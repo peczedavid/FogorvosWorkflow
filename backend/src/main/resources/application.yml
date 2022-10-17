@@ -1,8 +1,8 @@
 camunda:
   bpm:
     admin-user:
-      id: demo
-      password: demo
+      id: fogorvosdemo
+      password: fogorvosdemo
       first-name: Demo
     filter:
       create: All tasks
