@@ -1,6 +1,7 @@
 package com.peczedavid.fogorvos.controller;
 
 import com.peczedavid.fogorvos.model.DebugResponse;
+import org.apache.tomcat.jni.Proc;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@CrossOrigin(origins = { "http://localhost:4200" }, maxAge = 3600, allowCredentials = "true")
+import java.util.Random;
+
+@CrossOrigin(origins = {"http://localhost:4200"}, maxAge = 3600, allowCredentials = "true")
 @Controller
 @RequestMapping("/debug")
 public class DebugController {
@@ -25,7 +28,13 @@ public class DebugController {
 
     @PostMapping("/start")
     public ResponseEntity<?> startTask() {
-        ProcessInstanceWithVariables instance = testFogszabalyzoKell();
+        Random random = new Random();
+        ProcessInstanceWithVariables instance = switch (random.nextInt(3)) {
+            case 0 -> testFogszabalyzoKell();
+            case 1 -> testFogszabalyzoNemKell();
+            case 2 -> testSzakorvosiNemKellFogszabalyzo();
+            default -> null;
+        };
         DebugResponse response = new DebugResponse(instance.getId());
         return new ResponseEntity<DebugResponse>(response, HttpStatus.OK);
     }
@@ -40,11 +49,12 @@ public class DebugController {
                 .setVariable("rontgen", true)
                 .setVariable("szakorvosiVizsgalat", true)
                 .setVariable("fogszabalyzo", true)
+                .setVariable("elmarad", false)
                 .executeWithVariablesInReturn();
     }
 
-    private void testFogszabalyzoNemKell() {
-        ProcessInstanceWithVariables instance = runtimeService.createProcessInstanceByKey("Process_Fogorvos")
+    private ProcessInstanceWithVariables testFogszabalyzoNemKell() {
+        return runtimeService.createProcessInstanceByKey("Process_Fogorvos")
                 .setVariable("beteg", "fogorvosdemo")
                 .setVariable("recepcios", "fogorvosdemo")
                 .setVariable("orvos", "fogorvosdemo")
@@ -53,11 +63,12 @@ public class DebugController {
                 .setVariable("rontgen", false)
                 .setVariable("szakorvosiVizsgalat", false)
                 .setVariable("fogszabalyzo", false)
+                .setVariable("elmarad", false)
                 .executeWithVariablesInReturn();
     }
 
-    private void testSzakorvosiNemKellFogszabalyzo() {
-        ProcessInstanceWithVariables instance = runtimeService.createProcessInstanceByKey("Process_Fogorvos")
+    private ProcessInstanceWithVariables testSzakorvosiNemKellFogszabalyzo() {
+        return runtimeService.createProcessInstanceByKey("Process_Fogorvos")
                 .setVariable("beteg", "fogorvosdemo")
                 .setVariable("recepcios", "fogorvosdemo")
                 .setVariable("orvos", "fogorvosdemo")
@@ -66,6 +77,7 @@ public class DebugController {
                 .setVariable("rontgen", true)
                 .setVariable("szakorvosiVizsgalat", true)
                 .setVariable("fogszabalyzo", false)
+                .setVariable("elmarad", false)
                 .executeWithVariablesInReturn();
     }
 

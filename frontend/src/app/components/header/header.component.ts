@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-
-interface DebugResponse {
-    taskId: string;
-}
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-header',
@@ -18,10 +14,14 @@ export class HeaderComponent implements OnInit {
   ngOnInit(): void {}
 
   onDebugSend(): void {
-    this.http.post<DebugResponse>('http://localhost:8080/debug/start', null).subscribe(data => {
-      console.log(data.taskId);
-    });
+    this.http
+      .post<DebugResponse>('http://localhost:8080/debug/start', null)
+      .subscribe((data) => {
+        console.log(data.taskId);
+      });
   }
+}
 
-  
+interface DebugResponse {
+  taskId: string;
 }
