@@ -15,7 +15,7 @@
     <bpmn:boundaryEvent id="Event_12fcodo" attachedToRef="Activity_MegjelenesIdoponton">
       <bpmn:outgoing>Flow_1pldoo7</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_01upsst">
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R1/PT600S</bpmn:timeCycle>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R1/PT15S</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_1pldoo7" name="Nem jelent meg időben" sourceRef="Event_12fcodo" targetRef="Activity_BetegErtesitese" />
