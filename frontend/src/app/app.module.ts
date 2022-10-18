@@ -21,11 +21,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
 
+import { HttpClientModule } from "@angular/common/http";
+
 @NgModule({
   declarations: [AppComponent, HeaderComponent, LoginComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     FlexLayoutModule,
     FormsModule,
     MatToolbarModule,

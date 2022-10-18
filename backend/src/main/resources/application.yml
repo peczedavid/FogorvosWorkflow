@@ -6,3 +6,8 @@ camunda:
       first-name: Demo
     filter:
       create: All tasks
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/fogorvos_camunda
+    username: root
+    password: 123456
