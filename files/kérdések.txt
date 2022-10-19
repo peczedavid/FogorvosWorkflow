@@ -23,3 +23,5 @@
 
 1. Külön állítsak task-on változót, assignee-t vagy vagy egybe egy update fv? (valszeg egyesével)
 2. Amikor megkezdődik egy folyamat, a recepciósnak, vagy akár az orvosoknak claimelni kell vagy a rendszer beossza arra a processre a szereplőket? (A beteg az adott)
+
+NGRX
