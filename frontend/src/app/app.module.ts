@@ -21,12 +21,20 @@ import { MatMenuModule } from '@angular/material/menu';
 import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
 
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule, Routes } from '@angular/router';
+import { WorkflowComponent } from './components/workflow/workflow.component';
+
+const routes: Routes = [
+  { path: '', component: LoginComponent },
+  { path: 'workflow', component: WorkflowComponent }
+]
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, LoginComponent],
+  declarations: [AppComponent, HeaderComponent, LoginComponent, WorkflowComponent],
   imports: [
     BrowserModule,
+    RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     HttpClientModule,
     FlexLayoutModule,
@@ -41,7 +49,7 @@ import { HttpClientModule } from "@angular/common/http";
     MatSlideToggleModule,
     MatSelectModule,
     MatOptionModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
