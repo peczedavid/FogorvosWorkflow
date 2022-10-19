@@ -36,7 +36,7 @@ public class DebugController {
             default -> null;
         };
         DebugResponse response = new DebugResponse(instance.getId());
-        return new ResponseEntity<DebugResponse>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     private ProcessInstanceWithVariables testFogszabalyzoKell() {

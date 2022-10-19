@@ -1,7 +1,7 @@
 package com.peczedavid.fogorvos.controller;
 
+import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
 import org.camunda.bpm.engine.TaskService;
-import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,17 +25,17 @@ public class UserController {
 
     @GetMapping("/{id}/task")
     public ResponseEntity<?> getTasks(@PathVariable String id) {
-        List<TaskDto> taskDtos = new ArrayList<>();
         List<Task> tasks = taskService.createTaskQuery().list();
+        List<TaskPayload> taskPayloads = new ArrayList<>(tasks.size());
 
-        for (Task task : tasks) {
-            if (task.getAssignee().equals(id)) {
-                TaskDto taskDto = TaskDto.fromEntity(task);
-                taskDtos.add(taskDto);
+        for(Task task : tasks) {
+            if(task.getAssignee().equals(id)) {
+                TaskPayload taskPayload = TaskPayload.fromTask(task);
+                taskPayloads.add(taskPayload);
             }
         }
 
-        return new ResponseEntity<>(taskDtos, HttpStatus.OK);
+        return new ResponseEntity<>(taskPayloads, HttpStatus.OK);
     }
 
 }

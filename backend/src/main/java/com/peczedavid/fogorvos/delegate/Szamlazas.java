@@ -1,4 +1,4 @@
-package com.peczedavid.fogorvos.model;
+package com.peczedavid.fogorvos.delegate;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
