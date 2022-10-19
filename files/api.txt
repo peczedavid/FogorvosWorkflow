@@ -1,0 +1,12 @@
+Szükséges API funkciók:
+	-(KÉSZ) Aktív taskok lekérdezése adott user-hez
+		- Task Id(?) alapján eldonteni milyen task típus->onnan enum
+		- Válasz:
+			TaskPayload(Külön minden task-ra, erre lehet switch-elni):
+			- TaskDto, amiben az adott task adatai szerepelnek
+			- változók hozzá 
+			- bármi extra adat
+	- Task frissítése
+		- Saját api: frontend->backend
+		- Backend->Camunda
+	- Adott task befejezése

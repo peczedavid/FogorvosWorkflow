@@ -1,0 +1,25 @@
+1. Frontend->Backend->Camunda API? Közvetlenül vagy csak közvetetten
+2. .db fájl hol van?
+3. Java kódból küldjek Camunda Rest API felé rest kéréseket
+   vagy
+   Java kódból lehet közvetlen kérdezni az engine-től
+4. Mennyit kéne használni a Rest API-t és a Java engine kódot
+
+5. Honnan lehet tudni, hogy adott task-nál milyen változók vannak (beteg értesítése -> elmarad vagy késik)
+6. Honnan tudom, milyen típusú a változó?
+
+7. Camunda db egybe a sajáttal?
+
+8. Angular route: component: ComponentPerPage (mint Vue-ban view és component)
+
+- TaskDto -> Frontend és backend-be
+   - Ki lehet olvasni a hozzá tartozó változókat
+   - Meg lehet jeleníteni a hozzá tartozó UI-t
+- Egy db, bele 1 db users tábla->orvos-1, orvos-2, recepcios-1...
+- Java kód, nem Rest api
+- Angular -> Nincs view/component, de van egy oldalért felelős component
+
+----------------------
+
+1. Külön állítsak task-on változót, assignee-t vagy vagy egybe egy update fv? (valszeg egyesével)
+2. Amikor megkezdődik egy folyamat, a recepciósnak, vagy akár az orvosoknak claimelni kell vagy a rendszer beossza arra a processre a szereplőket? (A beteg az adott)
