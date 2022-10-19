@@ -17,7 +17,7 @@ public class TaskController {
     private TaskService taskService;
 
     // Todo:
-    //  - assignee endpoint
+    //  - set variable endpoint
 
     @PostMapping("/{id}/complete")
     public ResponseEntity<?> completeTask(@PathVariable String id) {
