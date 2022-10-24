@@ -1,6 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TaskPayload } from 'src/app/model/generic/task';
-import { TaskService } from 'src/app/services/task.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -8,12 +8,15 @@ import { TaskService } from 'src/app/services/task.service';
   styleUrls: ['./task-detail.component.css'],
 })
 export class TaskDetailComponent implements OnInit {
-  @Input() task: TaskPayload;
+  @Input() task: TaskPayload | undefined;
+  @Output() completeTask = new EventEmitter();
 
-  constructor(private _taskService: TaskService) {}
+  constructor(private http: HttpClient) {}
 
   onCompleteTask(): void {
-    this._taskService.completeTask(this.task.taskDto.id).subscribe();
+    this.http
+    .post<any>(`http://localhost:8080/task/${ this.task!.taskDto.id }/complete`, null)
+    .subscribe(_ => this.completeTask.emit())
   }
 
   ngOnInit(): void {}

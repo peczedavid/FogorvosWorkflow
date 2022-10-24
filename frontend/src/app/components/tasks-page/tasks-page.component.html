@@ -19,6 +19,7 @@
     <app-task-detail
       style="width: 100%"
       [task]="selectedTask"
+      (completeTask)="onTaskComplete()"
     ></app-task-detail>
   </mat-grid-tile>
 </mat-grid-list>

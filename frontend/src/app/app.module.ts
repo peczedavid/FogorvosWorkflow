@@ -34,7 +34,6 @@ import { TasksPageComponent } from './components/tasks-page/tasks-page.component
 
 import { routes } from './routes';
 import { TaskDetailComponent } from './components/task-detail/task-detail.component';
-import { TaskService } from './services/task.service';
 
 @NgModule({
   declarations: [
@@ -66,7 +65,7 @@ import { TaskService } from './services/task.service';
     MatGridListModule,
     ReactiveFormsModule,
   ],
-  providers: [TaskService],
+  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { TaskPayload } from '../../model/generic/task';
 import { MatSelectionListChange } from '@angular/material/list';
-import { TaskService } from 'src/app/services/task.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-tasks-page',
@@ -10,23 +10,31 @@ import { TaskService } from 'src/app/services/task.service';
   styleUrls: ['./tasks-page.component.css'],
 })
 export class TasksPageComponent implements OnInit {
-  constructor(private _taskService: TaskService) {}
+  constructor(private http: HttpClient) {}
 
   tasks: TaskPayload[] = [];
-  selectedTask: TaskPayload;
+  selectedTask: TaskPayload | undefined;
 
   onSelectionChanged(event: MatSelectionListChange) {
     this.selectedTask = event.options[0].value;
   }
 
-  onRefreshTasks() {
-    this._taskService
-      .getTasks('fogorvosdemo')
-      .subscribe((data: TaskPayload[]) => (this.tasks = data));
+  getTasks() {
+    this.http
+      .get<TaskPayload[]>('http://localhost:8080/user/fogorvosdemo/task')
+      .subscribe((data) => (this.tasks = data));
   }
+
+  onRefreshTasks() {
+    this.getTasks();
+  }
+
+  async onTaskComplete() {
+    this.getTasks();
+    this.selectedTask = undefined;
+  }
+
   ngOnInit() {
-    this._taskService
-      .getTasks('fogorvosdemo')
-      .subscribe((data: TaskPayload[]) => (this.tasks = data));
+    this.getTasks();
   }
 }
