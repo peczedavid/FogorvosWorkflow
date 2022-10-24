@@ -10,13 +10,21 @@ import { TaskPayload } from 'src/app/model/generic/task';
 export class TaskDetailComponent implements OnInit {
   @Input() task: TaskPayload | undefined;
   @Output() completeTask = new EventEmitter();
+  @Output() closePanel = new EventEmitter();
 
   constructor(private http: HttpClient) {}
 
+  onClosePanel(): void {
+    this.closePanel.emit();
+  }
+
   onCompleteTask(): void {
     this.http
-    .post<any>(`http://localhost:8080/task/${ this.task!.taskDto.id }/complete`, null)
-    .subscribe(_ => this.completeTask.emit())
+      .post<any>(
+        `http://localhost:8080/task/${this.task!.taskDto.id}/complete`,
+        null
+      )
+      .subscribe((_) => this.completeTask.emit());
   }
 
   ngOnInit(): void {}

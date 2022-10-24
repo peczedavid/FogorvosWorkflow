@@ -5,6 +5,7 @@
         <mat-icon fontIcon="refresh"></mat-icon>
       </button>
       <mat-selection-list
+        id="task-list"
         (selectionChange)="onSelectionChanged($event)"
         #tasklist
         [multiple]="false"
@@ -20,6 +21,7 @@
       style="width: 100%"
       [task]="selectedTask"
       (completeTask)="onTaskComplete()"
+      (closePanel)="onTaskPanelClosed()"
     ></app-task-detail>
   </mat-grid-tile>
 </mat-grid-list>

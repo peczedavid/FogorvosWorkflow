@@ -1,5 +1,8 @@
 <div *ngIf="task !== undefined">
+  <button mat-raised-button color="danger" (click)="onClosePanel()">X</button>
+  <h4>{{ task.taskDto.name }}</h4>
   <p>{{ task.taskDto.id }}</p>
-  <p>{{ task.taskDto.name }}</p>
-  <button mat-raised-button color="accent" (click)="onCompleteTask()">Befejezés</button>
+  <button mat-raised-button color="accent" (click)="onCompleteTask()">
+    Befejezés
+  </button>
 </div>

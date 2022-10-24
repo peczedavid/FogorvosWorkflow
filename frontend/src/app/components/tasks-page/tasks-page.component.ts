@@ -29,7 +29,14 @@ export class TasksPageComponent implements OnInit {
     this.getTasks();
   }
 
-  async onTaskComplete() {
+  // Kisebb hackelés, újra lekérdezem a taskokat, hogy frissüljön a tasks tömb, ezért nem lesz kijelölve
+  // egy task sem
+  onTaskPanelClosed() {
+    this.getTasks();
+    this.selectedTask = undefined;
+  }
+
+  onTaskComplete() {
     this.getTasks();
     this.selectedTask = undefined;
   }
