@@ -16,9 +16,15 @@ export class TasksPageComponent implements OnInit {
   selectedTask: TaskPayload;
 
   onSelectionChanged(event: MatSelectionListChange) {
-    this.selectedTask = this.tasks.find(
-      (task) => task.taskDto.id == event.options[0].value
-    )!;
+    this.selectedTask = event.options[0].value;
+  }
+
+  onRefreshTasks() {
+    this.http
+      .get<TaskPayload[]>('http://localhost:8080/user/fogorvosdemo/task')
+      .subscribe((data) => {
+        this.tasks = data;
+      });
   }
 
   ngOnInit(): void {

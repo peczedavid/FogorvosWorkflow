@@ -1,15 +1,19 @@
 <mat-grid-list cols="3">
   <mat-grid-tile [colspan]="1">
-    <mat-selection-list
-      (selectionChange)="onSelectionChanged($event)"
-      #tasklist
-      style="width: 100%"
-      [multiple]="false"
-    >
-      <mat-list-option *ngFor="let task of tasks" [value]="task.taskDto.id">
-        {{ task.taskDto.name }}
-      </mat-list-option>
-    </mat-selection-list>
+    <div style="width: 100%" fxLayout="column">
+      <button style="width: fit-content" mat-button (click)="onRefreshTasks()">
+        <mat-icon fontIcon="refresh"></mat-icon>
+      </button>
+      <mat-selection-list
+        (selectionChange)="onSelectionChanged($event)"
+        #tasklist
+        [multiple]="false"
+      >
+        <mat-list-option *ngFor="let task of tasks" [value]="task">
+          {{ task.taskDto.name }}
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="2">
     <app-task-detail
