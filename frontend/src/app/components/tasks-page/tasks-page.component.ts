@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 
 import { TaskPayload } from '../../model/generic/task';
 import { MatSelectionListChange } from '@angular/material/list';
 import { TaskService } from 'src/app/services/task.service';
-import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-tasks-page',
@@ -12,7 +10,7 @@ import { lastValueFrom } from 'rxjs';
   styleUrls: ['./tasks-page.component.css'],
 })
 export class TasksPageComponent implements OnInit {
-  constructor(private http: HttpClient, private _taskService: TaskService) {}
+  constructor(private _taskService: TaskService) {}
 
   tasks: TaskPayload[] = [];
   selectedTask: TaskPayload;

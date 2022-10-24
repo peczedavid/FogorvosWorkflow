@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { TaskPayload } from 'src/app/model/generic/task';
-import { HttpClient } from '@angular/common/http';
+import { TaskService } from 'src/app/services/task.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -10,12 +10,10 @@ import { HttpClient } from '@angular/common/http';
 export class TaskDetailComponent implements OnInit {
   @Input() task: TaskPayload;
 
-  constructor(private http: HttpClient) {}
+  constructor(private _taskService: TaskService) {}
 
   onCompleteTask(): void {
-    this.http
-    .post<any>(`http://localhost:8080/task/${ this.task.taskDto.id }/complete`, null)
-    .subscribe(); // Kell, különben nem működik
+    this._taskService.completeTask(this.task.taskDto.id).subscribe();
   }
 
   ngOnInit(): void {}

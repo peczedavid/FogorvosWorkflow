@@ -10,12 +10,13 @@ export class TaskService {
 
   constructor(private http: HttpClient) { }
 
+  completeTask(taskId: string) : any {
+    return this.http
+    .post<any>(`http://localhost:8080/task/${ taskId }/complete`, null)
+  }
+
   getTasks(userId: string): any {
     return this.http
     .get<TaskPayload[]>(`http://localhost:8080/user/${userId}/task`)
-    // .subscribe((data) => {
-    //   console.log(data);
-    //   return data;
-    // });
   }
 }
