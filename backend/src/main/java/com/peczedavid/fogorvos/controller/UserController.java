@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin(origins = { "http://localhost:4200" }, maxAge = 3600, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:4200"}, maxAge = 3600, allowCredentials = "true")
 @Controller
 @RequestMapping("/user")
 public class UserController {
@@ -28,8 +28,8 @@ public class UserController {
         List<Task> tasks = taskService.createTaskQuery().list();
         List<TaskPayload> taskPayloads = new ArrayList<>(tasks.size());
 
-        for(Task task : tasks) {
-            if(task.getAssignee().equals(id)) {
+        for (Task task : tasks) {
+            if (task.getAssignee().equals(id)) {
                 TaskPayload taskPayload = TaskPayload.fromTask(task);
                 taskPayloads.add(taskPayload);
             }

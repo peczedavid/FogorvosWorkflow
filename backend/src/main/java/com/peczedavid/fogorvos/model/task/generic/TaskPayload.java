@@ -19,7 +19,7 @@ public abstract class TaskPayload {
     public static TaskPayload fromTask(Task task) {
         TaskDto taskDto = TaskDto.fromEntity(task);
         TaskTipus taskTipus = TaskTipus.fromTaskDefinitionKey(taskDto.getTaskDefinitionKey());
-        return switch(taskTipus) {
+        return switch (taskTipus) {
             case TASK_MEGJELENES_IDOPONTON -> new MegjelenesIdopontonDto(taskDto, taskTipus);
             case TASK_BETEG_ERTESITESE -> new BetegErtesiteseDto(taskDto, taskTipus);
             case TASK_VIZSGALAT -> new VizsgalatDto(taskDto, taskTipus);

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = { "http://localhost:4200" }, maxAge = 3600, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:4200"}, maxAge = 3600, allowCredentials = "true")
 @Controller
 @RequestMapping("/process-instance")
 public class ProcessInstanceController {
@@ -24,10 +24,9 @@ public class ProcessInstanceController {
             @PathVariable String varName,
             @RequestBody VariablePayload variablePayload) {
         try {
-            if(runtimeService.getVariable(id, varName) == null)
+            if (runtimeService.getVariable(id, varName) == null)
                 return new ResponseEntity<>("Variable not found", HttpStatus.NOT_FOUND);
-        }
-        catch (NullValueException e) {
+        } catch (NullValueException e) {
             return new ResponseEntity<>("Process instance not found", HttpStatus.NOT_FOUND);
         }
 
