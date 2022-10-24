@@ -17,21 +17,29 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatListModule } from '@angular/material/list';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
-
-import { HttpClientModule } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router';
 import { WorkflowComponent } from './components/workflow/workflow.component';
 
-const routes: Routes = [
-  { path: '', component: LoginComponent },
-  { path: 'workflow', component: WorkflowComponent }
-]
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { TasksPageComponent } from './components/tasks-page/tasks-page.component';
+
+import { routes } from './routes';
+import { TaskDetailComponent } from './components/task-detail/task-detail.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, LoginComponent, WorkflowComponent],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    LoginComponent,
+    WorkflowComponent,
+    TasksPageComponent,
+    TaskDetailComponent,
+  ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
@@ -49,6 +57,8 @@ const routes: Routes = [
     MatSlideToggleModule,
     MatSelectModule,
     MatOptionModule,
+    MatListModule,
+    MatGridListModule,
     ReactiveFormsModule,
   ],
   providers: [],
