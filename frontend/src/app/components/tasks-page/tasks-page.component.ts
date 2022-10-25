@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import { TaskPayload } from '../../model/generic/task';
+import { TaskPayload, TaskTipus } from '../../model/generic/task';
 import { MatSelectionListChange } from '@angular/material/list';
 import { HttpClient } from '@angular/common/http';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-tasks-page',
@@ -22,7 +23,9 @@ export class TasksPageComponent implements OnInit {
   getTasks() {
     this.http
       .get<TaskPayload[]>('http://localhost:8080/user/fogorvosdemo/task')
-      .subscribe((data) => (this.tasks = data));
+      .subscribe((data) => {
+        this.tasks = data;
+      });
   }
 
   onRefreshTasks() {

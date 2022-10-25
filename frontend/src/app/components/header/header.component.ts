@@ -17,7 +17,6 @@ export class HeaderComponent implements OnInit {
     this.http
       .post<DebugResponse>('http://localhost:8080/debug/start', null)
       .subscribe((data) => {
-        console.log(data.taskId);
       });
   }
 }

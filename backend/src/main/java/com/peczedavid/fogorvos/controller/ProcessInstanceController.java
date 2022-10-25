@@ -31,8 +31,8 @@ public class ProcessInstanceController {
         }
 
         runtimeService.setVariable(id, varName, variablePayload.getValue());
-        // TODO: check if changed
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        // TODO: check if actually changed
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

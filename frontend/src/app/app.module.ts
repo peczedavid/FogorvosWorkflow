@@ -19,6 +19,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
@@ -30,6 +32,14 @@ import { TasksPageComponent } from './components/tasks-page/tasks-page.component
 
 import { routes } from './routes';
 import { TaskDetailComponent } from './components/task-detail/task-detail.component';
+import { MegjelenesIdopontonComponent } from './components/task/megjelenes-idoponton/megjelenes-idoponton.component';
+import { VizsgalatComponent } from './components/task/vizsgalat/vizsgalat.component';
+import { BetegErtesiteseComponent } from './components/task/beteg-ertesitese/beteg-ertesitese.component';
+import { RontgenComponent } from './components/task/rontgen/rontgen.component';
+import { FelulvizsgalatComponent } from './components/task/felulvizsgalat/felulvizsgalat.component';
+import { SzakorvosiVizsgalatComponent } from './components/task/szakorvosi-vizsgalat/szakorvosi-vizsgalat.component';
+import { FogszabalyzoFelrakasaComponent } from './components/task/fogszabalyzo-felrakasa/fogszabalyzo-felrakasa.component';
+import { VariableCheckboxComponent } from './components/variable/variable-checkbox/variable-checkbox.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +49,14 @@ import { TaskDetailComponent } from './components/task-detail/task-detail.compon
     WorkflowComponent,
     TasksPageComponent,
     TaskDetailComponent,
+    MegjelenesIdopontonComponent,
+    VizsgalatComponent,
+    BetegErtesiteseComponent,
+    RontgenComponent,
+    FelulvizsgalatComponent,
+    SzakorvosiVizsgalatComponent,
+    FogszabalyzoFelrakasaComponent,
+    VariableCheckboxComponent
   ],
   imports: [
     BrowserModule,
@@ -59,6 +77,8 @@ import { TaskDetailComponent } from './components/task-detail/task-detail.compon
     MatOptionModule,
     MatListModule,
     MatGridListModule,
+    MatCheckboxModule,
+    MatSnackBarModule,
     ReactiveFormsModule,
   ],
   providers: [],
