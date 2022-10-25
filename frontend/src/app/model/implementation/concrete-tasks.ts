@@ -1,23 +1,23 @@
 import { TaskPayload } from '../generic/task';
 
-export class VizsgalatDto extends TaskPayload {
+export interface VizsgalatDto extends TaskPayload {
   rontgen: boolean;
 }
 
-export class BetegErtesiteseDto extends TaskPayload {
+export interface BetegErtesiteseDto extends TaskPayload {
   elmarad: boolean;
 }
 
-export class FelulVizsgalatDto extends TaskPayload {
+export interface FelulVizsgalatDto extends TaskPayload {
   szakorvosiVizsgalat: boolean;
 }
 
-export class SzakorvosiVizsgalatDto extends TaskPayload {
+export interface SzakorvosiVizsgalatDto extends TaskPayload {
   fogszabalyzo: boolean;
 }
 
-export class FogszabalyzoFelrakasaDto extends TaskPayload {}
+export interface FogszabalyzoFelrakasaDto extends TaskPayload {}
 
-export class MegjelenesIdopontonDto extends TaskPayload {}
+export interface MegjelenesIdopontonDto extends TaskPayload {}
 
-export class RontgenDto extends TaskPayload {}
+export interface RontgenDto extends TaskPayload {}

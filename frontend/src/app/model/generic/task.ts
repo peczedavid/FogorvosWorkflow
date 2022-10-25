@@ -1,9 +1,9 @@
-export class TaskPayload {
+export interface TaskPayload {
     taskDto: TaskDto;
     taskTipus: TaskTipus;
 }
 
-export class TaskDto {
+export interface TaskDto {
   id: string;
   name: string;
   assignee: string;
