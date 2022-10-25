@@ -20,10 +20,8 @@ export class TaskDetailComponent implements OnInit {
     this.closePanel.emit();
   }
 
-  private tmp: TaskPayload | undefined;
-
   ngOnChanges() {
-    console.log(this.task);
+    //console.log(this.task);
   }
 
   onCompleteTask(): void {

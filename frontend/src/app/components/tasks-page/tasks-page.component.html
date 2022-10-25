@@ -1,6 +1,6 @@
 <mat-grid-list cols="3">
   <mat-grid-tile [colspan]="1">
-    <div style="width: 100%" fxLayout="column">
+    <div style="width: 100%; padding-left: 5rem; padding-right: 1rem;" fxLayout="column">
       <button style="width: fit-content" mat-button (click)="onRefreshTasks()">
         <mat-icon fontIcon="refresh"></mat-icon>
       </button>
@@ -18,7 +18,7 @@
   </mat-grid-tile>
   <mat-grid-tile [colspan]="2">
     <app-task-detail
-      style="width: 100%"
+      style="width: 100%; padding-left: 1rem;"
       [task]="selectedTask"
       (completeTask)="onTaskComplete()"
       (closePanel)="onTaskPanelClosed()"

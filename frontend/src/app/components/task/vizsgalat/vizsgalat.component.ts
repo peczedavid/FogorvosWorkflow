@@ -11,13 +11,12 @@ export class VizsgalatComponent implements OnInit {
 
   @Input() taskPayload: TaskPayload | undefined;
 
-  private _vizsgalatDto: VizsgalatDto;
+  vizsgalatDto: VizsgalatDto;
 
   constructor() { }
 
   ngOnInit(): void {
-    this._vizsgalatDto = this.taskPayload as VizsgalatDto;
-    console.log(this._vizsgalatDto.rontgen);
+    this.vizsgalatDto = this.taskPayload as VizsgalatDto;
   }
 
 }

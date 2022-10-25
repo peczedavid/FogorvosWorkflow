@@ -8,15 +8,14 @@ import { BetegErtesiteseDto } from 'src/app/model/implementation/concrete-tasks'
   styleUrls: ['./beteg-ertesitese.component.css']
 })
 export class BetegErtesiteseComponent implements OnInit {
-  @Input() taskPayload: TaskPayload | undefined;
+  @Input() taskPayload: TaskPayload;
 
-  _betegErtesiteseDto: BetegErtesiteseDto;
+  betegErtesiteseDto: BetegErtesiteseDto;
 
   constructor() { }
 
   ngOnInit(): void {
-    this._betegErtesiteseDto = this.taskPayload as BetegErtesiteseDto;
-    console.log(this._betegErtesiteseDto.elmarad);
+    this.betegErtesiteseDto = this.taskPayload as BetegErtesiteseDto;
   }
 
 }

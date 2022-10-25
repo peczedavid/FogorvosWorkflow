@@ -8,7 +8,7 @@ import { SzakorvosiVizsgalatDto } from 'src/app/model/implementation/concrete-ta
   styleUrls: ['./szakorvosi-vizsgalat.component.css']
 })
 export class SzakorvosiVizsgalatComponent implements OnInit {
-  @Input() taskPayload: TaskPayload | undefined;
+  @Input() taskPayload: TaskPayload;
 
   szakorvosiVizsgalatDto: SzakorvosiVizsgalatDto;
 
