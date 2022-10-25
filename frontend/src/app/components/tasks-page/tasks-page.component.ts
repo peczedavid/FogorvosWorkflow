@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { TaskPayload, TaskTipus } from '../../model/generic/task';
+import { TaskPayload } from '../../model/generic/task';
 import { MatSelectionListChange } from '@angular/material/list';
 import { HttpClient } from '@angular/common/http';
-import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-tasks-page',
