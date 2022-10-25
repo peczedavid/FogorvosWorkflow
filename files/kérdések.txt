@@ -25,3 +25,10 @@
 2. Amikor megkezdődik egy folyamat, a recepciósnak, vagy akár az orvosoknak claimelni kell vagy a rendszer beossza arra a processre a szereplőket? (A beteg az adott)
 
 NGRX
+
+---
+1. Angular service -> adatbázis lekérés vagy http kérés -> await és visszatérek? vagy promise-t adok vissza és subscribe (azzal nem működött, (nem volt szinkronban?))
+2. Van e global event? De lehet hogy helyettesíti a state management, amire lehet feliratkozni
+3. Fundamentában hogyan van pontosan megoldva a frontenden az interface/típus alapján megjelenítés
+4. Layout, containerek hogy vannak?
+5. Angular app-ot hogy érdemes mappákba szervezni (business logika a service-ekbe, interface model-be?)

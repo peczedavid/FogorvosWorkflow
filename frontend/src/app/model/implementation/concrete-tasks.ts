@@ -1,4 +1,4 @@
-import '../generic/task';
+import { TaskPayload } from '../generic/task';
 
 interface VizsgalatDto extends TaskPayload {
   rontgen: boolean;
