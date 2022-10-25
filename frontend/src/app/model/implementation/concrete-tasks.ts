@@ -1,27 +1,23 @@
 import { TaskPayload } from '../generic/task';
 
-interface VizsgalatDto extends TaskPayload {
+export class VizsgalatDto extends TaskPayload {
   rontgen: boolean;
 }
 
-interface BetegErtesiteseDto extends TaskPayload {
+export class BetegErtesiteseDto extends TaskPayload {
   elmarad: boolean;
 }
 
-interface FelulVizsgalatDto extends TaskPayload {
+export class FelulVizsgalatDto extends TaskPayload {
   szakorvosiVizsgalat: boolean;
 }
 
-interface BetegErtesiteseDto extends TaskPayload {
-  elmarad: boolean;
-}
-
-interface SzakorvosiVizsgalatDto extends TaskPayload {
+export class SzakorvosiVizsgalatDto extends TaskPayload {
   fogszabalyzo: boolean;
 }
 
-interface FogszabalyzoFelrakasaDto extends TaskPayload {}
+export class FogszabalyzoFelrakasaDto extends TaskPayload {}
 
-interface MegjelenesIdopontonDto extends TaskPayload {}
+export class MegjelenesIdopontonDto extends TaskPayload {}
 
-interface RontgenDto extends TaskPayload {}
+export class RontgenDto extends TaskPayload {}

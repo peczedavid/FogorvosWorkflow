@@ -1,7 +1,17 @@
 <div *ngIf="task !== undefined">
-  <button mat-raised-button color="danger" (click)="onClosePanel()">X</button>
-  <h4>{{ task.taskDto.name }}</h4>
-  <p>{{ task.taskDto.id }}</p>
+  <h4 style="display: inline;">{{ task.taskDto.name }}</h4>
+  <p style="display: inline;"> ({{ task.taskDto.id }})</p>
+  <button style="margin-left: 4rem;" mat-raised-button color="danger" (click)="onClosePanel()">X</button>
+  <div style="margin-bottom: 2rem; margin-top: 2rem;" [ngSwitch]="this.task!.taskTipus">
+    <app-megjelenes-idoponton *ngSwitchCase="TaskTipus.TASK_MEGJELENES_IDOPONTON"></app-megjelenes-idoponton>
+    <app-beteg-ertesitese [taskPayload]="task" *ngSwitchCase="TaskTipus.TASK_BETEG_ERTESITESE">Beteg értesítése</app-beteg-ertesitese>
+    <app-vizsgalat [taskPayload]="task" *ngSwitchCase="TaskTipus.TASK_VIZSGALAT">Vizsgálat</app-vizsgalat>
+    <app-rontgen *ngSwitchCase="TaskTipus.TASK_RONTGEN">Röntgen</app-rontgen>
+    <app-felulvizsgalat *ngSwitchCase="TaskTipus.TASK_FELULVIZSGALAT">Felülvizsgálat</app-felulvizsgalat>
+    <app-szakorvosi-vizsgalat [taskPayload]="task" *ngSwitchCase="TaskTipus.TASK_SZAKORVOSI_VIZSGALAT">Szakorvosi vizsgálat</app-szakorvosi-vizsgalat>
+    <app-fogszabalyzo-felrakasa *ngSwitchCase="TaskTipus.TASK_FOGSZABALYZO_FELRAKASA">Fogszabáylzó felrakása</app-fogszabalyzo-felrakasa>
+    <div *ngSwitchDefault>Ismeretlen task</div>
+  </div>
   <button mat-raised-button color="accent" (click)="onCompleteTask()">
     Befejezés
   </button>
