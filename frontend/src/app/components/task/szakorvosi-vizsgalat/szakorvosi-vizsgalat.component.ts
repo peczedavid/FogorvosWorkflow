@@ -5,17 +5,16 @@ import { SzakorvosiVizsgalatDto } from 'src/app/model/implementation/concrete-ta
 @Component({
   selector: 'app-szakorvosi-vizsgalat',
   templateUrl: './szakorvosi-vizsgalat.component.html',
-  styleUrls: ['./szakorvosi-vizsgalat.component.css']
+  styleUrls: ['./szakorvosi-vizsgalat.component.css'],
 })
 export class SzakorvosiVizsgalatComponent implements OnInit {
   @Input() taskPayload: TaskPayload;
 
   szakorvosiVizsgalatDto: SzakorvosiVizsgalatDto;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.szakorvosiVizsgalatDto = this.taskPayload as SzakorvosiVizsgalatDto;
   }
-
 }

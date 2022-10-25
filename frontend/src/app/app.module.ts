@@ -20,6 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBarModule } from "@angular/material/snack-bar";
 
 import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
@@ -38,6 +39,7 @@ import { RontgenComponent } from './components/task/rontgen/rontgen.component';
 import { FelulvizsgalatComponent } from './components/task/felulvizsgalat/felulvizsgalat.component';
 import { SzakorvosiVizsgalatComponent } from './components/task/szakorvosi-vizsgalat/szakorvosi-vizsgalat.component';
 import { FogszabalyzoFelrakasaComponent } from './components/task/fogszabalyzo-felrakasa/fogszabalyzo-felrakasa.component';
+import { VariableCheckboxComponent } from './components/variable/variable-checkbox/variable-checkbox.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,7 @@ import { FogszabalyzoFelrakasaComponent } from './components/task/fogszabalyzo-f
     FelulvizsgalatComponent,
     SzakorvosiVizsgalatComponent,
     FogszabalyzoFelrakasaComponent,
+    VariableCheckboxComponent
   ],
   imports: [
     BrowserModule,
@@ -75,6 +78,7 @@ import { FogszabalyzoFelrakasaComponent } from './components/task/fogszabalyzo-f
     MatListModule,
     MatGridListModule,
     MatCheckboxModule,
+    MatSnackBarModule,
     ReactiveFormsModule,
   ],
   providers: [],

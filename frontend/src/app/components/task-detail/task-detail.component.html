@@ -7,7 +7,7 @@
     <app-beteg-ertesitese [taskPayload]="task" *ngSwitchCase="TaskTipus.TASK_BETEG_ERTESITESE"></app-beteg-ertesitese>
     <app-vizsgalat [taskPayload]="task" *ngSwitchCase="TaskTipus.TASK_VIZSGALAT"></app-vizsgalat>
     <app-rontgen *ngSwitchCase="TaskTipus.TASK_RONTGEN"></app-rontgen>
-    <app-felulvizsgalat *ngSwitchCase="TaskTipus.TASK_FELULVIZSGALAT"></app-felulvizsgalat>
+    <app-felulvizsgalat [taskPayload]="task" *ngSwitchCase="TaskTipus.TASK_FELULVIZSGALAT"></app-felulvizsgalat>
     <app-szakorvosi-vizsgalat [taskPayload]="task" *ngSwitchCase="TaskTipus.TASK_SZAKORVOSI_VIZSGALAT"></app-szakorvosi-vizsgalat>
     <app-fogszabalyzo-felrakasa *ngSwitchCase="TaskTipus.TASK_FOGSZABALYZO_FELRAKASA"></app-fogszabalyzo-felrakasa>
     <div *ngSwitchDefault>Ismeretlen task</div>

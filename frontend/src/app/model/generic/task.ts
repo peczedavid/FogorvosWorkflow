@@ -8,6 +8,7 @@ export class TaskDto {
   name: string;
   assignee: string;
   description: string;
+  processInstanceId: string;
 }
 
 

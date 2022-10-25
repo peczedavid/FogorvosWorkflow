@@ -33,3 +33,4 @@ NGRX
 4. Layout, containerek hogy vannak?
 5. Angular app-ot hogy érdemes mappákba szervezni (business logika a service-ekbe, interface model-be?)
 6. Változók lekérdezése, értékek feltöltése backend-en
+7. Számlázás adott instance-hez rendelve, mondjuk külön táblába kiírva

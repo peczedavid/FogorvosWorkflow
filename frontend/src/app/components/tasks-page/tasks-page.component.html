@@ -1,6 +1,35 @@
-<mat-grid-list cols="3">
+<div
+  fxLayout.sm="column"
+  fxLayout.gt-sm="row"
+  style="padding-left: 3rem; padding-right: 3rem"
+>
+  <div fxFlex="35%" style="padding-top: 0.5rem">
+    <button style="width: fit-content" mat-button (click)="onRefreshTasks()">
+      <mat-icon fontIcon="refresh"></mat-icon>
+    </button>
+    <mat-selection-list
+      id="task-list"
+      (selectionChange)="onSelectionChanged($event)"
+      #tasklist
+      [multiple]="false"
+    >
+      <mat-list-option *ngFor="let task of tasks" [value]="task">
+        {{ task.taskDto.name }}
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+  <div fxFlex="65%" style="padding-top: 3rem; padding-left: 1rem">
+    <app-task-detail
+      [task]="selectedTask"
+      (completeTask)="onTaskComplete()"
+      (closePanel)="onTaskPanelClosed()"
+    ></app-task-detail>
+  </div>
+</div>
+
+<!-- <mat-grid-list cols="3">
   <mat-grid-tile [colspan]="1">
-    <div style="width: 100%; padding-left: 5rem; padding-right: 1rem;" fxLayout="column">
+    <div style="width: 100%; padding-left: 5rem; padding-right: 1rem;">
       <button style="width: fit-content" mat-button (click)="onRefreshTasks()">
         <mat-icon fontIcon="refresh"></mat-icon>
       </button>
@@ -24,4 +53,4 @@
       (closePanel)="onTaskPanelClosed()"
     ></app-task-detail>
   </mat-grid-tile>
-</mat-grid-list>
+</mat-grid-list> -->
