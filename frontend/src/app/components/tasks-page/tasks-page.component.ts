@@ -14,11 +14,14 @@ import { HttpResponse } from '@angular/common/http';
       style="padding-left: 3rem; padding-right: 3rem"
     >
       <div fxFlex="35%" style="padding-top: 0.5rem">
-        <button style="margin-right: 1rem;" (click)="newTask()" mat-raised-button>Új folyamat</button>
         <button
+          style="margin-right: 1rem;"
+          (click)="newTask()"
           mat-raised-button
-          (click)="onRefreshTasks()"
         >
+          Új folyamat
+        </button>
+        <button mat-raised-button (click)="onRefreshTasks()">
           <mat-icon fontIcon="refresh"></mat-icon>
         </button>
         <mat-selection-list
