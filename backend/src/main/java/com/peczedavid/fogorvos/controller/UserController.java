@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = {"http://localhost:4200"}, maxAge = 3600, allowCredentials = "true")
 @Controller
@@ -33,17 +34,17 @@ public class UserController {
     public ResponseEntity<?> getTasks(@PathVariable String id) {
         List<Task> tasks = taskService.createTaskQuery().list();
         List<TaskPayload> taskPayloads = new ArrayList<>(tasks.size());
-        List<VariableInstance> variablesInstances = runtimeService.createVariableInstanceQuery().list();
 
         for (Task task : tasks) {
             if (task.getAssignee().equals(id)) {
-                // TODO: .processInstanceIdIn()
-                List<VariableInstanceDto> taskVariables = new ArrayList<>();
-                for(VariableInstance variableInstance : variablesInstances) {
-                    if(variableInstance.getProcessInstanceId().equals(task.getProcessInstanceId())) {
-                        taskVariables.add(VariableInstanceDto.fromVariableInstance(variableInstance));
-                    }
-                }
+                List<VariableInstanceDto> taskVariables = runtimeService
+                        .createVariableInstanceQuery()
+                        .processInstanceIdIn(task.getProcessInstanceId())
+                        .list()
+                        .stream()
+                        .map(VariableInstanceDto::fromVariableInstance)
+                        .collect(Collectors.toList());
+
                 TaskPayload taskPayload = TaskPayload.fromTask(task, taskVariables);
                 taskPayloads.add(taskPayload);
             }
