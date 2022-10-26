@@ -30,4 +30,10 @@ export class TaskService {
       value: variableValue,
     });
   }
+
+  private _startCleanProcessUrl = 'http://localhost:8080/process-instance/new';
+  startCleanProcess(): Observable<HttpResponse<any>> {
+    const url = this._startCleanProcessUrl;
+    return this.http.post<HttpResponse<any>>(url, {});
+  }
 }

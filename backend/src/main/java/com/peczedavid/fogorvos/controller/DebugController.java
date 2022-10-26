@@ -1,6 +1,7 @@
 package com.peczedavid.fogorvos.controller;
 
 import com.peczedavid.fogorvos.model.DebugResponse;
+import com.peczedavid.fogorvos.model.MessageResponse;
 import org.apache.tomcat.jni.Proc;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;

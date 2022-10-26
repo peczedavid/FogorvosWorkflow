@@ -4,6 +4,7 @@ import com.peczedavid.fogorvos.model.MessageResponse;
 import com.peczedavid.fogorvos.model.process.VariablePayload;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.exception.NullValueException;
+import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,22 @@ public class ProcessInstanceController {
 
     @Autowired
     private RuntimeService runtimeService;
+
+    @PostMapping("/new")
+    public ResponseEntity<?> startCleanProcess() {
+        ProcessInstanceWithVariables instance = runtimeService.createProcessInstanceByKey("Process_Fogorvos")
+                .setVariable("beteg", "fogorvosdemo")
+                .setVariable("recepcios", "fogorvosdemo")
+                .setVariable("orvos", "fogorvosdemo")
+                .setVariable("rontgenes", "fogorvosdemo")
+                .setVariable("szakorvos", "fogorvosdemo")
+                .setVariable("rontgen", false)
+                .setVariable("szakorvosiVizsgalat", false)
+                .setVariable("fogszabalyzo", false)
+                .setVariable("elmarad", false)
+                .executeWithVariablesInReturn();
+        return new ResponseEntity<>(new MessageResponse(instance.getProcessInstanceId()), HttpStatus.OK);
+    }
 
     @PostMapping("/{id}/variables/{varName}")
     public ResponseEntity<MessageResponse> setVariable(
