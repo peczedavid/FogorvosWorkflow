@@ -4,7 +4,14 @@ import { BetegErtesiteseDto } from 'src/app/model/implementation/concrete-tasks'
 
 @Component({
   selector: 'app-beteg-ertesitese',
-  templateUrl: './beteg-ertesitese.component.html',
+  template: `
+    <app-variable-checkbox
+      [processInstanceId]="betegErtesiteseDto.taskDto.processInstanceId"
+      [name]="'elmarad'"
+      [displayName]="'Elmarad'"
+      [value]="betegErtesiteseDto.elmarad"
+    ></app-variable-checkbox>
+  `,
   styleUrls: ['./beteg-ertesitese.component.css'],
 })
 export class BetegErtesiteseComponent implements OnInit {

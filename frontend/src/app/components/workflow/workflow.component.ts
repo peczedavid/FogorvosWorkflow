@@ -3,18 +3,24 @@ import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-workflow',
-  templateUrl: './workflow.component.html',
-  styleUrls: ['./workflow.component.css']
+  template: `
+    <div fxLayoutAlign="center center" fxLayout="column">
+      <img
+        src="../../../assets/fogszabalyzo-folyamat.png"
+        alt=""
+        style="width: 50%; margin: 50px"
+      />
+      <button (click)="back()" mat-raised-button color="accent">Vissza</button>
+    </div>
+  `,
+  styleUrls: ['./workflow.component.css'],
 })
 export class WorkflowComponent implements OnInit {
-
   constructor(private location: Location) {}
 
   back(): void {
-    this.location.back()
+    this.location.back();
   }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void {}
 }

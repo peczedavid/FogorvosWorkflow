@@ -4,7 +4,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-variable-checkbox',
-  templateUrl: './variable-checkbox.component.html',
+  template: `
+    <mat-checkbox (change)="onEdited()" [(ngModel)]="value">
+      {{ displayName }}
+    </mat-checkbox>
+  `,
   styleUrls: ['./variable-checkbox.component.css'],
 })
 export class VariableCheckboxComponent implements OnInit {

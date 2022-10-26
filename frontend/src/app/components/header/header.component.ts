@@ -3,7 +3,30 @@ import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html',
+  template: `
+    <mat-toolbar class="navbar" color="primary">
+      <mat-icon style="margin-right: 10px;">local_hospital</mat-icon>
+      <button [routerLink]="['/']" mat-button style="font-size: 1.25rem;">
+        Online klinika
+      </button>
+      <span class="example-spacer"></span>
+      <button
+        [routerLink]="['/workflow']"
+        style="margin-right: 15px;"
+        mat-raised-button
+      >
+        Folyamat
+      </button>
+      <button
+        [routerLink]="['/tasks']"
+        style="margin-right: 15px;"
+        mat-raised-button
+      >
+        Feladatok
+      </button>
+      <button (click)="onDebugSend()" mat-raised-button>Debug</button>
+    </mat-toolbar>
+  `,
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit {
@@ -16,8 +39,7 @@ export class HeaderComponent implements OnInit {
   onDebugSend(): void {
     this.http
       .post<DebugResponse>('http://localhost:8080/debug/start', null)
-      .subscribe((data) => {
-      });
+      .subscribe((data) => {});
   }
 }
 

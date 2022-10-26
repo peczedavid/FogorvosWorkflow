@@ -4,19 +4,24 @@ import { VizsgalatDto } from 'src/app/model/implementation/concrete-tasks';
 
 @Component({
   selector: 'app-vizsgalat',
-  templateUrl: './vizsgalat.component.html',
-  styleUrls: ['./vizsgalat.component.css']
+  template: `
+    <app-variable-checkbox
+      [processInstanceId]="vizsgalatDto.taskDto.processInstanceId"
+      [name]="'rontgen'"
+      [displayName]="'Röntgen'"
+      [value]="vizsgalatDto.rontgen"
+    ></app-variable-checkbox>
+  `,
+  styleUrls: ['./vizsgalat.component.css'],
 })
 export class VizsgalatComponent implements OnInit {
-
-  @Input() taskPayload: TaskPayload | undefined;
+  @Input() taskPayload: TaskPayload;
 
   vizsgalatDto: VizsgalatDto;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.vizsgalatDto = this.taskPayload as VizsgalatDto;
   }
-
 }

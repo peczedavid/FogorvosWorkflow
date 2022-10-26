@@ -4,7 +4,14 @@ import { SzakorvosiVizsgalatDto } from 'src/app/model/implementation/concrete-ta
 
 @Component({
   selector: 'app-szakorvosi-vizsgalat',
-  templateUrl: './szakorvosi-vizsgalat.component.html',
+  template: `
+    <mat-checkbox
+      class="example-margin"
+      [checked]="szakorvosiVizsgalatDto.fogszabalyzo"
+    >
+      Fogszabályzó
+    </mat-checkbox>
+  `,
   styleUrls: ['./szakorvosi-vizsgalat.component.css'],
 })
 export class SzakorvosiVizsgalatComponent implements OnInit {
