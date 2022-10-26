@@ -1,6 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TaskService } from 'src/app/services/task.service';
 
 @Component({
   selector: 'app-variable-checkbox',
@@ -12,24 +13,32 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./variable-checkbox.component.css'],
 })
 export class VariableCheckboxComponent implements OnInit {
-  @Input() processInstanceId: String;
-  @Input() name: String;
-  @Input() displayName: String;
+  @Input() processInstanceId: string;
+  @Input() name: string;
+  @Input() displayName: string;
   @Input() value: boolean;
 
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar) {}
+  constructor(
+    private snackBar: MatSnackBar,
+    private taskService: TaskService
+  ) {}
 
   onEdited() {
-    const url = `http://localhost:8080/process-instance/${this.processInstanceId}/variables/${this.name}`;
-    this.http
-      .post<any>(url, {
-        type: 'elvileg-mindegy',
-        value: this.value,
-      })
-      .subscribe((response) => {
-        if (response === null) {
-          this._snackBar.open('Változó átállítva', 'Bezár');
+    this.taskService
+      .setVariable(this.processInstanceId, this.name, this.value)
+      .subscribe((response: HttpResponse<any>) => {
+        if (response) {
+          this.snackBar.open('Változó átállítva', 'Bezár', {
+            duration: 2000,
+            panelClass: ['success-snackbar']
+          });
         }
+      }, (error: HttpErrorResponse) => {
+        console.log(error);
+        this.snackBar.open('A változó nem sikerült átállítani', 'Bezár', {
+          duration: 2000,
+          panelClass: ['danger-snackbar']
+        });
       });
   }
 

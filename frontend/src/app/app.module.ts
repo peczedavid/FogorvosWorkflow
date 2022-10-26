@@ -40,6 +40,7 @@ import { FelulvizsgalatComponent } from './components/task/felulvizsgalat/felulv
 import { SzakorvosiVizsgalatComponent } from './components/task/szakorvosi-vizsgalat/szakorvosi-vizsgalat.component';
 import { FogszabalyzoFelrakasaComponent } from './components/task/fogszabalyzo-felrakasa/fogszabalyzo-felrakasa.component';
 import { VariableCheckboxComponent } from './components/variable/variable-checkbox/variable-checkbox.component';
+import { TaskService } from './services/task.service';
 
 @NgModule({
   declarations: [
@@ -81,7 +82,7 @@ import { VariableCheckboxComponent } from './components/variable/variable-checkb
     MatSnackBarModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [TaskService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

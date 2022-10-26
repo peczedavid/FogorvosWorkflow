@@ -5,12 +5,12 @@ import { SzakorvosiVizsgalatDto } from 'src/app/model/implementation/concrete-ta
 @Component({
   selector: 'app-szakorvosi-vizsgalat',
   template: `
-    <mat-checkbox
-      class="example-margin"
-      [checked]="szakorvosiVizsgalatDto.fogszabalyzo"
-    >
-      Fogszabályzó
-    </mat-checkbox>
+    <app-variable-checkbox
+      [processInstanceId]="szakorvosiVizsgalatDto.taskDto.processInstanceId"
+      [name]="'fogszabalyzo'"
+      [displayName]="'Fogszabályzó'"
+      [value]="szakorvosiVizsgalatDto.fogszabalyzo"
+    ></app-variable-checkbox>
   `,
   styleUrls: ['./szakorvosi-vizsgalat.component.css'],
 })

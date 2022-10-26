@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { TaskPayload, TaskTipus } from '../../model/generic/task';
 import { MatSelectionListChange } from '@angular/material/list';
-import { HttpClient } from '@angular/common/http';
+import { TaskService } from 'src/app/services/task.service';
 
 @Component({
   selector: 'app-tasks-page',
@@ -43,26 +43,23 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./tasks-page.component.css'],
 })
 export class TasksPageComponent implements OnInit {
-  constructor(private http: HttpClient) {}
+  constructor(private taskService: TaskService) {}
 
   tasks: TaskPayload[] = [];
   selectedTask: TaskPayload | undefined;
 
   onSelectionChanged(event: MatSelectionListChange) {
     this.selectedTask = undefined;
-    setTimeout(() =>{
+    setTimeout(() => {
       this.selectedTask = event.options[0].value;
-    }, 1);
-    
-    //console.log(this.selectedTask);
+    }, 0);
   }
 
   getTasks() {
-    this.http
-      .get<TaskPayload[]>('http://localhost:8080/user/fogorvosdemo/task')
-      .subscribe((data) => {
-        this.tasks = data;
-      });
+    this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
+      this.tasks = tasks;
+    });
+    this.selectedTask = undefined;
   }
 
   onRefreshTasks() {
@@ -70,17 +67,14 @@ export class TasksPageComponent implements OnInit {
   }
 
   onTaskPanelClosed() {
-    this.getTasks(); // Frissül a tasks tömb -> nem lesz kijelölve egy sem
-    this.selectedTask = undefined;
+    this.getTasks();
   }
 
   onTaskComplete() {
     this.getTasks();
-    this.selectedTask = undefined;
   }
 
   ngOnInit() {
     this.getTasks();
-    this.selectedTask = undefined;
   }
 }

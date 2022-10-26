@@ -11,7 +11,6 @@ import { BetegErtesiteseDto } from 'src/app/model/implementation/concrete-tasks'
       [displayName]="'Elmarad'"
       [value]="betegErtesiteseDto.elmarad"
     ></app-variable-checkbox>
-    <p>{{betegErtesiteseDto.taskDto.id}}</p>
   `,
   styleUrls: ['./beteg-ertesitese.component.css'],
 })

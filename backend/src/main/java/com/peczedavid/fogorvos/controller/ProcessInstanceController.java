@@ -1,5 +1,6 @@
 package com.peczedavid.fogorvos.controller;
 
+import com.peczedavid.fogorvos.model.MessageResponse;
 import com.peczedavid.fogorvos.model.process.VariablePayload;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.exception.NullValueException;
@@ -19,20 +20,20 @@ public class ProcessInstanceController {
     private RuntimeService runtimeService;
 
     @PostMapping("/{id}/variables/{varName}")
-    public ResponseEntity<?> setVariable(
+    public ResponseEntity<MessageResponse> setVariable(
             @PathVariable String id,
             @PathVariable String varName,
             @RequestBody VariablePayload variablePayload) {
         try {
             if (runtimeService.getVariable(id, varName) == null)
-                return new ResponseEntity<>("Variable not found", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(new MessageResponse("Variable not found"), HttpStatus.NOT_FOUND);
         } catch (NullValueException e) {
-            return new ResponseEntity<>("Process instance not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageResponse("Process instance not found"), HttpStatus.NOT_FOUND);
         }
 
         runtimeService.setVariable(id, varName, variablePayload.getValue());
         // TODO: check if actually changed
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse("Variable set"), HttpStatus.OK);
     }
 
 }

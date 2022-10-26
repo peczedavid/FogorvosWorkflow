@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
 
 @Component({
@@ -7,15 +7,16 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
   template: `
     <div *ngIf="task !== undefined">
       <h4 style="display: inline">{{ task.taskDto.name }}</h4>
-      <p style="display: inline">({{ task.taskDto.id }})</p>
       <button
-        style="margin-left: 4rem; width: fit-content"
+        style="margin-left: 4rem; width: fit-content; float: right;"
         mat-raised-button
         color="danger"
         (click)="onClosePanel()"
       >
         <mat-icon fontIcon="close"></mat-icon>
       </button>
+      <p>({{ task.taskDto.id }})</p>
+
       <ng-container *ngTemplateOutlet="vars_templ" #vars_cont></ng-container>
       <button mat-raised-button color="accent" (click)="onCompleteTask()">
         Befejez

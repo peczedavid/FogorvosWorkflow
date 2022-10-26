@@ -10,3 +10,6 @@ if (environment.production) {
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.error(err));
+
+// TODO: state management -> váltózó állítására frissíteni a selected task-ot
+//                           vagy lehet az összes task-ot és újra beállítani selected task-nak ugyanazt
