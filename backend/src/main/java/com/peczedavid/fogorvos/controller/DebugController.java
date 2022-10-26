@@ -1,8 +1,6 @@
 package com.peczedavid.fogorvos.controller;
 
-import com.peczedavid.fogorvos.model.DebugResponse;
 import com.peczedavid.fogorvos.model.MessageResponse;
-import org.apache.tomcat.jni.Proc;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
@@ -36,8 +34,7 @@ public class DebugController {
             case 2 -> testSzakorvosiNemKellFogszabalyzo();
             default -> null;
         };
-        DebugResponse response = new DebugResponse(instance.getId());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse(instance.getId()), HttpStatus.OK);
     }
 
     private ProcessInstanceWithVariables testFogszabalyzoKell() {

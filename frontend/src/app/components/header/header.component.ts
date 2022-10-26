@@ -38,11 +38,9 @@ export class HeaderComponent implements OnInit {
 
   onDebugSend(): void {
     this.http
-      .post<DebugResponse>('http://localhost:8080/debug/start', null)
-      .subscribe((data) => {});
+      .post<any>('http://localhost:8080/debug/start', null)
+      .subscribe((data) => {
+        console.log(data.message)
+      });
   }
-}
-
-interface DebugResponse {
-  taskId: string;
 }
