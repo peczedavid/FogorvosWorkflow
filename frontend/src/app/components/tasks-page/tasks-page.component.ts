@@ -49,8 +49,12 @@ export class TasksPageComponent implements OnInit {
   selectedTask: TaskPayload | undefined;
 
   onSelectionChanged(event: MatSelectionListChange) {
-    this.selectedTask = event.options[0].value;
-    console.log(this.selectedTask);
+    this.selectedTask = undefined;
+    setTimeout(() =>{
+      this.selectedTask = event.options[0].value;
+    }, 1);
+    
+    //console.log(this.selectedTask);
   }
 
   getTasks() {

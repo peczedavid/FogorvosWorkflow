@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild, ViewContainerRef, ViewRef } from '@angular/core';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
 
 @Component({
@@ -25,7 +25,7 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
     <ng-template #vars_templ>
       <div
         style="margin-top: 1rem; margin-bottom: 1rem"
-        [ngSwitch]="this.task!.taskTipus"
+        [ngSwitch]="task!.taskTipus"
       >
         <app-megjelenes-idoponton
           *ngSwitchCase="TaskTipus.TASK_MEGJELENES_IDOPONTON"
@@ -70,7 +70,7 @@ export class TaskDetailComponent implements OnInit {
   }
 
   ngOnChanges() {
-    console.log(this.task);
+    //console.log(this.task);
   }
 
   onCompleteTask(): void {

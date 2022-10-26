@@ -37,6 +37,7 @@ public class UserController {
 
         for (Task task : tasks) {
             if (task.getAssignee().equals(id)) {
+                // TODO: .processInstanceIdIn()
                 List<VariableInstanceDto> taskVariables = new ArrayList<>();
                 for(VariableInstance variableInstance : variablesInstances) {
                     if(variableInstance.getProcessInstanceId().equals(task.getProcessInstanceId())) {
