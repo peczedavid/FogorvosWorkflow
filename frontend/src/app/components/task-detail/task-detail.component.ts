@@ -16,14 +16,6 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
         <mat-icon fontIcon="close"></mat-icon>
       </button>
       <p>({{ task.taskDto.id }})</p>
-
-      <ng-container *ngTemplateOutlet="vars_templ" #vars_cont></ng-container>
-      <button mat-raised-button color="accent" (click)="onCompleteTask()">
-        Befejez
-      </button>
-    </div>
-
-    <ng-template #vars_templ>
       <div
         style="margin-top: 1rem; margin-bottom: 1rem"
         [ngSwitch]="task!.taskTipus"
@@ -57,7 +49,10 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
         ></app-fogszabalyzo-felrakasa>
         <div *ngSwitchDefault>Ismeretlen task</div>
       </div>
-    </ng-template>
+      <button mat-raised-button color="accent" (click)="onCompleteTask()">
+        Befejez
+      </button>
+    </div>
   `,
   styleUrls: ['./task-detail.component.css'],
 })

@@ -10,12 +10,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.ws.rs.Path;
+
 @CrossOrigin(origins = {"http://localhost:4200"}, maxAge = 3600, allowCredentials = "true")
 @Controller
 @RequestMapping("/task")
 public class TaskController {
     @Autowired
     private TaskService taskService;
+
+    //@PostMapping("/{id}")
+    //public ResponseEntity<?> getTask(@PathVariable String id {}
 
     @PostMapping("/{id}/complete")
     public ResponseEntity<?> completeTask(@PathVariable String id) {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TaskPayload } from 'src/app/model/generic/task';
 import { BetegErtesiteseDto } from 'src/app/model/implementation/concrete-tasks';
 
@@ -15,7 +15,8 @@ import { BetegErtesiteseDto } from 'src/app/model/implementation/concrete-tasks'
   `,
   styleUrls: ['./beteg-ertesitese.component.css'],
 })
-export class BetegErtesiteseComponent implements OnInit {
+export class BetegErtesiteseComponent implements OnChanges {
+  
   @Input() taskPayload: TaskPayload;
   @Output() variableChanged = new EventEmitter();
 
@@ -23,7 +24,8 @@ export class BetegErtesiteseComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
+  ngOnChanges() {
     this.betegErtesiteseDto = this.taskPayload as BetegErtesiteseDto;
   }
+  
 }

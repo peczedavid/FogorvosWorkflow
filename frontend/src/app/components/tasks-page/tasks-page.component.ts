@@ -65,10 +65,10 @@ export class TasksPageComponent implements OnInit {
   }
 
   onSelectionChanged(event: MatSelectionListChange) {
-    this.selectedTask = undefined;
-    setTimeout(() => {
+    //this.selectedTask = undefined;
+    //setTimeout(() => {
       this.selectedTask = event.options[0].value;
-    }, 0);
+    //}, 0);
   }
 
   onVariableChanged(event: Event) {
