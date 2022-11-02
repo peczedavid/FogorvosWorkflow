@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TaskPayload } from 'src/app/model/generic/task';
 import { BetegErtesiteseDto } from 'src/app/model/implementation/concrete-tasks';
 
@@ -10,12 +10,14 @@ import { BetegErtesiteseDto } from 'src/app/model/implementation/concrete-tasks'
       [name]="'elmarad'"
       [displayName]="'Elmarad'"
       [value]="betegErtesiteseDto.elmarad"
+      (valueChanged)="variableChanged.emit($event)"
     ></app-variable-checkbox>
   `,
   styleUrls: ['./beteg-ertesitese.component.css'],
 })
 export class BetegErtesiteseComponent implements OnInit {
   @Input() taskPayload: TaskPayload;
+  @Output() variableChanged = new EventEmitter();
 
   betegErtesiteseDto: BetegErtesiteseDto;
 

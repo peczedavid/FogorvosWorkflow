@@ -26,6 +26,7 @@ import { HttpResponse } from '@angular/common/http';
         </button>
         <mat-selection-list
           id="task-list"
+          [compareWith]="taskCompare"
           (selectionChange)="onSelectionChanged($event)"
           #tasklist
           [multiple]="false"
@@ -40,6 +41,7 @@ import { HttpResponse } from '@angular/common/http';
           [task]="selectedTask"
           (completeTask)="onTaskComplete()"
           (closePanel)="onTaskPanelClosed()"
+          (variableChanged)="onVariableChanged($event)"
         ></app-task-detail>
       </div>
     </div>
@@ -58,11 +60,25 @@ export class TasksPageComponent implements OnInit {
       .subscribe((response: HttpResponse<any>) => this.getTasks());
   }
 
+  taskCompare(object1: any, object2: any) : boolean {
+      return object1 && object2 && object1.taskDto.id == object2.taskDto.id;
+  }
+
   onSelectionChanged(event: MatSelectionListChange) {
     this.selectedTask = undefined;
     setTimeout(() => {
       this.selectedTask = event.options[0].value;
     }, 0);
+  }
+
+  onVariableChanged(event: Event) {
+    const selectedId = this.selectedTask?.taskDto.id;
+    this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
+      this.tasks = tasks;
+      this.tasks.map((task) => {
+        if (task.taskDto.id === selectedId) this.selectedTask = task;
+      });
+    });
   }
 
   getTasks() {

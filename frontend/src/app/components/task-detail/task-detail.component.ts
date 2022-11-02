@@ -34,18 +34,22 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
         <app-beteg-ertesitese
           [taskPayload]="task!"
           *ngSwitchCase="TaskTipus.TASK_BETEG_ERTESITESE"
+          (variableChanged)="onVariableChanged($event)"
         ></app-beteg-ertesitese>
         <app-vizsgalat
           [taskPayload]="task!"
+          (variableChanged)="onVariableChanged($event)"
           *ngSwitchCase="TaskTipus.TASK_VIZSGALAT"
         ></app-vizsgalat>
         <app-rontgen *ngSwitchCase="TaskTipus.TASK_RONTGEN"></app-rontgen>
         <app-felulvizsgalat
           [taskPayload]="task!"
+          (variableChanged)="onVariableChanged($event)"
           *ngSwitchCase="TaskTipus.TASK_FELULVIZSGALAT"
         ></app-felulvizsgalat>
         <app-szakorvosi-vizsgalat
           [taskPayload]="task!"
+          (variableChanged)="onVariableChanged($event)"
           *ngSwitchCase="TaskTipus.TASK_SZAKORVOSI_VIZSGALAT"
         ></app-szakorvosi-vizsgalat>
         <app-fogszabalyzo-felrakasa
@@ -61,10 +65,16 @@ export class TaskDetailComponent implements OnInit {
   @Input() task: TaskPayload | undefined;
   @Output() completeTask = new EventEmitter();
   @Output() closePanel = new EventEmitter();
+  @Output() variableChanged = new EventEmitter();
 
   TaskTipus = TaskTipus;
 
   constructor(private http: HttpClient) {}
+
+  onVariableChanged(event: Event) {
+    //console.log(event)
+    this.variableChanged.emit(event);
+  }
 
   onClosePanel(): void {
     this.closePanel.emit();

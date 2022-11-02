@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TaskPayload } from 'src/app/model/generic/task';
 import { VizsgalatDto } from 'src/app/model/implementation/concrete-tasks';
 
@@ -10,12 +10,14 @@ import { VizsgalatDto } from 'src/app/model/implementation/concrete-tasks';
       [name]="'rontgen'"
       [displayName]="'Röntgen'"
       [value]="vizsgalatDto.rontgen"
+      (valueChanged)="variableChanged.emit($event)"
     ></app-variable-checkbox>
   `,
   styleUrls: ['./vizsgalat.component.css'],
 })
 export class VizsgalatComponent implements OnInit {
   @Input() taskPayload: TaskPayload;
+  @Output() variableChanged = new EventEmitter();
 
   vizsgalatDto: VizsgalatDto;
 

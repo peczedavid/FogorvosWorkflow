@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskService } from 'src/app/services/task.service';
 
@@ -17,6 +17,7 @@ export class VariableCheckboxComponent implements OnInit {
   @Input() name: string;
   @Input() displayName: string;
   @Input() value: boolean;
+  @Output() valueChanged = new EventEmitter();
 
   constructor(
     private snackBar: MatSnackBar,
@@ -27,6 +28,7 @@ export class VariableCheckboxComponent implements OnInit {
     this.taskService
       .setVariable(this.processInstanceId, this.name, this.value)
       .subscribe((response: HttpResponse<any>) => {
+        this.valueChanged.emit(this.value)
         if (response) {
           this.snackBar.open('Változó átállítva', 'Bezár', {
             duration: 2000,
