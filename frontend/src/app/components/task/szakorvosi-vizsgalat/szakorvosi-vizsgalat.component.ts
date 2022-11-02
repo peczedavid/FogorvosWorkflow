@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TaskPayload } from 'src/app/model/generic/task';
 import { SzakorvosiVizsgalatDto } from 'src/app/model/implementation/concrete-tasks';
 
@@ -15,7 +15,7 @@ import { SzakorvosiVizsgalatDto } from 'src/app/model/implementation/concrete-ta
   `,
   styleUrls: ['./szakorvosi-vizsgalat.component.css'],
 })
-export class SzakorvosiVizsgalatComponent implements OnInit {
+export class SzakorvosiVizsgalatComponent implements OnChanges {
   @Input() taskPayload: TaskPayload;
   @Output() variableChanged = new EventEmitter();
 
@@ -23,7 +23,7 @@ export class SzakorvosiVizsgalatComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
+  ngOnChanges() {
     this.szakorvosiVizsgalatDto = this.taskPayload as SzakorvosiVizsgalatDto;
   }
 }

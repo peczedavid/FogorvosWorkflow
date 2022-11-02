@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { TaskPayload } from 'src/app/model/generic/task';
 import { VizsgalatDto } from 'src/app/model/implementation/concrete-tasks';
 
@@ -15,7 +15,7 @@ import { VizsgalatDto } from 'src/app/model/implementation/concrete-tasks';
   `,
   styleUrls: ['./vizsgalat.component.css'],
 })
-export class VizsgalatComponent implements OnInit {
+export class VizsgalatComponent implements OnChanges {
   @Input() taskPayload: TaskPayload;
   @Output() variableChanged = new EventEmitter();
 
@@ -23,7 +23,7 @@ export class VizsgalatComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     this.vizsgalatDto = this.taskPayload as VizsgalatDto;
   }
 }
