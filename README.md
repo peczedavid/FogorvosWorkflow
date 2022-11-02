@@ -6,6 +6,7 @@
 
 ![Tasks page](files/feladatok-nezet.png)
 ![Workflow chart](files/fogszabalyzo-folyamat.png)
+![Database](files/adatbazis-sajat.png)
 
 ## Szerepkörök
 - beteg
