@@ -60,15 +60,12 @@ export class TasksPageComponent implements OnInit {
       .subscribe((response: HttpResponse<any>) => this.getTasks());
   }
 
-  taskCompare(object1: any, object2: any) : boolean {
-      return object1 && object2 && object1.taskDto.id === object2.taskDto.id;
+  taskCompare(object1: any, object2: any): boolean {
+    return object1 && object2 && object1.taskDto.id === object2.taskDto.id;
   }
 
   onSelectionChanged(event: MatSelectionListChange) {
-    //this.selectedTask = undefined;
-    //setTimeout(() => {
-      this.selectedTask = event.options[0].value;
-    //}, 0);
+    this.selectedTask = event.options[0].value;
   }
 
   onVariableChanged(event: Event) {
