@@ -1,6 +1,5 @@
 package com.peczedavid.fogorvos.service;
 
-import com.peczedavid.fogorvos.controller.ProcessInstanceController;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
 import org.slf4j.Logger;

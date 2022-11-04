@@ -9,7 +9,6 @@ import org.camunda.bpm.engine.rest.dto.runtime.VariableInstanceDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Setter
