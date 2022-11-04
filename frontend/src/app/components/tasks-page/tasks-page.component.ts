@@ -72,10 +72,18 @@ export class TasksPageComponent implements OnInit {
     this.selectedTask = event.options[0].value;
   }
 
+  convertToDate(tasks: TaskPayload[]) : TaskPayload[] {
+    return tasks.map((task) => {
+      // Kell, különben string marad
+      task.taskDto.created = new Date(task.taskDto.created);
+      return task;
+    });
+  }
+
   onVariableChanged(event: Event) {
     const selectedId = this.selectedTask?.taskDto.id;
     this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
-      this.tasks = tasks;
+      this.tasks = this.convertToDate(tasks);
       this.tasks.map((task) => {
         if (task.taskDto.id === selectedId) this.selectedTask = task;
       });
@@ -84,11 +92,7 @@ export class TasksPageComponent implements OnInit {
 
   getTasks() {
     this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
-      this.tasks = tasks.map((task) => {
-        // Kell, különben string marad
-        task.taskDto.created = new Date(task.taskDto.created);
-        return task;
-      });
+      this.tasks = this.convertToDate(tasks);
       console.log(this.tasks);
     });
     this.selectedTask = undefined;

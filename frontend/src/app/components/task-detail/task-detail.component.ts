@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
+import { TaskService } from 'src/app/services/task.service';
 
 @Component({
   selector: 'app-task-detail',
@@ -68,10 +69,9 @@ export class TaskDetailComponent {
 
   TaskTipus = TaskTipus;
 
-  constructor(private http: HttpClient) {}
+  constructor(private taskService: TaskService) {}
 
   onVariableChanged(event: Event) {
-    //console.log(event)
     this.variableChanged.emit(event);
   }
 
@@ -79,14 +79,11 @@ export class TaskDetailComponent {
     this.closePanel.emit();
   }
 
-  // TODO: to service
   onCompleteTask(): void {
-    this.http
-      .post<any>(
-        `http://localhost:8080/task/${this.task!.taskDto.id}/complete`,
-        null
-      )
-      .subscribe((_) => this.completeTask.emit());
+    if (this.task?.taskDto.id !== undefined)
+      this.taskService
+        .completeTask(this.task?.taskDto.id)
+        .subscribe((_) => this.completeTask.emit());
   }
 
   formatDate(): string {

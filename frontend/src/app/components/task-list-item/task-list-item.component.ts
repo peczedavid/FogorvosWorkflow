@@ -16,14 +16,18 @@ export class TaskListItemComponent {
   constructor() {}
 
   formatDate(): string {
-    const year = this.taskDto.created.getFullYear();
-    const month = this.taskDto.created.getMonth();
-    const day = this.taskDto.created.getDay();
+    if (this.taskDto.created instanceof Date) {
+      const year = this.taskDto.created.getFullYear();
+      const month = this.taskDto.created.getMonth();
+      const day = this.taskDto.created.getDay();
 
-    const hours = this.taskDto.created.getHours();
-    const minutes = this.taskDto.created.getMinutes();
-    const seconds = this.taskDto.created.getSeconds();
+      const hours = this.taskDto.created.getHours();
+      const minutes = this.taskDto.created.getMinutes();
+      const seconds = this.taskDto.created.getSeconds();
 
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    } else {
+      return '';
+    }
   }
 }

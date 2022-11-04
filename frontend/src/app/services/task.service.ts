@@ -14,9 +14,11 @@ export class TaskService {
     const url = this._getTasksUrl.replace('#userId#', userId);
     return this.http.get<TaskPayload[]>(url);
   }
+  private _backendAddress = 'http://localhost:8080';
 
   private _setVariableUrl =
-    'http://localhost:8080/process-instance/#processInstanceId#/variables/#variableName#';
+    this._backendAddress +
+    '/process-instance/#processInstanceId#/variables/#variableName#';
   setVariable(
     processInstanceId: string,
     variableName: string,
@@ -31,9 +33,16 @@ export class TaskService {
     });
   }
 
-  private _startCleanProcessUrl = 'http://localhost:8080/process-instance/new';
+  private _startCleanProcessUrl =
+    this._backendAddress + '/process-instance/new';
   startCleanProcess(): Observable<HttpResponse<any>> {
     const url = this._startCleanProcessUrl;
+    return this.http.post<HttpResponse<any>>(url, {});
+  }
+
+  private _completeTaskUrl = this._backendAddress + '/task/#taskId#/complete';
+  completeTask(taskId: string): Observable<HttpResponse<any>> {
+    const url = this._completeTaskUrl.replace('#taskId#', taskId);
     return this.http.post<HttpResponse<any>>(url, {});
   }
 }
