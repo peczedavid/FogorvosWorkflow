@@ -6,7 +6,7 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
   selector: 'app-task-detail',
   template: `
     <div *ngIf="task !== undefined">
-      <h4 style="display: inline">{{ task.taskDto.name }}</h4>
+      <h4 style="display: inline;">{{ task.taskDto.name }}</h4>
       <button
         style="margin-left: 4rem; width: fit-content; float: right;"
         mat-raised-button
@@ -15,7 +15,11 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
       >
         <mat-icon fontIcon="close"></mat-icon>
       </button>
-      <p>({{ task.taskDto.id }})</p>
+      <br />
+      {{ formatDate() }}
+      <p>
+        {{ task.taskDto.id }}
+      </p>
       <div
         style="margin-top: 1rem; margin-bottom: 1rem"
         [ngSwitch]="task!.taskTipus"
@@ -56,7 +60,7 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
   `,
   styleUrls: ['./task-detail.component.css'],
 })
-export class TaskDetailComponent implements OnInit {
+export class TaskDetailComponent {
   @Input() task: TaskPayload | undefined;
   @Output() completeTask = new EventEmitter();
   @Output() closePanel = new EventEmitter();
@@ -75,10 +79,7 @@ export class TaskDetailComponent implements OnInit {
     this.closePanel.emit();
   }
 
-  ngOnChanges() {
-    //console.log(this.task);
-  }
-
+  // TODO: to service
   onCompleteTask(): void {
     this.http
       .post<any>(
@@ -88,5 +89,19 @@ export class TaskDetailComponent implements OnInit {
       .subscribe((_) => this.completeTask.emit());
   }
 
-  ngOnInit(): void {}
+  formatDate(): string {
+    if (this.task !== undefined) {
+      const year = this.task.taskDto.created.getFullYear();
+      const month = this.task.taskDto.created.getMonth();
+      const day = this.task.taskDto.created.getDay();
+
+      const hours = this.task.taskDto.created.getHours();
+      const minutes = this.task.taskDto.created.getMinutes();
+      const seconds = this.task.taskDto.created.getSeconds();
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    } else {
+      return '';
+    }
+  }
 }

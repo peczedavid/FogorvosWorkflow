@@ -31,8 +31,12 @@ import { HttpResponse } from '@angular/common/http';
           #tasklist
           [multiple]="false"
         >
-          <mat-list-option *ngFor="let task of tasks" [value]="task">
-            {{ task.taskDto.name }}
+          <mat-list-option
+            style="margin-bottom: 0.5rem;"
+            *ngFor="let task of tasks"
+            [value]="task"
+          >
+            <app-task-list-item [taskDto]="task.taskDto"></app-task-list-item>
           </mat-list-option>
         </mat-selection-list>
       </div>
@@ -80,7 +84,12 @@ export class TasksPageComponent implements OnInit {
 
   getTasks() {
     this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
-      this.tasks = tasks;
+      this.tasks = tasks.map((task) => {
+        // Kell, különben string marad
+        task.taskDto.created = new Date(task.taskDto.created);
+        return task;
+      });
+      console.log(this.tasks);
     });
     this.selectedTask = undefined;
   }

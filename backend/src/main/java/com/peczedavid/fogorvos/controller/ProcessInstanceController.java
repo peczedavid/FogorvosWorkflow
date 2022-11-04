@@ -2,11 +2,10 @@ package com.peczedavid.fogorvos.controller;
 
 import com.peczedavid.fogorvos.model.MessageResponse;
 import com.peczedavid.fogorvos.model.process.VariablePayload;
+import com.peczedavid.fogorvos.service.ProcessInstanceService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.exception.NullValueException;
-import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,24 +15,16 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/process-instance")
 public class ProcessInstanceController {
-
     @Autowired
     private RuntimeService runtimeService;
 
+    @Autowired
+    private ProcessInstanceService processInstanceService;
+
     @PostMapping("/new")
     public ResponseEntity<?> startCleanProcess() {
-        ProcessInstanceWithVariables instance = runtimeService.createProcessInstanceByKey("Process_Fogorvos")
-                .setVariable("beteg", "fogorvosdemo")
-                .setVariable("recepcios", "fogorvosdemo")
-                .setVariable("orvos", "fogorvosdemo")
-                .setVariable("rontgenes", "fogorvosdemo")
-                .setVariable("szakorvos", "fogorvosdemo")
-                .setVariable("rontgen", false)
-                .setVariable("szakorvosiVizsgalat", false)
-                .setVariable("fogszabalyzo", false)
-                .setVariable("elmarad", false)
-                .executeWithVariablesInReturn();
-        return new ResponseEntity<>(new MessageResponse(instance.getProcessInstanceId()), HttpStatus.OK);
+        var processInstance = processInstanceService.getCleanProcess();
+        return new ResponseEntity<>(new MessageResponse(processInstance.getProcessInstanceId()), HttpStatus.OK);
     }
 
     @PostMapping("/{id}/variables/{varName}")

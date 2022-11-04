@@ -20,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSnackBarModule } from "@angular/material/snack-bar";
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
@@ -41,6 +41,7 @@ import { SzakorvosiVizsgalatComponent } from './components/task/szakorvosi-vizsg
 import { FogszabalyzoFelrakasaComponent } from './components/task/fogszabalyzo-felrakasa/fogszabalyzo-felrakasa.component';
 import { VariableCheckboxComponent } from './components/variable/variable-checkbox/variable-checkbox.component';
 import { TaskService } from './services/task.service';
+import { TaskListItemComponent } from './components/task-list-item/task-list-item.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { TaskService } from './services/task.service';
     FelulvizsgalatComponent,
     SzakorvosiVizsgalatComponent,
     FogszabalyzoFelrakasaComponent,
-    VariableCheckboxComponent
+    VariableCheckboxComponent,
+    TaskListItemComponent,
   ],
   imports: [
     BrowserModule,
