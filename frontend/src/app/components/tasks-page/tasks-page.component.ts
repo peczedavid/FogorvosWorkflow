@@ -93,7 +93,6 @@ export class TasksPageComponent implements OnInit {
   getTasks() {
     this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
       this.tasks = this.convertToDate(tasks);
-      console.log(this.tasks);
     });
     this.selectedTask = undefined;
   }
