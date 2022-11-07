@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { StoreModule } from '@ngrx/store';
+import { tasksReducer } from './state/task/task.reducer';
 
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -64,6 +66,7 @@ import { TaskListItemComponent } from './components/task-list-item/task-list-ite
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
+    StoreModule.forRoot({ tasks: tasksReducer }),
     BrowserAnimationsModule,
     HttpClientModule,
     FlexLayoutModule,

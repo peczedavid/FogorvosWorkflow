@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { TaskPayload, TaskTipus } from '../../model/generic/task';
+import { TaskPayload } from '../../model/generic/task';
 import { MatSelectionListChange } from '@angular/material/list';
 import { TaskService } from 'src/app/services/task.service';
 import { HttpResponse } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+import { loadTasks } from 'src/app/state/task/task.actions';
 
 @Component({
   selector: 'app-tasks-page',
@@ -53,7 +56,9 @@ import { HttpResponse } from '@angular/common/http';
   styleUrls: ['./tasks-page.component.css'],
 })
 export class TasksPageComponent implements OnInit {
-  constructor(private taskService: TaskService) {}
+  tasks$: Observable<TaskState>;
+
+  constructor(private taskService: TaskService, private store: Store) {}
 
   tasks: TaskPayload[] = [];
   selectedTask: TaskPayload | undefined;

@@ -34,3 +34,14 @@ NGRX
 5. Angular app-ot hogy érdemes mappákba szervezni (business logika a service-ekbe, interface model-be?)
 6. Változók lekérdezése, értékek feltöltése backend-en
 7. Számlázás adott instance-hez rendelve, mondjuk külön táblába kiírva
+
+---------------------------------
+
+1. Service-ben exception, ami visszatér a controllerben egy responsebody-val (ProcessInstanceController.setVariable() -nél kéne)
+2. 1 reducer = 1 fv? 1 global store, ahol van minden? pl taskok, selectedtask, user
+
+
+
+
+
+
