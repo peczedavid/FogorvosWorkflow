@@ -17,3 +17,8 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: update
+
+peczedavid:
+  app:
+    jwtSecret: zt4PMzDXJHyX4iVaVHK5ZWF21GPSDjQUJq1gPBh6pUaJjMjxWah1QhT9Yt3EiG1
+    jwtExpirationMs: 86400000
