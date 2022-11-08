@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { TaskPayload } from '../model/generic/task';
 import { MessageResponse } from '../model/MessageResponse';
-import { UserData, LoginRequest } from '../model/UserData';
+import { UserData, LoginRequest, CheckResponse } from '../model/UserData';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +18,14 @@ export class UserService {
   getTasks(userId: string): Observable<TaskPayload[]> {
     const url = this._getTasksUrl.replace('#userId#', userId);
     return this.http.get<TaskPayload[]>(url, { withCredentials: true });
+  }
+
+  private _checkUrl: string = this._backendAddress + '/user/check';
+  check(): Observable<CheckResponse> {
+    const url = this._checkUrl;
+    return this.http.get<CheckResponse>(url, {
+      withCredentials: true,
+    });
   }
 
   private _loginUrl: string = this._backendAddress + '/user/login';
