@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 import { TaskPayload } from '../../model/generic/task';
 import { MatSelectionListChange } from '@angular/material/list';
 import { TaskService } from 'src/app/services/task.service';
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { loadTasks } from 'src/app/state/task/task.actions';
 import { UserService } from 'src/app/services/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-tasks-page',
@@ -62,6 +63,7 @@ export class TasksPageComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private userService: UserService,
+    private snackBar: MatSnackBar,
     private store: Store
   ) {}
 
@@ -103,6 +105,12 @@ export class TasksPageComponent implements OnInit {
   getTasks() {
     this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
       this.tasks = this.convertToDate(tasks);
+    }, (error: HttpErrorResponse) => {
+      console.log(error);
+      this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+        duration: 2000,
+        panelClass: ['danger-snackbar']
+      });
     });
     this.selectedTask = undefined;
   }
