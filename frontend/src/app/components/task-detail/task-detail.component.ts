@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
@@ -85,13 +85,22 @@ export class TaskDetailComponent {
 
   onCompleteTask(): void {
     if (this.task?.taskDto.id !== undefined)
-      this.taskService.completeTask(this.task?.taskDto.id).subscribe((_) => {
-        this.completeTask.emit();
-        this.snackBar.open('Feladat befejezve', 'Bezár', {
-          duration: 2000,
-          panelClass: ['success-snackbar'],
-        });
-      });
+      this.taskService.completeTask(this.task?.taskDto.id).subscribe(
+        (_) => {
+          this.completeTask.emit();
+          this.snackBar.open('Feladat befejezve', 'Bezár', {
+            duration: 2000,
+            panelClass: ['success-snackbar'],
+          });
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          this.snackBar.open('A feladatot nem sikerült befejezni', 'Bezár', {
+            duration: 2000,
+            panelClass: ['danger-snackbar'],
+          });
+        }
+      );
   }
 
   formatDate(): string {
