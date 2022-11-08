@@ -1,6 +1,5 @@
 package com.peczedavid.fogorvos.security;
 
-import com.peczedavid.fogorvos.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,7 +40,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         } catch (Exception exception) {
-            logger.error("Cannot authenticate user: " + exception.toString());
+            logger.error("Cannot authenticate user: " + exception);
         }
         filterChain.doFilter(request, response);
     }

@@ -46,8 +46,8 @@ public class ProcessInstanceController {
         }
         runtimeService.setVariable(id, varName, variablePayload.getValue());
         if (!variable.equals(runtimeService.getVariable(id, varName))) {
-            logger.info("Variable value changed.");
-            return new ResponseEntity<>(new MessageResponse("Variable value changed."), HttpStatus.OK);
+            logger.info("Variable '" + varName + "' value changed.");
+            return new ResponseEntity<>(new MessageResponse("Variable '" + varName + "' value changed."), HttpStatus.OK);
         } else {
             logger.warn("Couldn't change variable value for '" + varName + "'.");
             return new ResponseEntity<>(new MessageResponse("Couldn't change variable value for '" + varName + "'."), HttpStatus.INTERNAL_SERVER_ERROR);

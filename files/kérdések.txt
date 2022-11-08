@@ -39,9 +39,8 @@ NGRX
 
 1. Service-ben exception, ami visszatér a controllerben egy responsebody-val (ProcessInstanceController.setVariable() -nél kéne)
 2. 1 reducer = 1 fv? 1 global store, ahol van minden? pl taskok, selectedtask, user
-
-
-
-
-
-
+3.
+MELYIK LEGYEN?
+Ha check-nél visszaadom az id-t, akkor azt el tudom tárolni frontend-en és az alapján frontend-en meg tudom oldani, hogy az adott id-jű ember task-jait kérem és max backend-en megnézem tényleg ő e.
+Másik lehetőség: csak a felhasználónevet küldöm vissza a jwt tokenben úgyis benne lesz az id, így frontenden egy generikus task lekérést csinálok és a küldött jwt token alapján kapok vissza taskokat.
+4. regisztrálás hogy legyen? mintha egy sima weboldal lenne?

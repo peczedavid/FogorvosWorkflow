@@ -58,7 +58,6 @@ export class LoginComponent implements OnInit {
   protected username: string = '';
   protected password: string = '';
 
-  // TODO: info snackbar(dark theme?)
   check(): void {
     this.userService.check().subscribe((checkResponse: CheckResponse) => {
       if (checkResponse.userData === null) {

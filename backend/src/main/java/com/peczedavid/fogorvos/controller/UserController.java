@@ -6,6 +6,7 @@ import com.peczedavid.fogorvos.model.network.MessageResponse;
 import com.peczedavid.fogorvos.model.network.UserData;
 import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
 import com.peczedavid.fogorvos.security.JwtUtils;
+import com.peczedavid.fogorvos.security.UserDetailsImpl;
 import com.peczedavid.fogorvos.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -83,19 +83,18 @@ public class UserController {
             @RequestBody LoginRequest loginRequest,
             HttpServletResponse response) {
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-            );
+            authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            UserDetailsImpl userDetailsImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(loginRequest.getUsername());
+            String userName = userDetailsImpl.getUsername();
+            Cookie jwtCookie = jwtUtils.generaJwtCookie(userDetailsImpl);
+            response.addCookie(jwtCookie);
+            logger.info("User '" + userName + "' logged in.");
+            UserData userData = new UserData(userName);
+            return new ResponseEntity<>(userData, HttpStatus.OK);
         } catch (BadCredentialsException exception) {
             logger.error("Incorrect username or password!");
             return new ResponseEntity<>("Incorrect username or password!", HttpStatus.FORBIDDEN);
         }
-        String userName = loginRequest.getUsername();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-        Cookie jwtCookie = jwtUtils.generaJwtCookie(userDetails);
-        response.addCookie(jwtCookie);
-        logger.info("User '" + userName + "' logged in.");
-        UserData userData = new UserData(userName);
-        return new ResponseEntity(userData, HttpStatus.OK);
     }
 }

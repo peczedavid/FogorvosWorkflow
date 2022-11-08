@@ -4,7 +4,6 @@ import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
@@ -30,15 +29,15 @@ public class JwtUtils {
 
     public String getJwtFromRequest(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, COOKIE_NAME);
-        if(cookie == null) {
+        if (cookie == null) {
             logger.warn("No jwt cookie found in request.");
             return null;
         }
         return cookie.getValue();
     }
 
-    public Cookie generaJwtCookie(UserDetails userDetails) {
-        String jwt = generateToken(userDetails);
+    public Cookie generaJwtCookie(UserDetailsImpl userDetailsImpl) {
+        String jwt = generateToken(userDetailsImpl);
         Cookie cookie = new Cookie(COOKIE_NAME, jwt);
         cookie.setHttpOnly(true);
         cookie.setPath("/api");
@@ -57,7 +56,7 @@ public class JwtUtils {
     public boolean isTokenValid(String token) {
         try {
             extractAllClaims(token);
-            return true;
+            return !isTokenExpired(token);
         } catch (SignatureException e) {
             logger.error("Invalid JWT signature: {}", e.getMessage());
         } catch (MalformedJwtException e) {
@@ -72,9 +71,10 @@ public class JwtUtils {
         return false;
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetailsImpl userDetailsImpl) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        claims.put("id", String.valueOf(userDetailsImpl.getId()));
+        return createToken(claims, userDetailsImpl.getUsername());
     }
 
     public String getUsername(String token) {

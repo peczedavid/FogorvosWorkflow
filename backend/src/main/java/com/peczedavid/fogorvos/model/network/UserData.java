@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserData {
 
-    // TODO: database id(will be the user variable in Camunda)
+    // TODO: database id (will be the user variable in Camunda)
+    //private String id;
     private String username;
 
 }
