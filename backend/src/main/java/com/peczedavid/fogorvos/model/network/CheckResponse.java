@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class CheckResponse {
 
-    private String jwt;
+    private UserData userData;
+    private boolean loggedId;
 
 }

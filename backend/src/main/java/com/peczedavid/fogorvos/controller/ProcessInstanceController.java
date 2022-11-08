@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = {"http://localhost:4200"}, maxAge = 3600, allowCredentials = "true")
 @Controller
-@RequestMapping("/process-instance")
+@RequestMapping("/api/process-instance")
 public class ProcessInstanceController {
 
     Logger logger = LoggerFactory.getLogger(ProcessInstanceController.class);

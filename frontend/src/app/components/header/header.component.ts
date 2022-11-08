@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { UserService } from 'src/app/services/user.service';
+import { MessageResponse } from 'src/app/model/MessageResponse';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-header',
@@ -24,6 +27,13 @@ import { HttpClient } from '@angular/common/http';
       >
         Feladatok
       </button>
+      <button
+        style="margin-right: 15px;"
+        mat-raised-button
+        (click)="logout()"
+      >
+        Kilépés
+      </button>
     </mat-toolbar>
   `,
   styleUrls: ['./header.component.css'],
@@ -31,5 +41,16 @@ import { HttpClient } from '@angular/common/http';
 export class HeaderComponent {
   title: string = 'Fogorvos frontend';
 
-  constructor() {}
+  constructor(private userService: UserService, private snackBar: MatSnackBar,) {}
+
+  logout():void {
+    this.userService.logout().subscribe((response: MessageResponse) => {
+      console.log(response.message);
+      this.snackBar.open('Sikeres kijelentkezés', 'Bezár', {
+        duration: 2000,
+        panelClass: ['success-snackbar']
+      });
+    });
+  }
+  
 }

@@ -6,7 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +24,35 @@ public class JwtUtils {
 
     @Value("${peczedavid.app.jwtExpirationMs}")
     private int JWT_EXPIRATION_MS;
+
+    @Value("${peczedavid.app.jwtCookieName}")
+    private String COOKIE_NAME;
+
+    public String getJwtFromRequest(HttpServletRequest request) {
+        Cookie cookie = WebUtils.getCookie(request, COOKIE_NAME);
+        if(cookie == null) {
+            logger.warn("No jwt cookie found in request.");
+            return null;
+        }
+        return cookie.getValue();
+    }
+
+    public Cookie generaJwtCookie(UserDetails userDetails) {
+        String jwt = generateToken(userDetails);
+        Cookie cookie = new Cookie(COOKIE_NAME, jwt);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/api");
+        cookie.setMaxAge(JWT_EXPIRATION_MS / 1000);
+        return cookie;
+    }
+
+    public Cookie generateLogutCookie() {
+        Cookie cookie = new Cookie(COOKIE_NAME, "");
+        cookie.setHttpOnly(true);
+        cookie.setPath("/api");
+        cookie.setMaxAge(0);
+        return cookie;
+    }
 
     public boolean isTokenValid(String token) {
         try {

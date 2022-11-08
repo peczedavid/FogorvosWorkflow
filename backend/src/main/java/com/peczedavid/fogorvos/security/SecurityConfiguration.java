@@ -37,19 +37,29 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/**").permitAll();
-//        http.cors().and().csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-//                .authorizeRequests()
-//                .antMatchers("/user/login").permitAll()
-//                .anyRequest().authenticated();
-//        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        debugSetupSecurity(http);
+        //debugSetupNoSecurity(http);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
+    }
+
+    private void debugSetupSecurity(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests()
+                .antMatchers("/api/user/login").permitAll()
+                .antMatchers("/api/user/logout").permitAll()
+                .antMatchers("/api/user/check").permitAll()
+                .anyRequest().authenticated();
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
+    }
+
+    private void debugSetupNoSecurity(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/**").permitAll();
     }
 }

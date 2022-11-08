@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = {"http://localhost:4200"}, maxAge = 3600, allowCredentials = "true")
 @Controller
-@RequestMapping("/task")
+@RequestMapping("/api/task")
 public class TaskController {
     @Autowired
     private TaskServiceCustom taskServiceCustom;

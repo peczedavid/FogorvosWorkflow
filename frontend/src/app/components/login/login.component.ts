@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserData } from 'src/app/model/UserData';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -9,13 +12,13 @@ import { Component, OnInit } from '@angular/core';
         <form class="login-form" fxLayoutalign="stretch" fxLayout="column">
           <mat-form-field appearance="fill">
             <mat-label>Felhasználónév</mat-label>
-            <input matInput />
+            <input [(ngModel)]="username" matInput [ngModelOptions]="{standalone: true}"/>
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Jelszó</mat-label>
-            <input matInput type="password" />
+            <input [(ngModel)]="password" matInput type="password" [ngModelOptions]="{standalone: true}"/>
           </mat-form-field>
-          <button mat-raised-button color="accent">Belépés</button>
+          <button type="submit" (click)="login($event)" mat-raised-button color="accent">Belépés</button>
         </form>
       </mat-card>
     </div>
@@ -23,7 +26,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit {
-  constructor() {}
+  constructor(private userService: UserService, private snackBar: MatSnackBar) {}
+
+  protected username: string = "";
+  protected password: string = "";
+
+  login(e: Event) : void {
+    e.preventDefault();
+    this.userService.login(this.username, this.password)
+    .subscribe((userData: UserData) => {
+      console.log(userData);
+      this.snackBar.open('Sikeres bejelentkezés', 'Bezár', {
+        duration: 2000,
+        panelClass: ['success-snackbar']
+      });
+    });
+  }
 
   ngOnInit(): void {}
 }
