@@ -7,6 +7,7 @@ import { TaskService } from 'src/app/services/task.service';
 import { HttpResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { loadTasks } from 'src/app/state/task/task.actions';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-tasks-page',
@@ -58,7 +59,11 @@ import { loadTasks } from 'src/app/state/task/task.actions';
 export class TasksPageComponent implements OnInit {
   tasks$: Observable<TaskState>;
 
-  constructor(private taskService: TaskService, private store: Store) {}
+  constructor(
+    private taskService: TaskService,
+    private userService: UserService,
+    private store: Store
+  ) {}
 
   tasks: TaskPayload[] = [];
   selectedTask: TaskPayload | undefined;
@@ -77,7 +82,7 @@ export class TasksPageComponent implements OnInit {
     this.selectedTask = event.options[0].value;
   }
 
-  convertToDate(tasks: TaskPayload[]) : TaskPayload[] {
+  convertToDate(tasks: TaskPayload[]): TaskPayload[] {
     return tasks.map((task) => {
       // Kell, különben string marad
       task.taskDto.created = new Date(task.taskDto.created);
@@ -87,7 +92,7 @@ export class TasksPageComponent implements OnInit {
 
   onVariableChanged(event: Event) {
     const selectedId = this.selectedTask?.taskDto.id;
-    this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
+    this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
       this.tasks = this.convertToDate(tasks);
       this.tasks.map((task) => {
         if (task.taskDto.id === selectedId) this.selectedTask = task;
@@ -96,7 +101,7 @@ export class TasksPageComponent implements OnInit {
   }
 
   getTasks() {
-    this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
+    this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
       this.tasks = this.convertToDate(tasks);
     });
     this.selectedTask = undefined;

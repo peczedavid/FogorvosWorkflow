@@ -9,12 +9,6 @@ import { TaskPayload } from '../model/generic/task';
 export class TaskService {
   constructor(private http: HttpClient) {}
 
-  // TODO: Move to user service
-  private _getTasksUrl: string = 'http://localhost:8080/api/user/#userId#/task';
-  getTasks(userId: string): Observable<TaskPayload[]> {
-    const url = this._getTasksUrl.replace('#userId#', userId);
-    return this.http.get<TaskPayload[]>(url, { withCredentials: true });
-  }
   private _backendAddress = 'http://localhost:8080/api';
 
   private _setVariableUrl =

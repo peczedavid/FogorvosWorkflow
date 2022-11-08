@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
 import { TaskService } from 'src/app/services/task.service';
 
@@ -69,7 +70,10 @@ export class TaskDetailComponent {
 
   TaskTipus = TaskTipus;
 
-  constructor(private taskService: TaskService) {}
+  constructor(
+    private taskService: TaskService,
+    private snackBar: MatSnackBar
+  ) {}
 
   onVariableChanged(event: Event) {
     this.variableChanged.emit(event);
@@ -81,9 +85,13 @@ export class TaskDetailComponent {
 
   onCompleteTask(): void {
     if (this.task?.taskDto.id !== undefined)
-      this.taskService
-        .completeTask(this.task?.taskDto.id)
-        .subscribe((_) => this.completeTask.emit());
+      this.taskService.completeTask(this.task?.taskDto.id).subscribe((_) => {
+        this.completeTask.emit();
+        this.snackBar.open('Feladat befejezve', 'Bezár', {
+          duration: 2000,
+          panelClass: ['success-snackbar'],
+        });
+      });
   }
 
   formatDate(): string {

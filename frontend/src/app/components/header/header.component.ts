@@ -27,11 +27,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
       >
         Feladatok
       </button>
-      <button
-        style="margin-right: 15px;"
-        mat-raised-button
-        (click)="logout()"
-      >
+      <button style="margin-right: 15px;" mat-raised-button (click)="logout()">
         Kilépés
       </button>
     </mat-toolbar>
@@ -41,16 +37,18 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class HeaderComponent {
   title: string = 'Fogorvos frontend';
 
-  constructor(private userService: UserService, private snackBar: MatSnackBar,) {}
+  constructor(
+    private userService: UserService,
+    private snackBar: MatSnackBar
+  ) {}
 
-  logout():void {
+  logout(): void {
     this.userService.logout().subscribe((response: MessageResponse) => {
       console.log(response.message);
       this.snackBar.open('Sikeres kijelentkezés', 'Bezár', {
         duration: 2000,
-        panelClass: ['success-snackbar']
+        panelClass: ['success-snackbar'],
       });
     });
   }
-  
 }
