@@ -49,7 +49,7 @@ import { UserService } from 'src/app/services/user.service';
   `,
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   constructor(
     private userService: UserService,
     private snackBar: MatSnackBar
@@ -60,6 +60,7 @@ export class LoginComponent implements OnInit {
 
   check(): void {
     this.userService.check().subscribe((checkResponse: CheckResponse) => {
+      console.log(checkResponse);
       if (checkResponse.userData === null) {
         this.snackBar.open('Nem vagy bejelentkezve!', 'Bezár', {
           duration: 2000,
@@ -86,6 +87,4 @@ export class LoginComponent implements OnInit {
         });
       });
   }
-
-  ngOnInit(): void {}
 }

@@ -64,7 +64,7 @@ public class UserService {
             Cookie jwtCookie = jwtUtils.generaJwtCookie(userDetailsImpl);
             response.addCookie(jwtCookie);
             logger.info("User '" + userName + "' logged in.");
-            UserData userData = new UserData(userName);
+            UserData userData = new UserData(String.valueOf(userDetailsImpl.getId()), userName);
             return new ResponseEntity<>(userData, HttpStatus.OK);
         } catch (BadCredentialsException exception) {
             logger.error("Incorrect username or password!");
@@ -97,7 +97,7 @@ public class UserService {
             CheckResponse checkResponse = new CheckResponse(null, false);
             return ResponseEntity.ok(checkResponse);
         }
-        UserData userData = new UserData(jwtUtils.getUsername(jwt));
+        UserData userData = new UserData(jwtUtils.getId(jwt), jwtUtils.getUsername(jwt));
         CheckResponse checkResponse = new CheckResponse(userData, true);
         return ResponseEntity.ok(checkResponse);
     }
