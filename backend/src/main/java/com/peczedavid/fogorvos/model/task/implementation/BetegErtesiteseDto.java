@@ -1,6 +1,6 @@
 package com.peczedavid.fogorvos.model.task.implementation;
 
-import com.peczedavid.fogorvos.model.process.VariableUtil;
+import com.peczedavid.fogorvos.util.VariableUtil;
 import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
 import com.peczedavid.fogorvos.model.task.generic.TaskTipus;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import org.camunda.bpm.engine.rest.dto.runtime.VariableInstanceDto;
 import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @Setter

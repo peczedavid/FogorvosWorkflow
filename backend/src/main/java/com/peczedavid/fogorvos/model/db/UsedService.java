@@ -1,4 +1,4 @@
-package com.peczedavid.fogorvos.model;
+package com.peczedavid.fogorvos.model.db;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

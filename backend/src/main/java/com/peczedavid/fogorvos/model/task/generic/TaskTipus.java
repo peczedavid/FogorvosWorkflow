@@ -7,8 +7,7 @@ public enum TaskTipus {
     TASK_RONTGEN,
     TASK_FELULVIZSGALAT,
     TASK_SZAKORVOSI_VIZSGALAT,
-    TASK_FOGSZABALYZO_FELRAKASA,
-    TASK_SZAMLAZAS; // Service task (nem user task), de nem baj, ha fel van tuntetve
+    TASK_FOGSZABALYZO_FELRAKASA;
 
     public static TaskTipus fromTaskDefinitionKey(String taskDefinitionKey) {
         return switch (taskDefinitionKey) {

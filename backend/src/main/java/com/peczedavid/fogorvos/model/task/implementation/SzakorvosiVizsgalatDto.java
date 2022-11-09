@@ -1,6 +1,6 @@
 package com.peczedavid.fogorvos.model.task.implementation;
 
-import com.peczedavid.fogorvos.model.process.VariableUtil;
+import com.peczedavid.fogorvos.util.VariableUtil;
 import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
 import com.peczedavid.fogorvos.model.task.generic.TaskTipus;
 import lombok.Getter;

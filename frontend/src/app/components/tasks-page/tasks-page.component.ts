@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 
-import { TaskPayload, TaskTipus } from '../../model/generic/task';
+import { TaskPayload } from '../../model/generic/task';
 import { MatSelectionListChange } from '@angular/material/list';
 import { TaskService } from 'src/app/services/task.service';
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Store } from '@ngrx/store';
+import { loadTasks } from 'src/app/state/task/task.actions';
+import { UserService } from 'src/app/services/user.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-tasks-page',
@@ -31,8 +36,12 @@ import { HttpResponse } from '@angular/common/http';
           #tasklist
           [multiple]="false"
         >
-          <mat-list-option *ngFor="let task of tasks" [value]="task">
-            {{ task.taskDto.name }}
+          <mat-list-option
+            style="margin-bottom: 0.5rem;"
+            *ngFor="let task of tasks"
+            [value]="task"
+          >
+            <app-task-list-item [taskDto]="task.taskDto"></app-task-list-item>
           </mat-list-option>
         </mat-selection-list>
       </div>
@@ -49,7 +58,14 @@ import { HttpResponse } from '@angular/common/http';
   styleUrls: ['./tasks-page.component.css'],
 })
 export class TasksPageComponent implements OnInit {
-  constructor(private taskService: TaskService) {}
+  tasks$: Observable<TaskState>;
+
+  constructor(
+    private taskService: TaskService,
+    private userService: UserService,
+    private snackBar: MatSnackBar,
+    private store: Store
+  ) {}
 
   tasks: TaskPayload[] = [];
   selectedTask: TaskPayload | undefined;
@@ -68,10 +84,18 @@ export class TasksPageComponent implements OnInit {
     this.selectedTask = event.options[0].value;
   }
 
+  convertToDate(tasks: TaskPayload[]): TaskPayload[] {
+    return tasks.map((task) => {
+      // Kell, különben string marad
+      task.taskDto.created = new Date(task.taskDto.created);
+      return task;
+    });
+  }
+
   onVariableChanged(event: Event) {
     const selectedId = this.selectedTask?.taskDto.id;
-    this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
-      this.tasks = tasks;
+    this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
+      this.tasks = this.convertToDate(tasks);
       this.tasks.map((task) => {
         if (task.taskDto.id === selectedId) this.selectedTask = task;
       });
@@ -79,8 +103,14 @@ export class TasksPageComponent implements OnInit {
   }
 
   getTasks() {
-    this.taskService.getTasks('fogorvosdemo').subscribe((tasks) => {
-      this.tasks = tasks;
+    this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
+      this.tasks = this.convertToDate(tasks);
+    }, (error: HttpErrorResponse) => {
+      console.log(error);
+      this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+        duration: 2000,
+        panelClass: ['danger-snackbar']
+      });
     });
     this.selectedTask = undefined;
   }

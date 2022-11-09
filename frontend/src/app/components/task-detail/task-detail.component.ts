@@ -1,12 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
+import { TaskService } from 'src/app/services/task.service';
 
 @Component({
   selector: 'app-task-detail',
   template: `
     <div *ngIf="task !== undefined">
-      <h4 style="display: inline">{{ task.taskDto.name }}</h4>
+      <h4 style="display: inline;">{{ task.taskDto.name }}</h4>
       <button
         style="margin-left: 4rem; width: fit-content; float: right;"
         mat-raised-button
@@ -15,7 +17,11 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
       >
         <mat-icon fontIcon="close"></mat-icon>
       </button>
-      <p>({{ task.taskDto.id }})</p>
+      <br />
+      {{ formatDate() }}
+      <p>
+        {{ task.taskDto.id }}
+      </p>
       <div
         style="margin-top: 1rem; margin-bottom: 1rem"
         [ngSwitch]="task!.taskTipus"
@@ -56,7 +62,7 @@ import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
   `,
   styleUrls: ['./task-detail.component.css'],
 })
-export class TaskDetailComponent implements OnInit {
+export class TaskDetailComponent {
   @Input() task: TaskPayload | undefined;
   @Output() completeTask = new EventEmitter();
   @Output() closePanel = new EventEmitter();
@@ -64,10 +70,12 @@ export class TaskDetailComponent implements OnInit {
 
   TaskTipus = TaskTipus;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private taskService: TaskService,
+    private snackBar: MatSnackBar
+  ) {}
 
   onVariableChanged(event: Event) {
-    //console.log(event)
     this.variableChanged.emit(event);
   }
 
@@ -75,18 +83,39 @@ export class TaskDetailComponent implements OnInit {
     this.closePanel.emit();
   }
 
-  ngOnChanges() {
-    //console.log(this.task);
-  }
-
   onCompleteTask(): void {
-    this.http
-      .post<any>(
-        `http://localhost:8080/task/${this.task!.taskDto.id}/complete`,
-        null
-      )
-      .subscribe((_) => this.completeTask.emit());
+    if (this.task?.taskDto.id !== undefined)
+      this.taskService.completeTask(this.task?.taskDto.id).subscribe(
+        (_) => {
+          this.completeTask.emit();
+          this.snackBar.open('Feladat befejezve', 'Bezár', {
+            duration: 2000,
+            panelClass: ['success-snackbar'],
+          });
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+          this.snackBar.open('A feladatot nem sikerült befejezni', 'Bezár', {
+            duration: 2000,
+            panelClass: ['danger-snackbar'],
+          });
+        }
+      );
   }
 
-  ngOnInit(): void {}
+  formatDate(): string {
+    if (this.task !== undefined) {
+      const year = this.task.taskDto.created.getFullYear();
+      const month = this.task.taskDto.created.getMonth() + 1;
+      const day = this.task.taskDto.created.getDate();
+
+      const hours = this.task.taskDto.created.getHours();
+      const minutes = this.task.taskDto.created.getMinutes();
+      const seconds = this.task.taskDto.created.getSeconds();
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    } else {
+      return '';
+    }
+  }
 }

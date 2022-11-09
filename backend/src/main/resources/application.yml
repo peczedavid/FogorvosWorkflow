@@ -17,3 +17,12 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: update
+  output:
+    ansi:
+      enabled: always
+
+peczedavid:
+  app:
+    jwtSecret: zt4PMzDXJHyX4iVaVHK5ZWF21GPSDjQUJq1gPBh6pUaJjMjxWah1QhT9Yt3EiG1
+    jwtCookieName: jwtCookie
+    jwtExpirationMs: 86400000
