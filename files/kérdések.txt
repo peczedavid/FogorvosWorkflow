@@ -5,8 +5,7 @@
    Java kódból lehet közvetlen kérdezni az engine-től
 4. Mennyit kéne használni a Rest API-t és a Java engine kódot
 
-5. Honnan lehet tu
-dni, hogy adott task-nál milyen változók vannak (beteg értesítése -> elmarad vagy késik)
+5. Honnan lehet tudni, hogy adott task-nál milyen változók vannak (beteg értesítése -> elmarad vagy késik)
 6. Honnan tudom, milyen típusú a változó?
 
 7. Camunda db egybe a sajáttal?
@@ -47,4 +46,3 @@ Másik lehetőség: csak a felhasználónevet küldöm vissza a jwt tokenben úg
 4. regisztrálás hogy legyen? mintha egy sima weboldal lenne?
    vagy lesz egy recepciós mondjuk, aki tud másokat felvenni,
    vagy frontend-en ne is legyen regisztráció csak backend api-n(esetleg beteg tudjon regisztrálni)
-   
