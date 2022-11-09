@@ -3,6 +3,7 @@ package com.peczedavid.fogorvos.controller;
 import com.peczedavid.fogorvos.model.network.CheckResponse;
 import com.peczedavid.fogorvos.model.network.LoginRequest;
 import com.peczedavid.fogorvos.model.network.MessageResponse;
+import com.peczedavid.fogorvos.model.network.RegisterRequest;
 import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
 import com.peczedavid.fogorvos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +41,10 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         return userService.login(loginRequest, response);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest, HttpServletResponse response) {
+        return userService.register(registerRequest, response);
     }
 }

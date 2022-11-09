@@ -1,10 +1,9 @@
 package com.peczedavid.fogorvos.service;
 
-import com.peczedavid.fogorvos.model.network.CheckResponse;
-import com.peczedavid.fogorvos.model.network.LoginRequest;
-import com.peczedavid.fogorvos.model.network.MessageResponse;
-import com.peczedavid.fogorvos.model.network.UserData;
+import com.peczedavid.fogorvos.model.db.User;
+import com.peczedavid.fogorvos.model.network.*;
 import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
+import com.peczedavid.fogorvos.repository.UserRepository;
 import com.peczedavid.fogorvos.security.JwtUtils;
 import com.peczedavid.fogorvos.security.UserDetailsImpl;
 import org.camunda.bpm.engine.RuntimeService;
@@ -20,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,11 +49,17 @@ public class UserService {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    public ResponseEntity<?> login(LoginRequest loginRequest, HttpServletResponse response) {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private ResponseEntity<?> tryLogin(String username, String password, HttpServletResponse response) {
         try {
             authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-            UserDetailsImpl userDetailsImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(loginRequest.getUsername());
+                    .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            UserDetailsImpl userDetailsImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
             String userName = userDetailsImpl.getUsername();
             Cookie jwtCookie = jwtUtils.generaJwtCookie(userDetailsImpl);
             response.addCookie(jwtCookie);
@@ -63,6 +70,10 @@ public class UserService {
             logger.error("Incorrect username or password!");
             return new ResponseEntity<>("Incorrect username or password!", HttpStatus.FORBIDDEN);
         }
+    }
+
+    public ResponseEntity<?> login(LoginRequest loginRequest, HttpServletResponse response) {
+        return tryLogin(loginRequest.getUsername(), loginRequest.getPassword(), response);
     }
 
     public ResponseEntity<MessageResponse> logout(HttpServletRequest request, HttpServletResponse response) {
@@ -112,4 +123,18 @@ public class UserService {
         return new ResponseEntity<>(taskPayloads, HttpStatus.OK);
     }
 
+    public ResponseEntity<?> register(RegisterRequest registerRequest, HttpServletResponse response) {
+        final String username = registerRequest.getUsername();
+        final String password = passwordEncoder.encode(registerRequest.getPassword());
+        Optional<User> dbUser = userRepository.findByName(username);
+        if (dbUser.isPresent()) {
+            logger.warn("Username '" + username + "' is already taken");
+            return new ResponseEntity<>(new MessageResponse("Username '" + username + "' is already taken."), HttpStatus.BAD_REQUEST);
+        }
+        User user = new User(username, password);
+        userRepository.save(user);
+        logger.info("User '" + username + "' successfully registered");
+
+        return tryLogin(username, registerRequest.getPassword(), response);
+    }
 }
