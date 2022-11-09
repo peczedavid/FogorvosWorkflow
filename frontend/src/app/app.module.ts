@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { StoreModule } from '@ngrx/store';
-import { tasksReducer } from './state/task/task.reducer';
 
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -44,6 +43,10 @@ import { FogszabalyzoFelrakasaComponent } from './components/task/fogszabalyzo-f
 import { VariableCheckboxComponent } from './components/variable/variable-checkbox/variable-checkbox.component';
 import { TaskService } from './services/task.service';
 import { TaskListItemComponent } from './components/task-list-item/task-list-item.component';
+import { TASKS_STATE_NAME } from './state/task/task.state.model';
+import { taskReducer } from './state/task/task.reducer';
+import { taskActionFactoryToken } from './state/task/task.action.factory';
+import { TaskActionFactoryImpl } from './state/task/task.action.factory.impl';
 
 @NgModule({
   declarations: [
@@ -66,7 +69,8 @@ import { TaskListItemComponent } from './components/task-list-item/task-list-ite
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
-    StoreModule.forRoot({ tasks: tasksReducer }),
+    StoreModule.forRoot({}),
+    StoreModule.forFeature(TASKS_STATE_NAME, taskReducer),
     BrowserAnimationsModule,
     HttpClientModule,
     FlexLayoutModule,
@@ -87,7 +91,10 @@ import { TaskListItemComponent } from './components/task-list-item/task-list-ite
     MatSnackBarModule,
     ReactiveFormsModule,
   ],
-  providers: [TaskService],
+  providers: [
+    TaskService,
+    { provide: taskActionFactoryToken, useClass: TaskActionFactoryImpl },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

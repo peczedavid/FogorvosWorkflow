@@ -6,7 +6,6 @@ import { MatSelectionListChange } from '@angular/material/list';
 import { TaskService } from 'src/app/services/task.service';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { loadTasks } from 'src/app/state/task/task.actions';
 import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
