@@ -106,8 +106,8 @@ export class TaskDetailComponent {
   formatDate(): string {
     if (this.task !== undefined) {
       const year = this.task.taskDto.created.getFullYear();
-      const month = this.task.taskDto.created.getMonth();
-      const day = this.task.taskDto.created.getDay();
+      const month = this.task.taskDto.created.getMonth() + 1;
+      const day = this.task.taskDto.created.getDate();
 
       const hours = this.task.taskDto.created.getHours();
       const minutes = this.task.taskDto.created.getMinutes();

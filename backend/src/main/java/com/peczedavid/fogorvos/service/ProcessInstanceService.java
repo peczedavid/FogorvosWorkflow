@@ -1,16 +1,21 @@
 package com.peczedavid.fogorvos.service;
 
+import com.peczedavid.fogorvos.model.network.MessageResponse;
+import com.peczedavid.fogorvos.model.process.VariablePayload;
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.exception.NullValueException;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ProcessInstanceService {
 
-    Logger logger = LoggerFactory.getLogger(ProcessInstanceService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProcessInstanceService.class);
 
     @Autowired
     private RuntimeService runtimeService;
@@ -29,6 +34,27 @@ public class ProcessInstanceService {
                 .executeWithVariablesInReturn();
         logger.info("Process instance " + instance.getProcessInstanceId() + " started");
         return instance;
+    }
+
+    public ResponseEntity<MessageResponse> setVariable(String id, String varName, VariablePayload variablePayload) {
+        Object variable;
+        try {
+            if ((variable = runtimeService.getVariable(id, varName)) == null) {
+                logger.warn("Variable '" + varName + "' not found");
+                return new ResponseEntity<>(new MessageResponse("Variable '" + varName + "' not found"), HttpStatus.NOT_FOUND);
+            }
+        } catch (NullValueException e) {
+            logger.info("Process instance '" + id + "' not found");
+            return new ResponseEntity<>(new MessageResponse("Process instance '" + id + "' not found"), HttpStatus.NOT_FOUND);
+        }
+        runtimeService.setVariable(id, varName, variablePayload.getValue());
+        if (!variable.equals(runtimeService.getVariable(id, varName))) {
+            logger.info("Variable '" + varName + "' value changed.");
+            return new ResponseEntity<>(new MessageResponse("Variable '" + varName + "' value changed."), HttpStatus.OK);
+        } else {
+            logger.warn("Couldn't change variable value for '" + varName + "'.");
+            return new ResponseEntity<>(new MessageResponse("Couldn't change variable value for '" + varName + "'."), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

@@ -6,6 +6,8 @@ import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.rest.dto.runtime.VariableInstanceDto;
 import org.camunda.bpm.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +22,9 @@ public class TaskServiceCustom {
     @Autowired
     private RuntimeService runtimeService;
 
-    public TaskPayload getTask(String id) {
+    public ResponseEntity<TaskPayload> getTask(String id) {
         Task task = taskService.createTaskQuery().taskId(id).list().get(0);
-
+        // TODO: task not found
         List<VariableInstanceDto> taskVariables = runtimeService
                 .createVariableInstanceQuery()
                 .processInstanceIdIn(task.getProcessInstanceId())
@@ -31,10 +33,11 @@ public class TaskServiceCustom {
                 .map(VariableInstanceDto::fromVariableInstance)
                 .collect(Collectors.toList());
 
-        return TaskPayload.fromTask(task, taskVariables);
+        return new ResponseEntity<>(TaskPayload.fromTask(task, taskVariables), HttpStatus.OK);
     }
 
-    public void complete(String id) {
+    public ResponseEntity<?> complete(String id) {
         taskService.complete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

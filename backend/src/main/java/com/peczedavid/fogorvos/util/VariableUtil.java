@@ -1,4 +1,4 @@
-package com.peczedavid.fogorvos.model.process;
+package com.peczedavid.fogorvos.util;
 
 import org.camunda.bpm.engine.rest.dto.runtime.VariableInstanceDto;
 import org.slf4j.Logger;
@@ -8,7 +8,7 @@ import java.util.List;
 
 public class VariableUtil {
 
-    static Logger logger = LoggerFactory.getLogger(VariableUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(VariableUtil.class);
 
     public static Object getValue(List<VariableInstanceDto> taskVariables, String variableName) {
         var varInstance = taskVariables

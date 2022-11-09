@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtils {
-    Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     @Value("${peczedavid.app.jwtSecret}")
     private String SECRET_KEY;

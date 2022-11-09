@@ -18,8 +18,8 @@ export class TaskListItemComponent {
   formatDate(): string {
     if (this.taskDto.created instanceof Date) {
       const year = this.taskDto.created.getFullYear();
-      const month = this.taskDto.created.getMonth();
-      const day = this.taskDto.created.getDay();
+      const month = this.taskDto.created.getMonth() + 1;
+      const day = this.taskDto.created.getDate();
 
       const hours = this.taskDto.created.getHours();
       const minutes = this.taskDto.created.getMinutes();
