@@ -85,8 +85,6 @@ public class UserService {
         }
         Cookie cookie = jwtUtils.generateLogutCookie();
         response.addCookie(cookie);
-        // TODO: not technically logged out, but the cookie dissapears from the browser(when the page is refreshed, but it will be invalid)
-        // TODO: log out of memory?
         logger.info("User '" + jwtUtils.getUsername(jwt) + "' logged out.");
         MessageResponse messageResponse = new MessageResponse("User '" + jwtUtils.getUsername(jwt) + "' logged out.");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
@@ -104,7 +102,7 @@ public class UserService {
     }
 
     public ResponseEntity<List<TaskPayload>> getTasks(String userId) {
-        java.util.List<Task> tasks = taskService.createTaskQuery().list();
+        List<Task> tasks = taskService.createTaskQuery().list();
         List<TaskPayload> taskPayloads = new ArrayList<>(tasks.size());
 
         for (Task task : tasks) {
