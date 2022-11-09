@@ -104,19 +104,18 @@ export class TaskDetailComponent {
   }
 
   formatDate(): string {
-    return '';
-    // if (this.task !== undefined) {
-    //   const year = this.task.taskDto.created.getFullYear();
-    //   const month = this.task.taskDto.created.getMonth() + 1;
-    //   const day = this.task.taskDto.created.getDate();
+    if (this.task !== undefined && this.task.taskDto.created instanceof Date) {
+      const year = this.task.taskDto.created.getFullYear();
+      const month = this.task.taskDto.created.getMonth() + 1;
+      const day = this.task.taskDto.created.getDate();
 
-    //   const hours = this.task.taskDto.created.getHours();
-    //   const minutes = this.task.taskDto.created.getMinutes();
-    //   const seconds = this.task.taskDto.created.getSeconds();
+      const hours = this.task.taskDto.created.getHours();
+      const minutes = this.task.taskDto.created.getMinutes();
+      const seconds = this.task.taskDto.created.getSeconds();
 
-    //   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    // } else {
-    //   return '';
-    // }
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    } else {
+      return '';
+    }
   }
 }

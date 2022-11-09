@@ -15,14 +15,15 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
   getTasks(id: string): Observable<TaskPayload[]> {
     return new Observable<TaskPayload[]>((subscriber: Subscriber<any>) => {
       this.userService.getTasks(id).subscribe((tasks: TaskPayload[]) => {
+        const modifiedTasks = tasks.map((task) => { task.taskDto.created = new Date(task.taskDto.created) });
         this.ngrxStore.dispatch({
           type: GET_TASKS_RESPONSE,
-          payload: tasks,
+          payload: modifiedTasks,
         });
         subscriber.next(tasks);
         subscriber.complete();
       });
-      // TODO: törölni
+      // TODO: törölni? xd
       return function unsubscribe() {};
     });
   }

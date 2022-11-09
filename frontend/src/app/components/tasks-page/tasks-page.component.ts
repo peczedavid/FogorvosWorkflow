@@ -79,7 +79,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     this.tasksSubscription = this.ngrxStore
       .select(selectTasksState)
       .subscribe((tasksState: TasksState) => {
-        this.tasks = this.convertToDate(tasksState.tasks);
+        this.tasks = tasksState.tasks;
       });
   }
   ngOnDestroy(): void {
@@ -89,7 +89,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   tasks: TaskPayload[] = [];
   selectedTask: TaskPayload | undefined;
 
-  newTask() {
+  newTask(): void {
     this.taskService
       .startCleanProcess()
       .subscribe((response: HttpResponse<any>) => this.getTasks());
@@ -99,70 +99,27 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     return object1 && object2 && object1.taskDto.id === object2.taskDto.id;
   }
 
-  onSelectionChanged(event: MatSelectionListChange) {
+  onSelectionChanged(event: MatSelectionListChange): void {
     this.selectedTask = event.options[0].value;
   }
 
-  onVariableChanged(event: Event) {
+  onVariableChanged(event: Event): void {
     const selectedId = this.selectedTask?.taskDto.id;
     this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
       next: (tasks) => {
-        this.tasks = this.convertToDate(tasks);
+        this.tasks = tasks;
         this.tasks.map((task) => {
-        if (task.taskDto.id === selectedId) this.selectedTask = task;
-      });
+          if (task.taskDto.id === selectedId) this.selectedTask = task;
+        });
       },
-    });
-  }
-
-  public clone(): any {
-    var cloneObj = new (this.constructor() as any);
-    for (var attribut in this) {
-        if (typeof this[attribut] === "object") {
-            cloneObj[attribut] = (this[attribut] as any).clone();
-        } else {
-            cloneObj[attribut] = this[attribut];
-        }
-    }
-    return cloneObj;
-}
-
-  convertToDate(tasks: TaskPayload[]): TaskPayload[] {
-    return tasks;
-    return tasks.map((task) => {
-      //let taskNew: TaskPayload = {};
-      //Object.assign({}, ta)
-      const taskNewDate: TaskPayload = {
-        taskDto: {
-          assignee: task.taskDto.assignee,
-          created: new Date(task.taskDto.created),
-          description: task.taskDto.description,
-          id: task.taskDto.id,
-          name: task.taskDto.name,
-          processInstanceId: task.taskDto.processInstanceId
-        },
-        taskTipus: task.taskTipus
-      };
-      return taskNewDate;
-
-      // Kell, különben string marad
-      // let taskNewDate: TaskPayload = {
-      //   taskDto: {
-      //     created: new Date(task.taskDto.created)
-      //   }
-      // };
-      //return Object.assign({}, task, {});
-      //task.taskDto.created = new Date(task.taskDto.created);
-      //return task;
     });
   }
 
   getTasks() {
     this.selectedTask = undefined;
-
     this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
       next: (tasks) => {
-        this.tasks = this.convertToDate(tasks);
+        this.tasks = tasks;
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
@@ -172,16 +129,6 @@ export class TasksPageComponent implements OnInit, OnDestroy {
         });
       },
     });
-
-    // this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
-    //   this.tasks = this.convertToDate(tasks);
-    // }, (error: HttpErrorResponse) => {
-    //   console.log(error);
-    //   this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-    //     duration: 2000,
-    //     panelClass: ['danger-snackbar']
-    //   });
-    // });
   }
 
   onRefreshTasks() {
