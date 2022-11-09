@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { TaskPayload } from '../../model/generic/task';
@@ -8,6 +8,14 @@ import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Store } from '@ngrx/store';
 import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {
+  TaskActionFactory,
+  taskActionFactoryToken,
+} from 'src/app/state/task/task.action.factory';
+import {
+  selectTasksState,
+  TasksState,
+} from 'src/app/state/task/task.state.model';
 
 @Component({
   selector: 'app-tasks-page',
@@ -56,15 +64,27 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   `,
   styleUrls: ['./tasks-page.component.css'],
 })
-export class TasksPageComponent implements OnInit {
+export class TasksPageComponent implements OnInit, OnDestroy {
   tasks$: Observable<TaskState>;
+
+  private tasksSubscription: any;
 
   constructor(
     private taskService: TaskService,
-    private userService: UserService,
     private snackBar: MatSnackBar,
-    private store: Store
-  ) {}
+    private ngrxStore: Store,
+    @Inject(taskActionFactoryToken)
+    private taskActionFactory: TaskActionFactory
+  ) {
+    this.tasksSubscription = this.ngrxStore
+      .select(selectTasksState)
+      .subscribe((tasksState: TasksState) => {
+        this.tasks = this.convertToDate(tasksState.tasks);
+      });
+  }
+  ngOnDestroy(): void {
+    this.tasksSubscription.unsubscribe();
+  }
 
   tasks: TaskPayload[] = [];
   selectedTask: TaskPayload | undefined;
@@ -83,35 +103,85 @@ export class TasksPageComponent implements OnInit {
     this.selectedTask = event.options[0].value;
   }
 
-  convertToDate(tasks: TaskPayload[]): TaskPayload[] {
-    return tasks.map((task) => {
-      // Kell, különben string marad
-      task.taskDto.created = new Date(task.taskDto.created);
-      return task;
+  onVariableChanged(event: Event) {
+    const selectedId = this.selectedTask?.taskDto.id;
+    this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
+      next: (tasks) => {
+        this.tasks = this.convertToDate(tasks);
+        this.tasks.map((task) => {
+        if (task.taskDto.id === selectedId) this.selectedTask = task;
+      });
+      },
     });
   }
 
-  onVariableChanged(event: Event) {
-    const selectedId = this.selectedTask?.taskDto.id;
-    this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
-      this.tasks = this.convertToDate(tasks);
-      this.tasks.map((task) => {
-        if (task.taskDto.id === selectedId) this.selectedTask = task;
-      });
+  public clone(): any {
+    var cloneObj = new (this.constructor() as any);
+    for (var attribut in this) {
+        if (typeof this[attribut] === "object") {
+            cloneObj[attribut] = (this[attribut] as any).clone();
+        } else {
+            cloneObj[attribut] = this[attribut];
+        }
+    }
+    return cloneObj;
+}
+
+  convertToDate(tasks: TaskPayload[]): TaskPayload[] {
+    return tasks;
+    return tasks.map((task) => {
+      //let taskNew: TaskPayload = {};
+      //Object.assign({}, ta)
+      const taskNewDate: TaskPayload = {
+        taskDto: {
+          assignee: task.taskDto.assignee,
+          created: new Date(task.taskDto.created),
+          description: task.taskDto.description,
+          id: task.taskDto.id,
+          name: task.taskDto.name,
+          processInstanceId: task.taskDto.processInstanceId
+        },
+        taskTipus: task.taskTipus
+      };
+      return taskNewDate;
+
+      // Kell, különben string marad
+      // let taskNewDate: TaskPayload = {
+      //   taskDto: {
+      //     created: new Date(task.taskDto.created)
+      //   }
+      // };
+      //return Object.assign({}, task, {});
+      //task.taskDto.created = new Date(task.taskDto.created);
+      //return task;
     });
   }
 
   getTasks() {
-    this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
-      this.tasks = this.convertToDate(tasks);
-    }, (error: HttpErrorResponse) => {
-      console.log(error);
-      this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-        duration: 2000,
-        panelClass: ['danger-snackbar']
-      });
-    });
     this.selectedTask = undefined;
+
+    this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
+      next: (tasks) => {
+        this.tasks = this.convertToDate(tasks);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        });
+      },
+    });
+
+    // this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
+    //   this.tasks = this.convertToDate(tasks);
+    // }, (error: HttpErrorResponse) => {
+    //   console.log(error);
+    //   this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+    //     duration: 2000,
+    //     panelClass: ['danger-snackbar']
+    //   });
+    // });
   }
 
   onRefreshTasks() {

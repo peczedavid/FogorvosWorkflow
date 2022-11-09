@@ -69,7 +69,10 @@ import { TaskActionFactoryImpl } from './state/task/task.action.factory.impl';
   imports: [
     BrowserModule,
     RouterModule.forRoot(routes),
-    StoreModule.forRoot({}),
+    StoreModule.forRoot(
+      {},
+      { runtimeChecks: { strictStateImmutability: false } }
+    ),
     StoreModule.forFeature(TASKS_STATE_NAME, taskReducer),
     BrowserAnimationsModule,
     HttpClientModule,

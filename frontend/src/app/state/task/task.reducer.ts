@@ -23,5 +23,5 @@ function getTasksResponse(tasksState: TasksState, tasks: TaskPayload[]): TasksSt
 }
 
 function changeState(originalState: TasksState, changes: TasksState): TasksState {
-    return Object.assign({}, originalState, changeState);
+    return Object.assign({}, originalState, changes);
 }
