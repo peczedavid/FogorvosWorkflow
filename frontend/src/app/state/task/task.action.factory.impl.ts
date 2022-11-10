@@ -54,6 +54,10 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
         tasks.map((task) => {
           task.taskDto.created = new Date(task.taskDto.created);
         });
+        tasks.sort((t1, t2) => {
+          if(t1.taskDto.created > t2.taskDto.created) return -1;
+          else return 1;
+        });
         this.ngrxStore.dispatch({
           type: GET_TASKS_RESPONSE,
           payload: tasks,
