@@ -1,18 +1,14 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   EventEmitter,
   Inject,
-  Input,
   OnDestroy,
-  OnInit,
   Output,
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
-import { MessageResponse } from 'src/app/model/MessageResponse';
-import { TaskService } from 'src/app/services/task.service';
 import {
   TaskActionFactory,
   taskActionFactoryToken,
@@ -50,22 +46,18 @@ import {
         <app-beteg-ertesitese
           [taskPayload]="task!"
           *ngSwitchCase="TaskTipus.TASK_BETEG_ERTESITESE"
-          (variableChanged)="onVariableChanged($event)"
         ></app-beteg-ertesitese>
         <app-vizsgalat
           [taskPayload]="task!"
-          (variableChanged)="onVariableChanged($event)"
           *ngSwitchCase="TaskTipus.TASK_VIZSGALAT"
         ></app-vizsgalat>
         <app-rontgen *ngSwitchCase="TaskTipus.TASK_RONTGEN"></app-rontgen>
         <app-felulvizsgalat
           [taskPayload]="task!"
-          (variableChanged)="onVariableChanged($event)"
           *ngSwitchCase="TaskTipus.TASK_FELULVIZSGALAT"
         ></app-felulvizsgalat>
         <app-szakorvosi-vizsgalat
           [taskPayload]="task!"
-          (variableChanged)="onVariableChanged($event)"
           *ngSwitchCase="TaskTipus.TASK_SZAKORVOSI_VIZSGALAT"
         ></app-szakorvosi-vizsgalat>
         <app-fogszabalyzo-felrakasa
@@ -81,11 +73,8 @@ import {
   styleUrls: ['./task-detail.component.css'],
 })
 export class TaskDetailComponent implements OnDestroy {
-  task?: TaskPayload;
-  @Output() variableChanged = new EventEmitter();
-
   TaskTipus = TaskTipus;
-
+  task?: TaskPayload;
   private tasksSubscription: any;
 
   constructor(
@@ -102,10 +91,6 @@ export class TaskDetailComponent implements OnDestroy {
   }
   ngOnDestroy(): void {
     this.tasksSubscription.unsubscribe();
-  }
-
-  onVariableChanged(event: Event) {
-    this.variableChanged.emit(event);
   }
 
   onCompleteTask(): void {

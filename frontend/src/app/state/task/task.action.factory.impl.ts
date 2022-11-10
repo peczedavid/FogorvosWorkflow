@@ -12,7 +12,7 @@ import {
   SET_SELECTED_TASK_RESPONSE,
   SET_VARIABLE_RESPONSE,
   START_NEW_PROCESS_RESPONSE,
-  TaskActionFactory,
+  TaskActionFactory
 } from './task.action.factory';
 
 @Injectable()
@@ -23,16 +23,22 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
     private ngrxStore: Store<any>
   ) {}
 
-  setVariable(processId: string, variableName: string, variableValue: any): Observable<MessageResponse> {
+  setVariable(
+    processId: string,
+    variableName: string,
+    variableValue: any
+  ): Observable<MessageResponse> {
     return new Observable<MessageResponse>((subscriber: Subscriber<any>) => {
-      this.taskService.setVariable(processId, variableName, variableValue).subscribe((response: MessageResponse) => {
-        this.ngrxStore.dispatch({
-          type: SET_VARIABLE_RESPONSE,
-          payload: response,
+      this.taskService
+        .setVariable(processId, variableName, variableValue)
+        .subscribe((response: MessageResponse) => {
+          this.ngrxStore.dispatch({
+            type: SET_VARIABLE_RESPONSE,
+            payload: response,
+          });
+          subscriber.next(response);
+          subscriber.complete();
         });
-        subscriber.next(response);
-        subscriber.complete();
-      });
       return function unsubscribe() {};
     });
   }
@@ -44,7 +50,7 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
           task.taskDto.created = new Date(task.taskDto.created);
         });
         tasks.sort((t1, t2) => {
-          if(t1.taskDto.created > t2.taskDto.created) return -1;
+          if (t1.taskDto.created > t2.taskDto.created) return -1;
           else return 1;
         });
         this.ngrxStore.dispatch({
@@ -109,7 +115,7 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
           task.taskDto.created = new Date(task.taskDto.created);
         });
         tasks.sort((t1, t2) => {
-          if(t1.taskDto.created > t2.taskDto.created) return -1;
+          if (t1.taskDto.created > t2.taskDto.created) return -1;
           else return 1;
         });
         this.ngrxStore.dispatch({

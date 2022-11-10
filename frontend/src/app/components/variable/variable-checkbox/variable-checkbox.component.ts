@@ -1,27 +1,10 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpResponse,
-} from '@angular/common/http';
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, Inject, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Store } from '@ngrx/store';
-import { TaskService } from 'src/app/services/task.service';
 import {
   TaskActionFactory,
   taskActionFactoryToken,
 } from 'src/app/state/task/task.action.factory';
-import {
-  selectTasksState,
-  TasksState,
-} from 'src/app/state/task/task.state.model';
 
 @Component({
   selector: 'app-variable-checkbox',
@@ -38,11 +21,8 @@ export class VariableCheckboxComponent {
   @Input() displayName: string;
   @Input() value: boolean;
 
-  private tasksSubscription: any;
-
   constructor(
     private snackBar: MatSnackBar,
-    private ngrxStore: Store,
     @Inject(taskActionFactoryToken)
     private taskActionFactory: TaskActionFactory
   ) {}

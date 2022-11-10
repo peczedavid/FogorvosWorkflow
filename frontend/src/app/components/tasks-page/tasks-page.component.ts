@@ -1,13 +1,10 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
 
-import { TaskPayload } from '../../model/generic/task';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatSelectionListChange } from '@angular/material/list';
-import { TaskService } from 'src/app/services/task.service';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Store } from '@ngrx/store';
-import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Store } from '@ngrx/store';
+import { MessageResponse } from 'src/app/model/MessageResponse';
 import {
   TaskActionFactory,
   taskActionFactoryToken,
@@ -16,7 +13,7 @@ import {
   selectTasksState,
   TasksState,
 } from 'src/app/state/task/task.state.model';
-import { MessageResponse } from 'src/app/model/MessageResponse';
+import { TaskPayload } from '../../model/generic/task';
 
 @Component({
   selector: 'app-tasks-page',
@@ -54,8 +51,7 @@ import { MessageResponse } from 'src/app/model/MessageResponse';
         </mat-selection-list>
       </div>
       <div fxFlex="65%" style="padding-top: 3rem; padding-left: 1rem">
-        <app-task-detail
-        ></app-task-detail>
+        <app-task-detail></app-task-detail>
       </div>
     </div>
   `,

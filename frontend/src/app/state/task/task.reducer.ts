@@ -27,32 +27,43 @@ export function taskReducer(
       return getTasksKeepSelectedResponse(tasksState, action.payload);
     case SET_SELECTED_TASK_RESPONSE:
       return setSelectedTaskRespone(tasksState, action.payload);
-      case START_NEW_PROCESS_RESPONSE:
-        return startNewProcessResponse(tasksState, action.payload);
-    case COMPLETE_TASK_RESPONSE: return completeTaskResponse(tasksState, action.payload);
-    case SET_VARIABLE_RESPONSE: return setVariableResponse(tasksState, action.payload);
+    case START_NEW_PROCESS_RESPONSE:
+      return startNewProcessResponse(tasksState, action.payload);
+    case COMPLETE_TASK_RESPONSE:
+      return completeTaskResponse(tasksState, action.payload);
+    case SET_VARIABLE_RESPONSE:
+      return setVariableResponse(tasksState, action.payload);
     default:
       return tasksState;
   }
 }
 
-function setVariableResponse(tasksState: TasksState, message: MessageResponse): TasksState {
+function setVariableResponse(
+  tasksState: TasksState,
+  message: MessageResponse
+): TasksState {
   const changes: TasksState = {
     tasks: tasksState.tasks,
-    selectedTask: tasksState.selectedTask
+    selectedTask: tasksState.selectedTask,
   };
   return changeState(tasksState, changes);
 }
 
-function completeTaskResponse(tasksState: TasksState, message: MessageResponse): TasksState {
+function completeTaskResponse(
+  tasksState: TasksState,
+  message: MessageResponse
+): TasksState {
   const changes: TasksState = {
     tasks: tasksState.tasks,
-    selectedTask: undefined
+    selectedTask: undefined,
   };
   return changeState(tasksState, changes);
 }
 
-function startNewProcessResponse(tasksState: TasksState, message: MessageResponse): TasksState {
+function startNewProcessResponse(
+  tasksState: TasksState,
+  message: MessageResponse
+): TasksState {
   const changes: TasksState = {
     tasks: tasksState.tasks,
     selectedTask: tasksState.selectedTask,
@@ -81,18 +92,22 @@ function setSelectedTaskRespone(
   }
 }
 
-function getTasksKeepSelectedResponse(tasksState: TasksState, tasks: TaskPayload[]): TasksState {
-  if(tasksState.selectedTask === undefined) {
+function getTasksKeepSelectedResponse(
+  tasksState: TasksState,
+  tasks: TaskPayload[]
+): TasksState {
+  if (tasksState.selectedTask === undefined) {
     const changes: TasksState = {
       tasks: tasks,
-      selectedTask: undefined
+      selectedTask: undefined,
     };
     return changeState(tasksState, changes);
-  }
-  else {
+  } else {
     const changes: TasksState = {
       tasks: tasks,
-      selectedTask: tasks.find((task: TaskPayload) => { return task.taskDto.id === tasksState.selectedTask?.taskDto.id }),
+      selectedTask: tasks.find((task: TaskPayload) => {
+        return task.taskDto.id === tasksState.selectedTask?.taskDto.id;
+      }),
     };
     return changeState(tasksState, changes);
   }
@@ -115,5 +130,3 @@ function changeState(
 ): TasksState {
   return Object.assign({}, originalState, changes);
 }
-
-
