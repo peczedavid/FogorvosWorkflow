@@ -7,7 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-header',
   template: `
-    <mat-toolbar class="navbar" color="primary">
+    <mat-toolbar class="navbar" color="primary" [class.mat-elevation-z5]="true">
       <mat-icon style="margin-right: 10px;">local_hospital</mat-icon>
       <button [routerLink]="['/']" mat-button style="font-size: 1.25rem;">
         Online klinika

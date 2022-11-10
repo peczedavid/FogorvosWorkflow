@@ -1,6 +1,7 @@
 .navbar {
-    padding-right: 35px;
-    padding-left: 35px;
+    padding-right: 2.5rem;
+    padding-left: 2.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .example-spacer {

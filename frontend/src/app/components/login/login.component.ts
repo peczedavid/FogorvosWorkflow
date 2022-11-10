@@ -8,7 +8,7 @@ import { UserService } from 'src/app/services/user.service';
   template: `
     <div fxLayoutAlign="center center" style="margin-top: 100px">
       <mat-card class="login-card">
-        <mat-toolbar color="primary">Bejelentkezés</mat-toolbar>
+        <mat-toolbar color="primary" [class.mat-elevation-z3]="true">Bejelentkezés</mat-toolbar>
         <form class="login-form" fxLayoutalign="stretch" fxLayout="column">
           <mat-form-field appearance="fill">
             <mat-label>Felhasználónév</mat-label>

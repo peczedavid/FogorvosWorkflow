@@ -1,4 +1,11 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSelectionListChange } from '@angular/material/list';
@@ -76,7 +83,11 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    // Ha taszkot megnyitva lépünk el másik oldalra és visszakattintunk, akkor egy pillanatra
+    // felvillanna a details ablak
+    this.taskActionFactory.setSelectedTask(undefined).subscribe();
+    
     this.getTasks();
   }
 
