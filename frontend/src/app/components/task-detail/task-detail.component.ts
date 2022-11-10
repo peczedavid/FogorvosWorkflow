@@ -11,6 +11,7 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
+import { MessageResponse } from 'src/app/model/MessageResponse';
 import { TaskService } from 'src/app/services/task.service';
 import {
   TaskActionFactory,
@@ -81,7 +82,6 @@ import {
 })
 export class TaskDetailComponent implements OnDestroy {
   task?: TaskPayload;
-  //@Output() completeTask = new EventEmitter();
   @Output() variableChanged = new EventEmitter();
 
   TaskTipus = TaskTipus;
@@ -89,7 +89,6 @@ export class TaskDetailComponent implements OnDestroy {
   private tasksSubscription: any;
 
   constructor(
-    private taskService: TaskService,
     private snackBar: MatSnackBar,
     private ngrxStore: Store,
     @Inject(taskActionFactoryToken)
@@ -110,29 +109,19 @@ export class TaskDetailComponent implements OnDestroy {
   }
 
   onCompleteTask(): void {
-    // TODO: miért lehet undefined
-    if(this.task == undefined) return;
-    this.taskActionFactory.completeTask(this.task.taskDto.id).subscribe(() => {
-      this.taskActionFactory.getTasks('fogorvosdemo').subscribe();
+    if (this.task == undefined) return;
+    this.taskActionFactory.completeTask(this.task.taskDto.id).subscribe({
+      next: () => {
+        this.taskActionFactory.getTasks('fogorvosdemo').subscribe();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+        this.snackBar.open('A feladatot nem sikerült befejezni', 'Bezár', {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        });
+      },
     });
-
-    // if (this.task?.taskDto.id !== undefined)
-    //   this.taskService.completeTask(this.task?.taskDto.id).subscribe(
-    //     (_) => {
-    //       this.completeTask.emit();
-    //       this.snackBar.open('Feladat befejezve', 'Bezár', {
-    //         duration: 2000,
-    //         panelClass: ['success-snackbar'],
-    //       });
-    //     },
-    //     (error: HttpErrorResponse) => {
-    //       console.log(error);
-    //       this.snackBar.open('A feladatot nem sikerült befejezni', 'Bezár', {
-    //         duration: 2000,
-    //         panelClass: ['danger-snackbar'],
-    //       });
-    //     }
-    //   );
   }
 
   onClosePanel(): void {

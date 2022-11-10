@@ -45,6 +45,11 @@ public class TaskServiceCustom {
     }
 
     public ResponseEntity<?> complete(String id) {
+        Task task = taskService.createTaskQuery().taskId(id).singleResult();
+        if(task == null) {
+            logger.error("Cannot find task with id " + id);
+            return new ResponseEntity<>(new MessageResponse("Cannot find task with id " + id), HttpStatus.NOT_FOUND);
+        }
         taskService.complete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

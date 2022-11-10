@@ -1,6 +1,7 @@
 package com.peczedavid.fogorvos.controller;
 
 import com.peczedavid.fogorvos.service.TaskServiceCustom;
+import org.camunda.bpm.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,5 @@ public class TaskController {
     @PostMapping("/{id}/complete")
     public ResponseEntity<?> completeTask(@PathVariable String id) {
         return taskServiceCustom.complete(id);
-
     }
 }
