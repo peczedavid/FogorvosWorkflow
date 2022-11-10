@@ -104,33 +104,22 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   onRefreshTasks() {
     this.getTasks();
   }
-  
+
   onSelectionChanged(event: MatSelectionListChange): void {
     const selected: TaskPayload = event.options[0].value;
     this.taskActionFactory.setSelectedTask(selected.taskDto.id).subscribe();
   }
 
   getTasksKeepSelected() {
-    if (this.selectedTask === undefined) {
-      this.getTasks();
-    } else {
-      const selectedId = this.selectedTask.taskDto.id;
-      this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
-        next: (_) => {
-          this.tasks.map((task) => {
-            if (task.taskDto.id === selectedId)
-              this.taskActionFactory.setSelectedTask(selectedId).subscribe();
-          });
-        },
-        error: (error: HttpErrorResponse) => {
-          console.log(error);
-          this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-            duration: 2000,
-            panelClass: ['danger-snackbar'],
-          });
-        },
-      });
-    }
+    this.taskActionFactory.getTasksKeepSelected('fogorvosdemo').subscribe({
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        });
+      },
+    });
   }
 
   getTasks() {
@@ -144,5 +133,4 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       },
     });
   }
-
 }

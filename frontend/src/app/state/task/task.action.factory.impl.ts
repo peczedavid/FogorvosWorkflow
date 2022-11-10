@@ -7,6 +7,7 @@ import { TaskService } from 'src/app/services/task.service';
 import { UserService } from 'src/app/services/user.service';
 import {
   COMPLETE_TASK_RESPONSE,
+  GET_TASKS_KEEP_SELECTED_RESPONSE,
   GET_TASKS_RESPONSE,
   SET_SELECTED_TASK_RESPONSE,
   START_NEW_PROCESS_RESPONSE,
@@ -20,6 +21,28 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
     private userService: UserService,
     private ngrxStore: Store<any>
   ) {}
+
+  getTasksKeepSelected(userId: string): Observable<TaskPayload[]> {
+    return new Observable<TaskPayload[]>((subscriber: Subscriber<any>) => {
+      this.userService.getTasks(userId).subscribe((tasks: TaskPayload[]) => {
+        tasks.map((task) => {
+          task.taskDto.created = new Date(task.taskDto.created);
+        });
+        tasks.sort((t1, t2) => {
+          if(t1.taskDto.created > t2.taskDto.created) return -1;
+          else return 1;
+        });
+        this.ngrxStore.dispatch({
+          type: GET_TASKS_KEEP_SELECTED_RESPONSE,
+          payload: tasks,
+        });
+        subscriber.next(tasks);
+        subscriber.complete();
+      });
+      return function unsubscribe() {};
+    });
+  }
+
   completeTask(taskId: string): Observable<MessageResponse> {
     return new Observable<MessageResponse>((subscriber: Subscriber<any>) => {
       this.taskService
