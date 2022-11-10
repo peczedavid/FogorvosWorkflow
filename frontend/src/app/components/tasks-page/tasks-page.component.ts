@@ -1,14 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 
-import { TaskPayload } from '../../model/generic/task';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MatSelectionListChange } from '@angular/material/list';
-import { TaskService } from 'src/app/services/task.service';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Store } from '@ngrx/store';
-import { loadTasks } from 'src/app/state/task/task.actions';
-import { UserService } from 'src/app/services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Store } from '@ngrx/store';
+import { MessageResponse } from 'src/app/model/MessageResponse';
+import {
+  TaskActionFactory,
+  taskActionFactoryToken,
+} from 'src/app/state/task/task.action.factory';
+import {
+  selectTasksState,
+  TasksState,
+} from 'src/app/state/task/task.state.model';
+import { TaskPayload } from '../../model/generic/task';
 
 @Component({
   selector: 'app-tasks-page',
@@ -31,7 +36,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         </button>
         <mat-selection-list
           id="task-list"
-          [compareWith]="taskCompare"
           (selectionChange)="onSelectionChanged($event)"
           #tasklist
           [multiple]="false"
@@ -40,94 +44,84 @@ import { MatSnackBar } from '@angular/material/snack-bar';
             style="margin-bottom: 0.5rem;"
             *ngFor="let task of tasks"
             [value]="task"
+            [selected]="selectedTask?.taskDto?.id == task.taskDto.id"
           >
             <app-task-list-item [taskDto]="task.taskDto"></app-task-list-item>
           </mat-list-option>
         </mat-selection-list>
       </div>
       <div fxFlex="65%" style="padding-top: 3rem; padding-left: 1rem">
-        <app-task-detail
-          [task]="selectedTask"
-          (completeTask)="onTaskComplete()"
-          (closePanel)="onTaskPanelClosed()"
-          (variableChanged)="onVariableChanged($event)"
-        ></app-task-detail>
+        <app-task-detail></app-task-detail>
       </div>
     </div>
   `,
   styleUrls: ['./tasks-page.component.css'],
 })
-export class TasksPageComponent implements OnInit {
-  tasks$: Observable<TaskState>;
+export class TasksPageComponent implements OnInit, OnDestroy {
+  private tasksSubscription: any;
+  protected tasks: TaskPayload[];
+  protected selectedTask?: TaskPayload;
 
   constructor(
-    private taskService: TaskService,
-    private userService: UserService,
     private snackBar: MatSnackBar,
-    private store: Store
-  ) {}
-
-  tasks: TaskPayload[] = [];
-  selectedTask: TaskPayload | undefined;
-
-  newTask() {
-    this.taskService
-      .startCleanProcess()
-      .subscribe((response: HttpResponse<any>) => this.getTasks());
-  }
-
-  taskCompare(object1: any, object2: any): boolean {
-    return object1 && object2 && object1.taskDto.id === object2.taskDto.id;
-  }
-
-  onSelectionChanged(event: MatSelectionListChange) {
-    this.selectedTask = event.options[0].value;
-  }
-
-  convertToDate(tasks: TaskPayload[]): TaskPayload[] {
-    return tasks.map((task) => {
-      // Kell, különben string marad
-      task.taskDto.created = new Date(task.taskDto.created);
-      return task;
-    });
-  }
-
-  onVariableChanged(event: Event) {
-    const selectedId = this.selectedTask?.taskDto.id;
-    this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
-      this.tasks = this.convertToDate(tasks);
-      this.tasks.map((task) => {
-        if (task.taskDto.id === selectedId) this.selectedTask = task;
+    private ngrxStore: Store,
+    @Inject(taskActionFactoryToken)
+    private taskActionFactory: TaskActionFactory
+  ) {
+    this.tasksSubscription = this.ngrxStore
+      .select(selectTasksState)
+      .subscribe((tasksState: TasksState) => {
+        this.tasks = tasksState.tasks;
+        this.selectedTask = tasksState.selectedTask;
       });
-    });
   }
 
-  getTasks() {
-    this.userService.getTasks('fogorvosdemo').subscribe((tasks) => {
-      this.tasks = this.convertToDate(tasks);
-    }, (error: HttpErrorResponse) => {
-      console.log(error);
-      this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-        duration: 2000,
-        panelClass: ['danger-snackbar']
+  ngOnInit() {
+    this.getTasks();
+  }
+
+  ngOnDestroy(): void {
+    this.tasksSubscription.unsubscribe();
+  }
+
+  newTask(): void {
+    this.taskActionFactory
+      .startNewProcess()
+      .subscribe((message: MessageResponse) => {
+        this.getTasksKeepSelected();
       });
-    });
-    this.selectedTask = undefined;
   }
 
   onRefreshTasks() {
     this.getTasks();
   }
 
-  onTaskPanelClosed() {
-    this.getTasks();
+  onSelectionChanged(event: MatSelectionListChange): void {
+    const selected: TaskPayload = event.options[0].value;
+    this.taskActionFactory.setSelectedTask(selected.taskDto.id).subscribe();
   }
 
-  onTaskComplete() {
-    this.getTasks();
+  getTasksKeepSelected() {
+    this.taskActionFactory.getTasksKeepSelected('fogorvosdemo').subscribe({
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        });
+      },
+    });
   }
 
-  ngOnInit() {
-    this.getTasks();
+  getTasks() {
+    this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        });
+      },
+    });
   }
 }

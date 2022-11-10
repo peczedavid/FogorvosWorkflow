@@ -1,8 +1,22 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  OnDestroy,
+  Output,
+} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Store } from '@ngrx/store';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
-import { TaskService } from 'src/app/services/task.service';
+import {
+  TaskActionFactory,
+  taskActionFactoryToken,
+} from 'src/app/state/task/task.action.factory';
+import {
+  selectTasksState,
+  TasksState,
+} from 'src/app/state/task/task.state.model';
 
 @Component({
   selector: 'app-task-detail',
@@ -32,22 +46,18 @@ import { TaskService } from 'src/app/services/task.service';
         <app-beteg-ertesitese
           [taskPayload]="task!"
           *ngSwitchCase="TaskTipus.TASK_BETEG_ERTESITESE"
-          (variableChanged)="onVariableChanged($event)"
         ></app-beteg-ertesitese>
         <app-vizsgalat
           [taskPayload]="task!"
-          (variableChanged)="onVariableChanged($event)"
           *ngSwitchCase="TaskTipus.TASK_VIZSGALAT"
         ></app-vizsgalat>
         <app-rontgen *ngSwitchCase="TaskTipus.TASK_RONTGEN"></app-rontgen>
         <app-felulvizsgalat
           [taskPayload]="task!"
-          (variableChanged)="onVariableChanged($event)"
           *ngSwitchCase="TaskTipus.TASK_FELULVIZSGALAT"
         ></app-felulvizsgalat>
         <app-szakorvosi-vizsgalat
           [taskPayload]="task!"
-          (variableChanged)="onVariableChanged($event)"
           *ngSwitchCase="TaskTipus.TASK_SZAKORVOSI_VIZSGALAT"
         ></app-szakorvosi-vizsgalat>
         <app-fogszabalyzo-felrakasa
@@ -62,49 +72,49 @@ import { TaskService } from 'src/app/services/task.service';
   `,
   styleUrls: ['./task-detail.component.css'],
 })
-export class TaskDetailComponent {
-  @Input() task: TaskPayload | undefined;
-  @Output() completeTask = new EventEmitter();
-  @Output() closePanel = new EventEmitter();
-  @Output() variableChanged = new EventEmitter();
-
+export class TaskDetailComponent implements OnDestroy {
   TaskTipus = TaskTipus;
+  task?: TaskPayload;
+  private tasksSubscription: any;
 
   constructor(
-    private taskService: TaskService,
-    private snackBar: MatSnackBar
-  ) {}
-
-  onVariableChanged(event: Event) {
-    this.variableChanged.emit(event);
+    private snackBar: MatSnackBar,
+    private ngrxStore: Store,
+    @Inject(taskActionFactoryToken)
+    private taskActionFactory: TaskActionFactory
+  ) {
+    this.tasksSubscription = this.ngrxStore
+      .select(selectTasksState)
+      .subscribe((tasksState: TasksState) => {
+        this.task = tasksState.selectedTask;
+      });
   }
-
-  onClosePanel(): void {
-    this.closePanel.emit();
+  ngOnDestroy(): void {
+    this.tasksSubscription.unsubscribe();
   }
 
   onCompleteTask(): void {
-    if (this.task?.taskDto.id !== undefined)
-      this.taskService.completeTask(this.task?.taskDto.id).subscribe(
-        (_) => {
-          this.completeTask.emit();
-          this.snackBar.open('Feladat befejezve', 'Bezár', {
-            duration: 2000,
-            panelClass: ['success-snackbar'],
-          });
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-          this.snackBar.open('A feladatot nem sikerült befejezni', 'Bezár', {
-            duration: 2000,
-            panelClass: ['danger-snackbar'],
-          });
-        }
-      );
+    if (this.task == undefined) return;
+    this.taskActionFactory.completeTask(this.task.taskDto.id).subscribe({
+      next: () => {
+        this.taskActionFactory.getTasks('fogorvosdemo').subscribe();
+      },
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+        this.snackBar.open('A feladatot nem sikerült befejezni', 'Bezár', {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        });
+      },
+    });
+  }
+
+  onClosePanel(): void {
+    this.taskActionFactory.setSelectedTask(undefined).subscribe();
   }
 
   formatDate(): string {
-    if (this.task !== undefined) {
+    if (this.task !== undefined && this.task.taskDto.created instanceof Date) {
       const year = this.task.taskDto.created.getFullYear();
       const month = this.task.taskDto.created.getMonth() + 1;
       const day = this.task.taskDto.created.getDate();

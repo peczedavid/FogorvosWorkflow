@@ -1,7 +1,10 @@
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, Inject, Input } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { TaskService } from 'src/app/services/task.service';
+import {
+  TaskActionFactory,
+  taskActionFactoryToken,
+} from 'src/app/state/task/task.action.factory';
 
 @Component({
   selector: 'app-variable-checkbox',
@@ -12,37 +15,40 @@ import { TaskService } from 'src/app/services/task.service';
   `,
   styleUrls: ['./variable-checkbox.component.css'],
 })
-export class VariableCheckboxComponent implements OnInit {
+export class VariableCheckboxComponent {
   @Input() processInstanceId: string;
   @Input() name: string;
   @Input() displayName: string;
   @Input() value: boolean;
-  @Output() valueChanged = new EventEmitter();
 
   constructor(
     private snackBar: MatSnackBar,
-    private taskService: TaskService
+    @Inject(taskActionFactoryToken)
+    private taskActionFactory: TaskActionFactory
   ) {}
 
   onEdited() {
-    this.taskService
+    this.taskActionFactory
       .setVariable(this.processInstanceId, this.name, this.value)
-      .subscribe((response: HttpResponse<any>) => {
-        this.valueChanged.emit(this.value)
-        if (response) {
-          this.snackBar.open('Változó átállítva', 'Bezár', {
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.snackBar.open('Változó átállítva', 'Bezár', {
+              duration: 2000,
+              panelClass: ['success-snackbar'],
+            });
+          }
+          this.taskActionFactory
+            .getTasksKeepSelected('fogorvosdemo')
+            .subscribe();
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+          this.snackBar.open('A változó nem sikerült átállítani', 'Bezár', {
             duration: 2000,
-            panelClass: ['success-snackbar']
+            panelClass: ['danger-snackbar'],
           });
-        }
-      }, (error: HttpErrorResponse) => {
-        console.log(error);
-        this.snackBar.open('A változó nem sikerült átállítani', 'Bezár', {
-          duration: 2000,
-          panelClass: ['danger-snackbar']
-        });
+        },
       });
   }
-
-  ngOnInit(): void {}
 }
