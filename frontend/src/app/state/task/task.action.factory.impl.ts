@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable, Subscriber } from 'rxjs';
 import { TaskPayload } from 'src/app/model/generic/task';
 import { UserService } from 'src/app/services/user.service';
-import { GET_TASKS_RESPONSE, TaskActionFactory } from './task.action.factory';
+import { GET_TASKS_RESPONSE, SET_SELECTED_TASK_RESPONSE, TaskActionFactory } from './task.action.factory';
 
 @Injectable()
 export class TaskActionFactoryImpl implements TaskActionFactory {
@@ -11,6 +11,18 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
     private userService: UserService,
     private ngrxStore: Store<any>
   ) {}
+
+  setSelectedTask(taskId: string): Observable<TaskPayload> {
+    return new Observable<TaskPayload>((subscriber: Subscriber<any>) => {
+      this.ngrxStore.dispatch({
+        type: SET_SELECTED_TASK_RESPONSE,
+        payload: taskId
+      });
+      subscriber.next(taskId);
+      subscriber.complete();
+      return function unsubscribe() {};
+    });
+  }
 
   getTasks(id: string): Observable<TaskPayload[]> {
     return new Observable<TaskPayload[]>((subscriber: Subscriber<any>) => {
@@ -23,7 +35,6 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
         subscriber.next(tasks);
         subscriber.complete();
       });
-      // TODO: törölni? xd
       return function unsubscribe() {};
     });
   }

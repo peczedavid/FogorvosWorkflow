@@ -5,6 +5,7 @@ export const TASKS_STATE_NAME = 'task';
 
 export interface TasksState {
   tasks: TaskPayload[];
+  selectedTask?: TaskPayload;
 }
 
 export const selectTasksState =

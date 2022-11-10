@@ -5,10 +5,12 @@ import { TaskPayload } from 'src/app/model/generic/task';
 const DESC = 'task_factory_desc';
 
 export const GET_TASKS_RESPONSE = "GET_TASKS_RESPONSE";
+export const SET_SELECTED_TASK_RESPONSE = "SET_SELECTED_TASK_RESPONSE";
 
 export const taskActionFactoryToken: InjectionToken<TaskActionFactory> =
   new InjectionToken<TaskActionFactory>(DESC);
 
 export interface TaskActionFactory {
   getTasks(id: string): Observable<TaskPayload[]>;
+  setSelectedTask(taskId: string): Observable<TaskPayload>;
 }

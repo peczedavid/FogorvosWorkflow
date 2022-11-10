@@ -65,9 +65,9 @@ import {
   styleUrls: ['./tasks-page.component.css'],
 })
 export class TasksPageComponent implements OnInit, OnDestroy {
-  tasks$: Observable<TaskState>;
-
   private tasksSubscription: any;
+  protected tasks: TaskPayload[];
+  protected selectedTask?: TaskPayload;
 
   constructor(
     private taskService: TaskService,
@@ -80,14 +80,17 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       .select(selectTasksState)
       .subscribe((tasksState: TasksState) => {
         this.tasks = tasksState.tasks;
+        this.selectedTask = tasksState.selectedTask;
       });
   }
+
+  ngOnInit() {
+    this.getTasks();
+  }
+
   ngOnDestroy(): void {
     this.tasksSubscription.unsubscribe();
   }
-
-  tasks: TaskPayload[] = [];
-  selectedTask: TaskPayload | undefined;
 
   newTask(): void {
     this.taskService
@@ -96,31 +99,30 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   taskCompare(object1: any, object2: any): boolean {
+    //if(this.selectedTask === undefined) return false;
     return object1 && object2 && object1.taskDto.id === object2.taskDto.id;
   }
 
   onSelectionChanged(event: MatSelectionListChange): void {
-    this.selectedTask = event.options[0].value;
+    const selected: TaskPayload = event.options[0].value;
+    this.taskActionFactory.setSelectedTask(selected.taskDto.id).subscribe();
   }
 
   onVariableChanged(event: Event): void {
-    const selectedId = this.selectedTask?.taskDto.id;
+    if (this.selectedTask === undefined) return;
+    const selectedId = this.selectedTask.taskDto.id;
     this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
-      next: (tasks) => {
-        this.tasks = tasks;
+      next: (_) => {
         this.tasks.map((task) => {
-          if (task.taskDto.id === selectedId) this.selectedTask = task;
+          if (task.taskDto.id === selectedId)
+            this.taskActionFactory.setSelectedTask(selectedId).subscribe();
         });
       },
     });
   }
 
   getTasks() {
-    this.selectedTask = undefined;
     this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
-      next: (tasks) => {
-        this.tasks = tasks;
-      },
       error: (error: HttpErrorResponse) => {
         console.log(error);
         this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
@@ -143,7 +145,5 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     this.getTasks();
   }
 
-  ngOnInit() {
-    this.getTasks();
-  }
+ 
 }
