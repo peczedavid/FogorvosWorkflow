@@ -16,6 +16,7 @@ import {
   selectTasksState,
   TasksState,
 } from 'src/app/state/task/task.state.model';
+import { MessageResponse } from 'src/app/model/MessageResponse';
 
 @Component({
   selector: 'app-tasks-page',
@@ -70,7 +71,6 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   protected selectedTask?: TaskPayload;
 
   constructor(
-    private taskService: TaskService,
     private snackBar: MatSnackBar,
     private ngrxStore: Store,
     @Inject(taskActionFactoryToken)
@@ -93,44 +93,11 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   newTask(): void {
-    this.taskService
-      .startCleanProcess()
-      .subscribe((response: HttpResponse<any>) => this.getTasks());
-  }
-
-  taskCompare(object1: any, object2: any): boolean {
-    //if(this.selectedTask === undefined) return false;
-    return object1 && object2 && object1.taskDto.id === object2.taskDto.id;
-  }
-
-  onSelectionChanged(event: MatSelectionListChange): void {
-    const selected: TaskPayload = event.options[0].value;
-    this.taskActionFactory.setSelectedTask(selected.taskDto.id).subscribe();
-  }
-
-  onVariableChanged(event: Event): void {
-    if (this.selectedTask === undefined) return;
-    const selectedId = this.selectedTask.taskDto.id;
-    this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
-      next: (_) => {
-        this.tasks.map((task) => {
-          if (task.taskDto.id === selectedId)
-            this.taskActionFactory.setSelectedTask(selectedId).subscribe();
-        });
-      },
-    });
-  }
-
-  getTasks() {
-    this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
-      error: (error: HttpErrorResponse) => {
-        console.log(error);
-        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-          duration: 2000,
-          panelClass: ['danger-snackbar'],
-        });
-      },
-    });
+    this.taskActionFactory
+      .startNewProcess()
+      .subscribe((message: MessageResponse) => {
+        this.getTasksKeepSelected();
+      });
   }
 
   onRefreshTasks() {
@@ -145,5 +112,51 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     this.getTasks();
   }
 
- 
+  onVariableChanged(event: Event): void {
+    this.getTasksKeepSelected();
+  }
+
+  onSelectionChanged(event: MatSelectionListChange): void {
+    const selected: TaskPayload = event.options[0].value;
+    this.taskActionFactory.setSelectedTask(selected.taskDto.id).subscribe();
+  }
+
+  getTasksKeepSelected() {
+    if (this.selectedTask === undefined) {
+      this.getTasks();
+    } else {
+      const selectedId = this.selectedTask.taskDto.id;
+      this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
+        next: (_) => {
+          this.tasks.map((task) => {
+            if (task.taskDto.id === selectedId)
+              this.taskActionFactory.setSelectedTask(selectedId).subscribe();
+          });
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+          this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+            duration: 2000,
+            panelClass: ['danger-snackbar'],
+          });
+        },
+      });
+    }
+  }
+
+  getTasks() {
+    this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        });
+      },
+    });
+  }
+
+  taskCompare(object1: any, object2: any): boolean {
+    return object1 && object2 && object1.taskDto.id === object2.taskDto.id;
+  }
 }
