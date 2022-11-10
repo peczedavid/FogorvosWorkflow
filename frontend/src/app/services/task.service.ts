@@ -19,11 +19,11 @@ export class TaskService {
     processInstanceId: string,
     variableName: string,
     variableValue: any
-  ): Observable<HttpResponse<any>> {
+  ): Observable<MessageResponse> {
     const url = this._setVariableUrl
       .replace('#processInstanceId#', processInstanceId)
       .replace('#variableName#', variableName);
-    return this.http.post<HttpResponse<any>>(
+    return this.http.post<MessageResponse>(
       url,
       {
         type: 'elvileg-mindegy',

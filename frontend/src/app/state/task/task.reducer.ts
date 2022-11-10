@@ -6,6 +6,7 @@ import {
   GET_TASKS_KEEP_SELECTED_RESPONSE,
   GET_TASKS_RESPONSE,
   SET_SELECTED_TASK_RESPONSE,
+  SET_VARIABLE_RESPONSE,
   START_NEW_PROCESS_RESPONSE,
 } from './task.action.factory';
 import { TasksState } from './task.state.model';
@@ -29,9 +30,18 @@ export function taskReducer(
       case START_NEW_PROCESS_RESPONSE:
         return startNewProcessResponse(tasksState, action.payload);
     case COMPLETE_TASK_RESPONSE: return completeTaskResponse(tasksState, action.payload);
-        default:
+    case SET_VARIABLE_RESPONSE: return setVariableResponse(tasksState, action.payload);
+    default:
       return tasksState;
   }
+}
+
+function setVariableResponse(tasksState: TasksState, message: MessageResponse): TasksState {
+  const changes: TasksState = {
+    tasks: tasksState.tasks,
+    selectedTask: tasksState.selectedTask
+  };
+  return changeState(tasksState, changes);
 }
 
 function completeTaskResponse(tasksState: TasksState, message: MessageResponse): TasksState {

@@ -10,6 +10,7 @@ import {
   GET_TASKS_KEEP_SELECTED_RESPONSE,
   GET_TASKS_RESPONSE,
   SET_SELECTED_TASK_RESPONSE,
+  SET_VARIABLE_RESPONSE,
   START_NEW_PROCESS_RESPONSE,
   TaskActionFactory,
 } from './task.action.factory';
@@ -21,6 +22,20 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
     private userService: UserService,
     private ngrxStore: Store<any>
   ) {}
+
+  setVariable(processId: string, variableName: string, variableValue: any): Observable<MessageResponse> {
+    return new Observable<MessageResponse>((subscriber: Subscriber<any>) => {
+      this.taskService.setVariable(processId, variableName, variableValue).subscribe((response: MessageResponse) => {
+        this.ngrxStore.dispatch({
+          type: SET_VARIABLE_RESPONSE,
+          payload: response,
+        });
+        subscriber.next(response);
+        subscriber.complete();
+      });
+      return function unsubscribe() {};
+    });
+  }
 
   getTasksKeepSelected(userId: string): Observable<TaskPayload[]> {
     return new Observable<TaskPayload[]>((subscriber: Subscriber<any>) => {

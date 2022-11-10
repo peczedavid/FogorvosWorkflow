@@ -55,7 +55,6 @@ import { MessageResponse } from 'src/app/model/MessageResponse';
       </div>
       <div fxFlex="65%" style="padding-top: 3rem; padding-left: 1rem">
         <app-task-detail
-          (variableChanged)="onVariableChanged($event)"
         ></app-task-detail>
       </div>
     </div>
@@ -79,10 +78,6 @@ export class TasksPageComponent implements OnInit, OnDestroy {
         this.tasks = tasksState.tasks;
         this.selectedTask = tasksState.selectedTask;
       });
-  }
-
-  onVariableChanged(event: Event): void {
-    this.getTasksKeepSelected();
   }
 
   ngOnInit() {
