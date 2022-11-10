@@ -39,7 +39,6 @@ import { MessageResponse } from 'src/app/model/MessageResponse';
         </button>
         <mat-selection-list
           id="task-list"
-          [compareWith]="taskCompare"
           (selectionChange)="onSelectionChanged($event)"
           #tasklist
           [multiple]="false"
@@ -48,6 +47,7 @@ import { MessageResponse } from 'src/app/model/MessageResponse';
             style="margin-bottom: 0.5rem;"
             *ngFor="let task of tasks"
             [value]="task"
+            [selected]="selectedTask?.taskDto?.id == task.taskDto.id"
           >
             <app-task-list-item [taskDto]="task.taskDto"></app-task-list-item>
           </mat-list-option>
@@ -81,6 +81,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       .subscribe((tasksState: TasksState) => {
         this.tasks = tasksState.tasks;
         this.selectedTask = tasksState.selectedTask;
+        console.log(this.selectedTask);
       });
   }
 
@@ -156,7 +157,4 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  taskCompare(object1: any, object2: any): boolean {
-    return object1 && object2 && object1.taskDto.id === object2.taskDto.id;
-  }
 }
