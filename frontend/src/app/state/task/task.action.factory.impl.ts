@@ -36,7 +36,7 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
     });
   }
 
-  setSelectedTask(taskId: string): Observable<TaskPayload> {
+  setSelectedTask(taskId?: string): Observable<TaskPayload> {
     return new Observable<TaskPayload>((subscriber: Subscriber<any>) => {
       this.ngrxStore.dispatch({
         type: SET_SELECTED_TASK_RESPONSE,

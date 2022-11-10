@@ -57,7 +57,6 @@ import { MessageResponse } from 'src/app/model/MessageResponse';
         <app-task-detail
           [task]="selectedTask"
           (completeTask)="onTaskComplete()"
-          (closePanel)="onTaskPanelClosed()"
           (variableChanged)="onVariableChanged($event)"
         ></app-task-detail>
       </div>
@@ -81,7 +80,6 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       .subscribe((tasksState: TasksState) => {
         this.tasks = tasksState.tasks;
         this.selectedTask = tasksState.selectedTask;
-        console.log(this.selectedTask);
       });
   }
 
@@ -102,10 +100,6 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   onRefreshTasks() {
-    this.getTasks();
-  }
-
-  onTaskPanelClosed() {
     this.getTasks();
   }
 

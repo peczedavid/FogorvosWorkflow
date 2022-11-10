@@ -14,6 +14,6 @@ export const taskActionFactoryToken: InjectionToken<TaskActionFactory> =
 
 export interface TaskActionFactory {
   getTasks(id: string): Observable<TaskPayload[]>;
-  setSelectedTask(taskId: string): Observable<TaskPayload>;
+  setSelectedTask(taskId?: string): Observable<TaskPayload>;
   startNewProcess(): Observable<MessageResponse>;
 }

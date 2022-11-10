@@ -1,8 +1,11 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Store } from '@ngrx/store';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
 import { TaskService } from 'src/app/services/task.service';
+import { TaskActionFactory, taskActionFactoryToken } from 'src/app/state/task/task.action.factory';
+import { selectTasksState, TasksState } from 'src/app/state/task/task.state.model';
 
 @Component({
   selector: 'app-task-detail',
@@ -62,25 +65,34 @@ import { TaskService } from 'src/app/services/task.service';
   `,
   styleUrls: ['./task-detail.component.css'],
 })
-export class TaskDetailComponent {
-  @Input() task: TaskPayload | undefined;
+export class TaskDetailComponent implements OnDestroy {
+  @Input() task?: TaskPayload;
   @Output() completeTask = new EventEmitter();
-  @Output() closePanel = new EventEmitter();
   @Output() variableChanged = new EventEmitter();
 
   TaskTipus = TaskTipus;
 
+  private tasksSubscription: any;
+
   constructor(
     private taskService: TaskService,
-    private snackBar: MatSnackBar
-  ) {}
+    private snackBar: MatSnackBar,
+    private ngrxStore: Store,
+    @Inject(taskActionFactoryToken)
+    private taskActionFactory: TaskActionFactory
+  ) {
+    this.tasksSubscription = this.ngrxStore
+    .select(selectTasksState)
+    .subscribe((tasksState: TasksState) => {
+      this.task = tasksState.selectedTask;
+    });
+  }
+  ngOnDestroy(): void {
+    this.tasksSubscription.unsubscribe();
+  }
 
   onVariableChanged(event: Event) {
     this.variableChanged.emit(event);
-  }
-
-  onClosePanel(): void {
-    this.closePanel.emit();
   }
 
   onCompleteTask(): void {
@@ -101,6 +113,10 @@ export class TaskDetailComponent {
           });
         }
       );
+  }
+
+  onClosePanel(): void {
+    this.taskActionFactory.setSelectedTask(undefined).subscribe();
   }
 
   formatDate(): string {

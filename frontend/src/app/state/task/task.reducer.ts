@@ -27,15 +27,23 @@ export function taskReducer(
 
 function setSelectedTaskRespone(
   tasksState: TasksState,
-  taskId: string
+  taskId?: string
 ): TasksState {
-  const changes: TasksState = {
-    tasks: tasksState.tasks,
-    selectedTask: tasksState.tasks.find((task: TaskPayload) => {
-      return task.taskDto.id === taskId;
-    }),
-  };
-  return changeState(tasksState, changes);
+  if (taskId === undefined) {
+    const changes: TasksState = {
+      tasks: tasksState.tasks,
+      selectedTask: undefined,
+    };
+    return changeState(tasksState, changes);
+  } else {
+    const changes: TasksState = {
+      tasks: tasksState.tasks,
+      selectedTask: tasksState.tasks.find((task: TaskPayload) => {
+        return task.taskDto.id === taskId;
+      }),
+    };
+    return changeState(tasksState, changes);
+  }
 }
 
 function getTasksResponse(
@@ -44,7 +52,7 @@ function getTasksResponse(
 ): TasksState {
   const changes: TasksState = {
     tasks: tasks,
-    selectedTask: undefined
+    selectedTask: undefined,
   };
   return changeState(tasksState, changes);
 }
