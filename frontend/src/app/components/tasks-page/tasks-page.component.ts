@@ -16,6 +16,7 @@ import {
   selectTasksState,
   TasksState,
 } from 'src/app/state/task/task.state.model';
+import { MessageResponse } from 'src/app/model/MessageResponse';
 
 @Component({
   selector: 'app-tasks-page',
@@ -65,12 +66,11 @@ import {
   styleUrls: ['./tasks-page.component.css'],
 })
 export class TasksPageComponent implements OnInit, OnDestroy {
-  tasks$: Observable<TaskState>;
-
   private tasksSubscription: any;
+  protected tasks: TaskPayload[] = [];
+  protected selectedTask?: TaskPayload;
 
   constructor(
-    private taskService: TaskService,
     private snackBar: MatSnackBar,
     private ngrxStore: Store,
     @Inject(taskActionFactoryToken)
@@ -79,48 +79,48 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     this.tasksSubscription = this.ngrxStore
       .select(selectTasksState)
       .subscribe((tasksState: TasksState) => {
+        console.log('ts');
         this.tasks = tasksState.tasks;
+        this.selectedTask = tasksState.selectedTask;
       });
   }
+
+  ngOnInit() {
+    this.getTasks();
+  }
+
   ngOnDestroy(): void {
     this.tasksSubscription.unsubscribe();
   }
 
-  tasks: TaskPayload[] = [];
-  selectedTask: TaskPayload | undefined;
-
   newTask(): void {
-    this.taskService
-      .startCleanProcess()
-      .subscribe((response: HttpResponse<any>) => this.getTasks());
+    this.taskActionFactory
+      .newProcess()
+      .subscribe((_: HttpResponse<MessageResponse>) => {
+        this.getTasks();
+      });
   }
 
   taskCompare(object1: any, object2: any): boolean {
+    //if(this.selectedTask === undefined) return false;
     return object1 && object2 && object1.taskDto.id === object2.taskDto.id;
   }
 
   onSelectionChanged(event: MatSelectionListChange): void {
-    this.selectedTask = event.options[0].value;
+    this.setSelectedTask(event.options[0].value);
   }
 
-  onVariableChanged(event: Event): void {
-    const selectedId = this.selectedTask?.taskDto.id;
-    this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
-      next: (tasks) => {
-        this.tasks = tasks;
-        this.tasks.map((task) => {
-          if (task.taskDto.id === selectedId) this.selectedTask = task;
-        });
-      },
-    });
+  setSelectedTask(task?: TaskPayload): void {
+    this.taskActionFactory.setSelectedTask(task).subscribe();
+  }
+
+  onVariableChanged(_: Event): void {
+    this.taskActionFactory.getTasks('fogorvosdemo').subscribe();
   }
 
   getTasks() {
-    this.selectedTask = undefined;
+    this.setSelectedTask(undefined);
     this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
-      next: (tasks) => {
-        this.tasks = tasks;
-      },
       error: (error: HttpErrorResponse) => {
         console.log(error);
         this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
@@ -142,8 +142,5 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   onTaskComplete() {
     this.getTasks();
   }
-
-  ngOnInit() {
-    this.getTasks();
-  }
+ 
 }

@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { TaskPayload } from '../model/generic/task';
+import { MessageResponse } from '../model/MessageResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -34,9 +35,9 @@ export class TaskService {
 
   private _startCleanProcessUrl =
     this._backendAddress + '/process-instance/new';
-  startCleanProcess(): Observable<HttpResponse<any>> {
+  startCleanProcess(): Observable<HttpResponse<MessageResponse>> {
     const url = this._startCleanProcessUrl;
-    return this.http.post<HttpResponse<any>>(
+    return this.http.post<HttpResponse<MessageResponse>>(
       url,
       {},
       { withCredentials: true }
