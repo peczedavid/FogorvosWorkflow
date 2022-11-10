@@ -6,6 +6,7 @@ import { MessageResponse } from 'src/app/model/MessageResponse';
 import { TaskService } from 'src/app/services/task.service';
 import { UserService } from 'src/app/services/user.service';
 import {
+  COMPLETE_TASK_RESPONSE,
   GET_TASKS_RESPONSE,
   SET_SELECTED_TASK_RESPONSE,
   START_NEW_PROCESS_RESPONSE,
@@ -19,6 +20,21 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
     private userService: UserService,
     private ngrxStore: Store<any>
   ) {}
+  completeTask(taskId: string): Observable<MessageResponse> {
+    return new Observable<MessageResponse>((subscriber: Subscriber<any>) => {
+      this.taskService
+        .completeTask(taskId)
+        .subscribe((message: MessageResponse) => {
+          this.ngrxStore.dispatch({
+            type: COMPLETE_TASK_RESPONSE,
+            payload: message,
+          });
+          subscriber.next(message);
+          subscriber.complete();
+        });
+      return function unsubscribe() {};
+    });
+  }
 
   startNewProcess(): Observable<MessageResponse> {
     return new Observable<MessageResponse>((subscriber: Subscriber<any>) => {

@@ -1,11 +1,25 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, Inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
 import { TaskService } from 'src/app/services/task.service';
-import { TaskActionFactory, taskActionFactoryToken } from 'src/app/state/task/task.action.factory';
-import { selectTasksState, TasksState } from 'src/app/state/task/task.state.model';
+import {
+  TaskActionFactory,
+  taskActionFactoryToken,
+} from 'src/app/state/task/task.action.factory';
+import {
+  selectTasksState,
+  TasksState,
+} from 'src/app/state/task/task.state.model';
 
 @Component({
   selector: 'app-task-detail',
@@ -66,8 +80,8 @@ import { selectTasksState, TasksState } from 'src/app/state/task/task.state.mode
   styleUrls: ['./task-detail.component.css'],
 })
 export class TaskDetailComponent implements OnDestroy {
-  @Input() task?: TaskPayload;
-  @Output() completeTask = new EventEmitter();
+  task?: TaskPayload;
+  //@Output() completeTask = new EventEmitter();
   @Output() variableChanged = new EventEmitter();
 
   TaskTipus = TaskTipus;
@@ -82,10 +96,10 @@ export class TaskDetailComponent implements OnDestroy {
     private taskActionFactory: TaskActionFactory
   ) {
     this.tasksSubscription = this.ngrxStore
-    .select(selectTasksState)
-    .subscribe((tasksState: TasksState) => {
-      this.task = tasksState.selectedTask;
-    });
+      .select(selectTasksState)
+      .subscribe((tasksState: TasksState) => {
+        this.task = tasksState.selectedTask;
+      });
   }
   ngOnDestroy(): void {
     this.tasksSubscription.unsubscribe();
@@ -96,23 +110,29 @@ export class TaskDetailComponent implements OnDestroy {
   }
 
   onCompleteTask(): void {
-    if (this.task?.taskDto.id !== undefined)
-      this.taskService.completeTask(this.task?.taskDto.id).subscribe(
-        (_) => {
-          this.completeTask.emit();
-          this.snackBar.open('Feladat befejezve', 'Bezár', {
-            duration: 2000,
-            panelClass: ['success-snackbar'],
-          });
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-          this.snackBar.open('A feladatot nem sikerült befejezni', 'Bezár', {
-            duration: 2000,
-            panelClass: ['danger-snackbar'],
-          });
-        }
-      );
+    // TODO: miért lehet undefined
+    if(this.task == undefined) return;
+    this.taskActionFactory.completeTask(this.task.taskDto.id).subscribe(() => {
+      this.taskActionFactory.getTasks('fogorvosdemo').subscribe();
+    });
+
+    // if (this.task?.taskDto.id !== undefined)
+    //   this.taskService.completeTask(this.task?.taskDto.id).subscribe(
+    //     (_) => {
+    //       this.completeTask.emit();
+    //       this.snackBar.open('Feladat befejezve', 'Bezár', {
+    //         duration: 2000,
+    //         panelClass: ['success-snackbar'],
+    //       });
+    //     },
+    //     (error: HttpErrorResponse) => {
+    //       console.log(error);
+    //       this.snackBar.open('A feladatot nem sikerült befejezni', 'Bezár', {
+    //         duration: 2000,
+    //         panelClass: ['danger-snackbar'],
+    //       });
+    //     }
+    //   );
   }
 
   onClosePanel(): void {

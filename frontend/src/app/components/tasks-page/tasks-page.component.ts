@@ -55,8 +55,6 @@ import { MessageResponse } from 'src/app/model/MessageResponse';
       </div>
       <div fxFlex="65%" style="padding-top: 3rem; padding-left: 1rem">
         <app-task-detail
-          [task]="selectedTask"
-          (completeTask)="onTaskComplete()"
           (variableChanged)="onVariableChanged($event)"
         ></app-task-detail>
       </div>
@@ -83,6 +81,10 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       });
   }
 
+  onVariableChanged(event: Event): void {
+    this.getTasksKeepSelected();
+  }
+
   ngOnInit() {
     this.getTasks();
   }
@@ -102,15 +104,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   onRefreshTasks() {
     this.getTasks();
   }
-
-  onTaskComplete() {
-    this.getTasks();
-  }
-
-  onVariableChanged(event: Event): void {
-    this.getTasksKeepSelected();
-  }
-
+  
   onSelectionChanged(event: MatSelectionListChange): void {
     const selected: TaskPayload = event.options[0].value;
     this.taskActionFactory.setSelectedTask(selected.taskDto.id).subscribe();

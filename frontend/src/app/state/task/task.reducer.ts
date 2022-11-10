@@ -1,8 +1,11 @@
 import { CoreStateAction } from 'src/app/model/CoreStateAction';
 import { TaskPayload } from 'src/app/model/generic/task';
+import { MessageResponse } from 'src/app/model/MessageResponse';
 import {
+  COMPLETE_TASK_RESPONSE,
   GET_TASKS_RESPONSE,
   SET_SELECTED_TASK_RESPONSE,
+  START_NEW_PROCESS_RESPONSE,
 } from './task.action.factory';
 import { TasksState } from './task.state.model';
 
@@ -20,9 +23,28 @@ export function taskReducer(
       return getTasksResponse(tasksState, action.payload);
     case SET_SELECTED_TASK_RESPONSE:
       return setSelectedTaskRespone(tasksState, action.payload);
-    default:
+      case START_NEW_PROCESS_RESPONSE:
+        return startNewProcessResponse(tasksState, action.payload);
+    case COMPLETE_TASK_RESPONSE: return completeTaskResponse(tasksState, action.payload);
+        default:
       return tasksState;
   }
+}
+
+function completeTaskResponse(tasksState: TasksState, message: MessageResponse): TasksState {
+  const changes: TasksState = {
+    tasks: tasksState.tasks,
+    selectedTask: undefined
+  };
+  return changeState(tasksState, changes);
+}
+
+function startNewProcessResponse(tasksState: TasksState, message: MessageResponse): TasksState {
+  const changes: TasksState = {
+    tasks: tasksState.tasks,
+    selectedTask: tasksState.selectedTask,
+  };
+  return changeState(tasksState, changes);
 }
 
 function setSelectedTaskRespone(
