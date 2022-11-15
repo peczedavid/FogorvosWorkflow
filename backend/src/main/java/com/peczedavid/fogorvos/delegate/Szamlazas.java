@@ -31,6 +31,7 @@ public class Szamlazas implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         String processInstanceId = delegateExecution.getProcessInstanceId();
+        // TODO: kivenni final String-be valahova
         String variableName = "beteg";
         String userId = (String) runtimeService.getVariable(processInstanceId, variableName);
         User user = userRepository.findById(Long.valueOf(userId)).orElse(null);
