@@ -37,17 +37,18 @@ import {
     <div
       fxLayout.sm="column"
       fxLayout.gt-sm="row"
-      style="padding-left: 3rem; padding-right: 3rem"
+      style="padding-left: 5rem; padding-right: 5rem; margin-top: 1.5rem;"
     >
-      <div fxFlex="35%" style="padding-top: 0.5rem">
+      <div fxFlex="35%" style="margin-top: 0.5rem">
         <button
-          style="margin-right: 1rem;"
+          style="margin-left: 1rem; margin-right: 1rem;"
           (click)="newTask()"
+          color="basic"
           mat-raised-button
         >
           Új folyamat
         </button>
-        <button mat-raised-button (click)="onRefreshTasks()">
+        <button style="margin-bottom: 1rem;" mat-icon-button (click)="onRefreshTasks()">
           <mat-icon fontIcon="refresh"></mat-icon>
         </button>
         <mat-selection-list
