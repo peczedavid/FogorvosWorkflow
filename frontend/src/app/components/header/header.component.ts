@@ -24,35 +24,39 @@ import {
       <span class="example-spacer"></span>
       <button
         [routerLink]="['/workflow']"
-        style="margin-right: 15px;"
+        style="margin-right: 15px; padding-right: 0.65rem;"
         mat-raised-button
       >
         Folyamat
+        <mat-icon style="margin-left: 0.5rem;" fontIcon="view_headline"></mat-icon>
       </button>
       <button
         [routerLink]="['/tasks']"
-        style="margin-right: 15px;"
+        style="margin-right: 15px; padding-right: 0.65rem;"
         mat-raised-button
         *ngIf="currentUser !== undefined"
       >
         Feladatok
+        <mat-icon style="margin-left: 0.5rem;" fontIcon="list_alt"></mat-icon>
       </button>
       <button
         [routerLink]="['/login']"
-        style="margin-right: 15px;"
+        style="margin-right: 15px; padding-right: 0.65rem;"
         mat-raised-button
         *ngIf="currentUser === undefined"
       >
         Belépés
+        <mat-icon style="margin-left: 0.15rem;" fontIcon="login"></mat-icon>
       </button>
       <button
         [routerLink]="['/']"
-        style="margin-right: 15px;"
+        style="margin-right: 15px; padding-right: 0.55rem;"
         mat-raised-button
         (click)="logout()"
         *ngIf="currentUser !== undefined"
       >
         Kilépés
+        <mat-icon style="margin-left: 0.35rem;" fontIcon="logout"></mat-icon>
       </button>
     </mat-toolbar>
   `,
