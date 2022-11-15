@@ -13,15 +13,12 @@ export class UserService {
 
   private _backendAddress = 'http://localhost:8080/api';
 
-  // TODO: automatikusan a bejelentkezett felhasználó task-jait kérje le
-  //       átrakni user state-be
   private _getTasksUrl: string = this._backendAddress + '/user/#userId#/task';
   getTasks(userId: string): Observable<TaskPayload[]> {
     const url = this._getTasksUrl.replace('#userId#', userId);
     return this.http.get<TaskPayload[]>(url, { withCredentials: true });
   }
 
-  // TODO: make into regular userData
   private _checkUrl: string = this._backendAddress + '/user/check';
   check(): Observable<UserData> {
     const url = this._checkUrl;

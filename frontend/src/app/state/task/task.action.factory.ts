@@ -20,8 +20,8 @@ export interface TaskActionFactory {
   getTasks(userId: string): Observable<TaskPayload[]>;
   getTasksKeepSelected(userId: string): Observable<TaskPayload[]>;
   setSelectedTask(taskId?: string): Observable<TaskPayload>;
-  startNewProcess(): Observable<MessageResponse>;
-  completeTask(taskId: string): Observable<MessageResponse>;
+  startNewProcess(patientId: string): Observable<MessageResponse>;
+  completeTask(taskName: string): Observable<MessageResponse>;
   setVariable(
     processId: string,
     variableName: string,

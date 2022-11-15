@@ -80,10 +80,10 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
     });
   }
 
-  startNewProcess(): Observable<MessageResponse> {
+  startNewProcess(taskName: string): Observable<MessageResponse> {
     return new Observable<MessageResponse>((subscriber: Subscriber<any>) => {
       this.taskService
-        .startCleanProcess()
+        .startCleanProcess(taskName)
         .subscribe((message: MessageResponse) => {
           this.ngrxStore.dispatch({
             type: START_NEW_PROCESS_RESPONSE,

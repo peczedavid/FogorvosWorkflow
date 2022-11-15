@@ -1,7 +1,10 @@
 package com.peczedavid.fogorvos.service;
 
+import com.peczedavid.fogorvos.model.db.User;
 import com.peczedavid.fogorvos.model.network.MessageResponse;
+import com.peczedavid.fogorvos.model.network.StartProcessRequest;
 import com.peczedavid.fogorvos.model.process.VariablePayload;
+import com.peczedavid.fogorvos.repository.UserRepository;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.exception.NullValueException;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
@@ -20,10 +23,17 @@ public class ProcessInstanceService {
     @Autowired
     private RuntimeService runtimeService;
 
-    // TODO: beteget beállítani, frontendről kapva, többit automatikusan beosztva
-    public ProcessInstanceWithVariables getCleanProcess() {
-        var instance = runtimeService.createProcessInstanceByKey("Process_Fogorvos")
-                .setVariable("beteg", "14")
+    @Autowired
+    private UserRepository userRepository;
+
+    // TODO: automatikusan beosza a többi résztvevőt
+    public ResponseEntity<MessageResponse> getCleanProcess(StartProcessRequest startProcessRequest) {
+        User user = userRepository.findByName(startProcessRequest.getPatientName()).orElse(null);
+        if (user == null)
+            return new ResponseEntity<>(new MessageResponse("User '" + startProcessRequest.getPatientName() + "' not found."), HttpStatus.NOT_FOUND);
+
+        ProcessInstanceWithVariables processInstance = runtimeService.createProcessInstanceByKey("Process_Fogorvos")
+                .setVariable("beteg", user.getId().toString())
                 .setVariable("recepcios", "14")
                 .setVariable("orvos", "14")
                 .setVariable("rontgenes", "14")
@@ -33,8 +43,9 @@ public class ProcessInstanceService {
                 .setVariable("fogszabalyzo", false)
                 .setVariable("elmarad", false)
                 .executeWithVariablesInReturn();
-        logger.info("Process instance " + instance.getProcessInstanceId() + " started");
-        return instance;
+        
+        logger.info("Process instance " + processInstance.getProcessInstanceId() + " started");
+        return new ResponseEntity<>(new MessageResponse(processInstance.getProcessInstanceId()), HttpStatus.OK);
     }
 
     public ResponseEntity<MessageResponse> setVariable(String id, String varName, VariablePayload variablePayload) {

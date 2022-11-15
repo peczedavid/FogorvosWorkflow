@@ -1,6 +1,7 @@
 package com.peczedavid.fogorvos.controller;
 
 import com.peczedavid.fogorvos.model.network.MessageResponse;
+import com.peczedavid.fogorvos.model.network.StartProcessRequest;
 import com.peczedavid.fogorvos.model.process.VariablePayload;
 import com.peczedavid.fogorvos.service.ProcessInstanceService;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
@@ -18,11 +19,9 @@ public class ProcessInstanceController {
     @Autowired
     private ProcessInstanceService processInstanceService;
 
-    // TODO: beteget beállítani, frontendről kapva, többit automatikusan beosztva
     @PostMapping("/new")
-    public ResponseEntity<?> startCleanProcess() {
-        ProcessInstanceWithVariables processInstance = processInstanceService.getCleanProcess();
-        return new ResponseEntity<>(new MessageResponse(processInstance.getProcessInstanceId()), HttpStatus.OK);
+    public ResponseEntity<?> startCleanProcess(@RequestBody StartProcessRequest startProcessRequest) {
+        return processInstanceService.getCleanProcess(startProcessRequest);
     }
 
     @PostMapping("/{id}/variables/{varName}")

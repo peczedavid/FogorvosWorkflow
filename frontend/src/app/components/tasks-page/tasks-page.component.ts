@@ -117,7 +117,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
 
   newTask(): void {
     this.taskActionFactory
-      .startNewProcess()
+      .startNewProcess('beteg_1')
       .subscribe((message: MessageResponse) => {
         this.getTasksKeepSelected();
       });

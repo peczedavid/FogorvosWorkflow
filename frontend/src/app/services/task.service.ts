@@ -35,11 +35,13 @@ export class TaskService {
 
   private _startCleanProcessUrl =
     this._backendAddress + '/process-instance/new';
-  startCleanProcess(): Observable<MessageResponse> {
+  startCleanProcess(patientName: string): Observable<MessageResponse> {
     const url = this._startCleanProcessUrl;
     return this.http.post<MessageResponse>(
       url,
-      {},
+      {
+        patientName: patientName
+      },
       { withCredentials: true }
     );
   }
