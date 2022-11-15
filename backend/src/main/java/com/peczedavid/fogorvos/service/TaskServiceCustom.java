@@ -21,10 +21,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.peczedavid.fogorvos.model.db.ClinicService.*;
+import static com.peczedavid.fogorvos.service.ProcessInstanceService.VARIABLE_FOGSZBALYZO_NAME;
 
 @Service
 public class TaskServiceCustom {
@@ -72,29 +74,46 @@ public class TaskServiceCustom {
             return new ResponseEntity<>(new MessageResponse("Cannot find user with id " + patientId), HttpStatus.NOT_FOUND);
         }
 
-        ClinicService clinicService;
-        UsedClinicService usedClinicService;
+        // Fogszabályzó felrakása párhuzamos, egyszerre kell elmenteni a szakorvosi vizsgálattal,
+        // mert utána jön közvetlen a számlázás, ezért lesz lista
+        List<ClinicService> clinicServices = new ArrayList<>();
         TaskDto taskDto = TaskDto.fromEntity(task);
         TaskTipus taskTipus = TaskTipus.fromTaskDefinitionKey(taskDto.getTaskDefinitionKey());
+
+        ClinicService vizsgalatService = clinicServiceRepository.findByName(CLINIC_SERVICE_VIZSGALAT).orElse(null);
+        ClinicService rontgenService = clinicServiceRepository.findByName(CLINIC_SERVICE_RONTGEN).orElse(null);
+        ClinicService szakorvosiVizsgalatService = clinicServiceRepository.findByName(CLINIC_SERVICE_SZAKORVOSI_VIZSGALAT).orElse(null);
+        ClinicService fogszabalyzoFelkarasaService = clinicServiceRepository.findByName(CLINIC_SERVICE_FOGSZABALYZO_FELRAKASA).orElse(null);
         switch (taskTipus) {
-            case TASK_VIZSGALAT ->
-                    clinicService = clinicServiceRepository.findByName(CLINIC_SERVICE_VIZSGALAT).orElse(null);
-            case TASK_RONTGEN ->
-                    clinicService = clinicServiceRepository.findByName(CLINIC_SERVICE_RONTGEN).orElse(null);
-            case TASK_SZAKORVOSI_VIZSGALAT ->
-                    clinicService = clinicServiceRepository.findByName(CLINIC_SERVICE_SZAKORVOSI_VIZSGALAT).orElse(null);
-            case TASK_FOGSZABALYZO_FELRAKASA ->
-                    clinicService = clinicServiceRepository.findByName(CLINIC_SERVICE_FOGSZABALYZO_FELRAKASA).orElse(null);
-            default -> clinicService = null;
+            case TASK_VIZSGALAT -> {
+                if (vizsgalatService != null)
+                    clinicServices.add(vizsgalatService);
+            }
+            case TASK_RONTGEN -> {
+                if (rontgenService != null)
+                    clinicServices.add(rontgenService);
+            }
+            case TASK_SZAKORVOSI_VIZSGALAT -> {
+                if (szakorvosiVizsgalatService != null)
+                    clinicServices.add(szakorvosiVizsgalatService);
+
+                if ((Boolean) runtimeService.getVariable(processInstanceId, VARIABLE_FOGSZBALYZO_NAME)) {
+                    if (fogszabalyzoFelkarasaService != null)
+                        clinicServices.add(fogszabalyzoFelkarasaService);
+                }
+            }
+            default -> { }
         }
         // Fizetős szolgáltatás
-        if (clinicService != null) {
-            usedClinicService = new UsedClinicService();
-            usedClinicService.setClinicService(clinicService);
-            usedClinicService.setUser(user);
-            usedClinicService.setHandled(false);
-            usedClinicService.setProcessInstanceId(processInstanceId);
-            usedClinicServiceRepository.save(usedClinicService);
+        if (clinicServices.size() > 0) {
+            for (ClinicService clinicService : clinicServices) {
+                UsedClinicService usedClinicService = new UsedClinicService();
+                usedClinicService.setClinicService(clinicService);
+                usedClinicService.setUser(user);
+                usedClinicService.setHandled(false);
+                usedClinicService.setProcessInstanceId(processInstanceId);
+                usedClinicServiceRepository.save(usedClinicService);
+            }
         }
 
         taskService.complete(id);

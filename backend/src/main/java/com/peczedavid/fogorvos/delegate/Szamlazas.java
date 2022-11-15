@@ -14,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.peczedavid.fogorvos.service.ProcessInstanceService.VARIABLE_ROLE_BETEG_NAME;
+
 @Component
 public class Szamlazas implements JavaDelegate {
 
@@ -31,19 +33,16 @@ public class Szamlazas implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         String processInstanceId = delegateExecution.getProcessInstanceId();
-        // TODO: kivenni final String-be valahova
-        String variableName = "beteg";
-        String userId = (String) runtimeService.getVariable(processInstanceId, variableName);
+        String userId = (String) runtimeService.getVariable(processInstanceId, VARIABLE_ROLE_BETEG_NAME);
         User user = userRepository.findById(Long.valueOf(userId)).orElse(null);
         if (user == null) {
             logger.error("Cannot send bill, user with id " + userId + " not found");
         } else {
-            List<UsedClinicService> usedClinicServices = usedClinicServiceRepository.findAllByUser(user);
+            List<UsedClinicService> usedClinicServices = usedClinicServiceRepository
+                    .findAllByUserAndProcessInstanceId(user, processInstanceId);
             Double costSum = 0.0;
             for (UsedClinicService usedClinicService : usedClinicServices) {
-                boolean matchingProcessInstance = usedClinicService.getProcessInstanceId().equals(processInstanceId);
-                boolean notYetHandled = !usedClinicService.getHandled();
-                if(matchingProcessInstance && notYetHandled) {
+                if (!usedClinicService.getHandled()) {
                     costSum += usedClinicService.getClinicService().getCost();
                     usedClinicService.setHandled(true);
                 }

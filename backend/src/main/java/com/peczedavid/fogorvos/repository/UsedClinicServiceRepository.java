@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface UsedClinicServiceRepository extends JpaRepository<UsedClinicService, Long> {
 
-    List<UsedClinicService> findAllByUser(User user);
-
-    // TODO: saját query user-re és processinstanceid-re
+    List<UsedClinicService> findAllByUserAndProcessInstanceId(User user, String processInstanceId);
 
 }

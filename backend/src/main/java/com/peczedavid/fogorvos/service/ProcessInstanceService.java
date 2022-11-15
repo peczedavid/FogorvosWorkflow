@@ -32,16 +32,16 @@ public class ProcessInstanceService {
         if (user == null)
             return new ResponseEntity<>(new MessageResponse("User '" + startProcessRequest.getPatientName() + "' not found."), HttpStatus.NOT_FOUND);
 
-        ProcessInstanceWithVariables processInstance = runtimeService.createProcessInstanceByKey("Process_Fogorvos")
-                .setVariable("beteg", user.getId().toString())
-                .setVariable("recepcios", "14")
-                .setVariable("orvos", "14")
-                .setVariable("rontgenes", "14")
-                .setVariable("szakorvos", "14")
-                .setVariable("rontgen", false)
-                .setVariable("szakorvosiVizsgalat", false)
-                .setVariable("fogszabalyzo", false)
-                .setVariable("elmarad", false)
+        ProcessInstanceWithVariables processInstance = runtimeService.createProcessInstanceByKey(PROCESS_NAME)
+                .setVariable(VARIABLE_ROLE_BETEG_NAME, user.getId().toString())
+                .setVariable(VARIABLE_ROLE_RECEPCIOS_NAME, "14")
+                .setVariable(VARIABLE_ROLE_ORVOS_NAME, "14")
+                .setVariable(VARIABLE_ROLE_RONTGENES_NAME, "14")
+                .setVariable(VARIABLE_ROLE_SZAKORVOS_NAME, "14")
+                .setVariable(VARIABLE_RONTGEN_NAME, false)
+                .setVariable(VARIABLE_SZAKORVOSI_VIZSGALAT_NAME, false)
+                .setVariable(VARIABLE_FOGSZBALYZO_NAME, false)
+                .setVariable(VARIABLE_ELMARAD_NAME, false)
                 .executeWithVariablesInReturn();
 
         logger.info("Process instance " + processInstance.getProcessInstanceId() + " started");
@@ -68,5 +68,18 @@ public class ProcessInstanceService {
             return new ResponseEntity<>(new MessageResponse("Couldn't change variable value for '" + varName + "'."), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    public static final String PROCESS_NAME = "Process_Fogorvos";
+
+    public static final String VARIABLE_ROLE_BETEG_NAME = "beteg";
+    public static final String VARIABLE_ROLE_RECEPCIOS_NAME = "recepcios";
+    public static final String VARIABLE_ROLE_ORVOS_NAME = "orvos";
+    public static final String VARIABLE_ROLE_RONTGENES_NAME = "rontgenes";
+    public static final String VARIABLE_ROLE_SZAKORVOS_NAME = "szakorvos";
+
+    public static final String VARIABLE_RONTGEN_NAME = "rontgen";
+    public static final String VARIABLE_SZAKORVOSI_VIZSGALAT_NAME = "szakorvosiVizsgalat";
+    public static final String VARIABLE_FOGSZBALYZO_NAME = "fogszabalyzo";
+    public static final String VARIABLE_ELMARAD_NAME = "elmarad";
 
 }
