@@ -21,8 +21,15 @@ import {
   TasksState,
 } from 'src/app/state/task/task.state.model';
 import { TaskPayload } from '../../model/generic/task';
-import { selectUserState, UserState } from 'src/app/state/user/user.state.model';
+import {
+  selectUserState,
+  UserState,
+} from 'src/app/state/user/user.state.model';
 import { UserData } from 'src/app/model/UserData';
+import {
+  UserActionFactory,
+  userActionFactoryToken,
+} from 'src/app/state/user/user.action.factory';
 
 @Component({
   selector: 'app-tasks-page',
@@ -70,7 +77,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   private tasksSubscription: any;
   private userSubscription: any;
 
-  protected currentUser?: UserData
+  protected currentUser?: UserData;
   protected tasks: TaskPayload[];
   protected selectedTask?: TaskPayload;
 
@@ -78,7 +85,9 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar,
     private ngrxStore: Store,
     @Inject(taskActionFactoryToken)
-    private taskActionFactory: TaskActionFactory
+    private taskActionFactory: TaskActionFactory,
+    @Inject(userActionFactoryToken)
+    private userActionFactory: UserActionFactory
   ) {
     this.tasksSubscription = this.ngrxStore
       .select(selectTasksState)
@@ -86,7 +95,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
         this.tasks = tasksState.tasks;
         this.selectedTask = tasksState.selectedTask;
       });
-      this.userSubscription = this.ngrxStore
+    this.userSubscription = this.ngrxStore
       .select(selectUserState)
       .subscribe((userState: UserState) => {
         this.currentUser = userState.currentUser;
@@ -103,6 +112,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.tasksSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 
   newTask(): void {
@@ -123,28 +133,60 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   getTasksKeepSelected() {
-    if(this.currentUser === undefined) return;
-    this.taskActionFactory.getTasksKeepSelected(this.currentUser.id).subscribe({
-      error: (error: HttpErrorResponse) => {
-        console.log(error);
-        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-          duration: 2000,
-          panelClass: ['danger-snackbar'],
+    if (this.currentUser === undefined) {
+      this.userActionFactory.check().subscribe({
+        next: (userData: UserData) => {
+          console.log('check');
+          this.taskActionFactory.getTasksKeepSelected(userData.id).subscribe({
+            error: (error: HttpErrorResponse) => {
+              console.log(error);
+              this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+                duration: 2000,
+                panelClass: ['danger-snackbar'],
+              });
+            },
+          });
+        },
+      });
+    } else {
+      this.taskActionFactory
+        .getTasksKeepSelected(this.currentUser.id)
+        .subscribe({
+          error: (error: HttpErrorResponse) => {
+            this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+              duration: 2000,
+              panelClass: ['danger-snackbar'],
+            });
+          },
         });
-      },
-    });
+    }
   }
 
   getTasks() {
-    if(this.currentUser === undefined) return;
-    this.taskActionFactory.getTasks(this.currentUser.id).subscribe({
-      error: (error: HttpErrorResponse) => {
-        console.log(error);
-        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-          duration: 2000,
-          panelClass: ['danger-snackbar'],
-        });
-      },
-    });
+    if (this.currentUser === undefined) {
+      this.userActionFactory.check().subscribe({
+        next: (userData: UserData) => {
+          this.taskActionFactory.getTasks(userData.id).subscribe({
+            error: (error: HttpErrorResponse) => {
+              console.log(error);
+              this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+                duration: 2000,
+                panelClass: ['danger-snackbar'],
+              });
+            },
+          });
+        },
+      });
+    } else {
+      this.taskActionFactory.getTasks(this.currentUser.id).subscribe({
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+          this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+            duration: 2000,
+            panelClass: ['danger-snackbar'],
+          });
+        },
+      });
+    }
   }
 }

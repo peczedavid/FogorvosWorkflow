@@ -109,6 +109,10 @@ export class TaskDetailComponent implements OnDestroy {
     this.taskActionFactory.completeTask(this.task.taskDto.id).subscribe({
       next: () => {
         this.taskActionFactory.getTasks(this.currentUser!.id).subscribe();
+        this.snackBar.open('Feladat befejezve', 'Bezár', {
+          duration: 2000,
+          panelClass: ['success-snackbar'],
+        });
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
