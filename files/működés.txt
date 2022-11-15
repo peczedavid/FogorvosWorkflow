@@ -1,5 +1,0 @@
-JWT token, benne id, név
-/user/login->visszakap 1 napig jó tokent
-/user/logout->visszakap olyat, ami egyből lejár (memóriában elvileg még be van jelentkezve)
-/user/register->visszakap 1 napig jó tokent
-/user/check->ha jött vele jwt, akkor abból visszadja a backend válaszként az adatokat, (név, role, stb..), ha nem jött, akkor pedig válaszként megadja, hogy "üres" vagy valami hasonló
