@@ -43,10 +43,14 @@ public class Szamlazas implements JavaDelegate {
             Double costSum = 0.0;
             for (UsedClinicService usedClinicService : usedClinicServices) {
                 if (!usedClinicService.getHandled()) {
-                    costSum += usedClinicService.getClinicService().getCost();
+                    Double cost = usedClinicService.getClinicService().getCost();
+                    costSum += cost;
+                    logger.info("   " + cost + "Ft");
                     usedClinicService.setHandled(true);
                 }
             }
+            logger.info("----------");
+            logger.info(" + " + costSum + "Ft");
             logger.info("Billing " + costSum + "Ft to " + user.getName());
         }
     }
