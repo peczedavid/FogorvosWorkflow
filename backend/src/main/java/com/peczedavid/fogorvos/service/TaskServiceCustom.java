@@ -64,7 +64,8 @@ public class TaskServiceCustom {
             return new ResponseEntity<>(new MessageResponse("Cannot find task with id " + id), HttpStatus.NOT_FOUND);
         }
 
-        String patientId = (String) runtimeService.getVariable(task.getProcessInstanceId(), "beteg");
+        String processInstanceId = task.getProcessInstanceId();
+        String patientId = (String) runtimeService.getVariable(processInstanceId, "beteg");
         User user = userRepository.findById(Long.valueOf(patientId)).orElse(null);
         if (user == null) {
             logger.error("Cannot find user with id " + patientId);
@@ -91,6 +92,8 @@ public class TaskServiceCustom {
             usedClinicService = new UsedClinicService();
             usedClinicService.setClinicService(clinicService);
             usedClinicService.setUser(user);
+            usedClinicService.setHandled(false);
+            usedClinicService.setProcessInstanceId(processInstanceId);
             usedClinicServiceRepository.save(usedClinicService);
         }
 

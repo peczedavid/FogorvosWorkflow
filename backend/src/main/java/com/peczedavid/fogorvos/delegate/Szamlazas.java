@@ -40,7 +40,12 @@ public class Szamlazas implements JavaDelegate {
             List<UsedClinicService> usedClinicServices = usedClinicServiceRepository.findAllByUser(user);
             Double costSum = 0.0;
             for (UsedClinicService usedClinicService : usedClinicServices) {
-                costSum += usedClinicService.getClinicService().getCost();
+                boolean matchingProcessInstance = usedClinicService.getProcessInstanceId().equals(processInstanceId);
+                boolean notYetHandled = !usedClinicService.getHandled();
+                if(matchingProcessInstance && notYetHandled) {
+                    costSum += usedClinicService.getClinicService().getCost();
+                    usedClinicService.setHandled(true);
+                }
             }
             logger.info("Billing " + costSum + "Ft to " + user.getName());
         }

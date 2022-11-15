@@ -12,4 +12,6 @@ public interface UsedClinicServiceRepository extends JpaRepository<UsedClinicSer
 
     List<UsedClinicService> findAllByUser(User user);
 
+    // TODO: saját query user-re és processinstanceid-re
+
 }

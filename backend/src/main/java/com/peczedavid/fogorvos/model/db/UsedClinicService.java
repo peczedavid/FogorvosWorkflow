@@ -3,6 +3,7 @@ package com.peczedavid.fogorvos.model.db;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.*;
 
@@ -25,5 +26,9 @@ public class UsedClinicService {
     @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
     private User user;
 
-    // TODO: elszámolva boolean, hogy maradhasson az adatbázisban
+    @Column(nullable = false)
+    private Boolean handled;
+
+    @Column(name = "process_instance_id", nullable = false)
+    private String processInstanceId;
 }
