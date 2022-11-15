@@ -22,17 +22,10 @@ import {
         Online klinika
       </button>
       <span class="example-spacer"></span>
-      <button
-        [routerLink]="['/workflow']"
-        style="margin-right: 15px; padding-right: 0.65rem;"
-        mat-raised-button
-      >
-        Folyamat
-        <mat-icon style="margin-left: 0.5rem;" fontIcon="view_headline"></mat-icon>
-      </button>
+      <p style="font-size: 0.875em; margin-right: 1rem;" mat-button>{{ currentUser?.username }}</p>
       <button
         [routerLink]="['/tasks']"
-        style="margin-right: 15px; padding-right: 0.65rem;"
+        style="margin-right: 1rem; padding-right: 0.65rem;"
         mat-raised-button
         *ngIf="currentUser !== undefined"
       >
@@ -41,7 +34,7 @@ import {
       </button>
       <button
         [routerLink]="['/login']"
-        style="margin-right: 15px; padding-right: 0.65rem;"
+        style="margin-right: 1rem; padding-right: 0.65rem;"
         mat-raised-button
         *ngIf="currentUser === undefined"
       >
@@ -50,7 +43,7 @@ import {
       </button>
       <button
         [routerLink]="['/']"
-        style="margin-right: 15px; padding-right: 0.55rem;"
+        style="margin-right: 1rem; padding-right: 0.55rem;"
         mat-raised-button
         (click)="logout()"
         *ngIf="currentUser !== undefined"
