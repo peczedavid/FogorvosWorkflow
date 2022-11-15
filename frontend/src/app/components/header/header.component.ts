@@ -1,15 +1,16 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MessageResponse } from 'src/app/model/MessageResponse';
 import { UserData } from 'src/app/model/UserData';
 import {
   UserActionFactory,
-  userActionFactoryToken
+  userActionFactoryToken,
 } from 'src/app/state/user/user.action.factory';
 import {
   selectUserState,
-  UserState
+  UserState,
 } from 'src/app/state/user/user.state.model';
 
 @Component({
@@ -37,6 +38,15 @@ import {
         Feladatok
       </button>
       <button
+        [routerLink]="['/login']"
+        style="margin-right: 15px;"
+        mat-raised-button
+        *ngIf="currentUser === undefined"
+      >
+        Belépés
+      </button>
+      <button
+        [routerLink]="['/']"
         style="margin-right: 15px;"
         mat-raised-button
         (click)="logout()"
@@ -55,6 +65,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   protected title: string = 'Fogorvos frontend';
 
   constructor(
+    private router: Router,
     private ngrxStore: Store,
     @Inject(userActionFactoryToken)
     private userActionFactory: UserActionFactory,
@@ -77,7 +88,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   logout(): void {
     this.userActionFactory.logout().subscribe((response: MessageResponse) => {
       console.log(response.message);
-      this.snackBar.open('Sikeres kijelentkezés', 'Bezár', {
+      this.router.navigateByUrl('/');
+      this.snackBar.open('Kijelentkezve', 'Bezár', {
         duration: 2000,
         panelClass: ['success-snackbar'],
       });

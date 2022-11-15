@@ -71,7 +71,8 @@ public class UserService {
             return new ResponseEntity<>(userData, HttpStatus.OK);
         } catch (BadCredentialsException exception) {
             logger.error("Incorrect username or password!");
-            return new ResponseEntity<>("Incorrect username or password!", HttpStatus.FORBIDDEN);
+            MessageResponse messageResponse = new MessageResponse("Incorrect username or password!");
+            return new ResponseEntity<>(messageResponse, HttpStatus.FORBIDDEN);
         }
     }
 
