@@ -20,13 +20,14 @@ public class ProcessInstanceService {
     @Autowired
     private RuntimeService runtimeService;
 
+    // TODO: beteget beállítani, frontendről kapva, többit automatikusan beosztva
     public ProcessInstanceWithVariables getCleanProcess() {
         var instance = runtimeService.createProcessInstanceByKey("Process_Fogorvos")
-                .setVariable("beteg", "fogorvosdemo")
-                .setVariable("recepcios", "fogorvosdemo")
-                .setVariable("orvos", "fogorvosdemo")
-                .setVariable("rontgenes", "fogorvosdemo")
-                .setVariable("szakorvos", "fogorvosdemo")
+                .setVariable("beteg", "14")
+                .setVariable("recepcios", "14")
+                .setVariable("orvos", "14")
+                .setVariable("rontgenes", "14")
+                .setVariable("szakorvos", "14")
                 .setVariable("rontgen", false)
                 .setVariable("szakorvosiVizsgalat", false)
                 .setVariable("fogszabalyzo", false)

@@ -9,6 +9,7 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
+import { UserData } from 'src/app/model/UserData';
 import {
   TaskActionFactory,
   taskActionFactoryToken,
@@ -17,6 +18,10 @@ import {
   selectTasksState,
   TasksState,
 } from 'src/app/state/task/task.state.model';
+import {
+  selectUserState,
+  UserState,
+} from 'src/app/state/user/user.state.model';
 
 @Component({
   selector: 'app-task-detail',
@@ -74,8 +79,12 @@ import {
 })
 export class TaskDetailComponent implements OnDestroy {
   TaskTipus = TaskTipus;
-  task?: TaskPayload;
+
   private tasksSubscription: any;
+  private userSubscription: any;
+
+  protected task?: TaskPayload;
+  protected currentUser?: UserData;
 
   constructor(
     private snackBar: MatSnackBar,
@@ -88,16 +97,18 @@ export class TaskDetailComponent implements OnDestroy {
       .subscribe((tasksState: TasksState) => {
         this.task = tasksState.selectedTask;
       });
-  }
-  ngOnDestroy(): void {
-    this.tasksSubscription.unsubscribe();
+    this.userSubscription = this.ngrxStore
+      .select(selectUserState)
+      .subscribe((userState: UserState) => {
+        this.currentUser = userState.currentUser;
+      });
   }
 
   onCompleteTask(): void {
     if (this.task == undefined) return;
     this.taskActionFactory.completeTask(this.task.taskDto.id).subscribe({
       next: () => {
-        this.taskActionFactory.getTasks('fogorvosdemo').subscribe();
+        this.taskActionFactory.getTasks(this.currentUser!.id).subscribe();
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
@@ -127,5 +138,10 @@ export class TaskDetailComponent implements OnDestroy {
     } else {
       return '';
     }
+  }
+
+  ngOnDestroy(): void {
+    this.tasksSubscription.unsubscribe();
+    this.userSubscription.unsubscribe();
   }
 }

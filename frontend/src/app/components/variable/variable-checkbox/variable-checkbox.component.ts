@@ -1,10 +1,16 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject, Input, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Store } from '@ngrx/store';
+import { UserData } from 'src/app/model/UserData';
 import {
   TaskActionFactory,
-  taskActionFactoryToken,
+  taskActionFactoryToken
 } from 'src/app/state/task/task.action.factory';
+import {
+  selectUserState,
+  UserState
+} from 'src/app/state/user/user.state.model';
 
 @Component({
   selector: 'app-variable-checkbox',
@@ -15,17 +21,28 @@ import {
   `,
   styleUrls: ['./variable-checkbox.component.css'],
 })
-export class VariableCheckboxComponent {
+export class VariableCheckboxComponent implements OnDestroy {
   @Input() processInstanceId: string;
   @Input() name: string;
   @Input() displayName: string;
   @Input() value: boolean;
 
+  protected currentUser?: UserData;
+
+  private userSubscription: any;
+
   constructor(
     private snackBar: MatSnackBar,
+    private ngrxStore: Store,
     @Inject(taskActionFactoryToken)
     private taskActionFactory: TaskActionFactory
-  ) {}
+  ) {
+    this.userSubscription = this.ngrxStore
+      .select(selectUserState)
+      .subscribe((userState: UserState) => {
+        this.currentUser = userState.currentUser;
+      });
+  }
 
   onEdited() {
     this.taskActionFactory
@@ -39,7 +56,7 @@ export class VariableCheckboxComponent {
             });
           }
           this.taskActionFactory
-            .getTasksKeepSelected('fogorvosdemo')
+            .getTasksKeepSelected(this.currentUser!.id)
             .subscribe();
         },
         error: (error: HttpErrorResponse) => {
@@ -50,5 +67,9 @@ export class VariableCheckboxComponent {
           });
         },
       });
+  }
+
+  ngOnDestroy(): void {
+    this.userSubscription.unsubscribe();
   }
 }

@@ -21,6 +21,8 @@ import {
   TasksState,
 } from 'src/app/state/task/task.state.model';
 import { TaskPayload } from '../../model/generic/task';
+import { selectUserState, UserState } from 'src/app/state/user/user.state.model';
+import { UserData } from 'src/app/model/UserData';
 
 @Component({
   selector: 'app-tasks-page',
@@ -66,6 +68,9 @@ import { TaskPayload } from '../../model/generic/task';
 })
 export class TasksPageComponent implements OnInit, OnDestroy {
   private tasksSubscription: any;
+  private userSubscription: any;
+
+  protected currentUser?: UserData
   protected tasks: TaskPayload[];
   protected selectedTask?: TaskPayload;
 
@@ -81,13 +86,18 @@ export class TasksPageComponent implements OnInit, OnDestroy {
         this.tasks = tasksState.tasks;
         this.selectedTask = tasksState.selectedTask;
       });
+      this.userSubscription = this.ngrxStore
+      .select(selectUserState)
+      .subscribe((userState: UserState) => {
+        this.currentUser = userState.currentUser;
+      });
   }
 
   ngOnInit(): void {
     // Ha taszkot megnyitva lépünk el másik oldalra és visszakattintunk, akkor egy pillanatra
     // felvillanna a details ablak
     this.taskActionFactory.setSelectedTask(undefined).subscribe();
-    
+
     this.getTasks();
   }
 
@@ -113,7 +123,8 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   getTasksKeepSelected() {
-    this.taskActionFactory.getTasksKeepSelected('fogorvosdemo').subscribe({
+    if(this.currentUser === undefined) return;
+    this.taskActionFactory.getTasksKeepSelected(this.currentUser.id).subscribe({
       error: (error: HttpErrorResponse) => {
         console.log(error);
         this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
@@ -125,7 +136,8 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   getTasks() {
-    this.taskActionFactory.getTasks('fogorvosdemo').subscribe({
+    if(this.currentUser === undefined) return;
+    this.taskActionFactory.getTasks(this.currentUser.id).subscribe({
       error: (error: HttpErrorResponse) => {
         console.log(error);
         this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {

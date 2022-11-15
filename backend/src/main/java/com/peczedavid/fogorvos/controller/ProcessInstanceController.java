@@ -18,6 +18,7 @@ public class ProcessInstanceController {
     @Autowired
     private ProcessInstanceService processInstanceService;
 
+    // TODO: beteget beállítani, frontendről kapva, többit automatikusan beosztva
     @PostMapping("/new")
     public ResponseEntity<?> startCleanProcess() {
         ProcessInstanceWithVariables processInstance = processInstanceService.getCleanProcess();
