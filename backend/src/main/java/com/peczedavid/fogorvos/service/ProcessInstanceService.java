@@ -43,7 +43,7 @@ public class ProcessInstanceService {
                 .setVariable("fogszabalyzo", false)
                 .setVariable("elmarad", false)
                 .executeWithVariablesInReturn();
-        
+
         logger.info("Process instance " + processInstance.getProcessInstanceId() + " started");
         return new ResponseEntity<>(new MessageResponse(processInstance.getProcessInstanceId()), HttpStatus.OK);
     }
