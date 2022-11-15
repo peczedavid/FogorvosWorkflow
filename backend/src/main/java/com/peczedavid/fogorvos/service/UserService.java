@@ -1,7 +1,10 @@
 package com.peczedavid.fogorvos.service;
 
 import com.peczedavid.fogorvos.model.db.User;
-import com.peczedavid.fogorvos.model.network.*;
+import com.peczedavid.fogorvos.model.network.LoginRequest;
+import com.peczedavid.fogorvos.model.network.MessageResponse;
+import com.peczedavid.fogorvos.model.network.RegisterRequest;
+import com.peczedavid.fogorvos.model.network.UserData;
 import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
 import com.peczedavid.fogorvos.repository.UserRepository;
 import com.peczedavid.fogorvos.security.JwtUtils;
@@ -90,15 +93,13 @@ public class UserService {
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<CheckResponse> checkUser(HttpServletRequest request) {
+    public ResponseEntity<UserData> checkUser(HttpServletRequest request) {
         String jwt = jwtUtils.getJwtFromRequest(request);
         if (jwt == null) {
-            CheckResponse checkResponse = new CheckResponse(null, false);
-            return ResponseEntity.ok(checkResponse);
+            return ResponseEntity.ok(null);
         }
         UserData userData = new UserData(jwtUtils.getId(jwt), jwtUtils.getUsername(jwt));
-        CheckResponse checkResponse = new CheckResponse(userData, true);
-        return ResponseEntity.ok(checkResponse);
+        return ResponseEntity.ok(userData);
     }
 
     public ResponseEntity<List<TaskPayload>> getTasks(String userId) {

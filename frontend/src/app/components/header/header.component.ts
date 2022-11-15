@@ -1,8 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { UserService } from 'src/app/services/user.service';
-import { MessageResponse } from 'src/app/model/MessageResponse';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Store } from '@ngrx/store';
+import { MessageResponse } from 'src/app/model/MessageResponse';
+import { UserData } from 'src/app/model/UserData';
+import {
+  UserActionFactory,
+  userActionFactoryToken
+} from 'src/app/state/user/user.action.factory';
+import {
+  selectUserState,
+  UserState
+} from 'src/app/state/user/user.state.model';
 
 @Component({
   selector: 'app-header',
@@ -24,26 +32,50 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         [routerLink]="['/tasks']"
         style="margin-right: 15px;"
         mat-raised-button
+        *ngIf="currentUser !== undefined"
       >
         Feladatok
       </button>
-      <button style="margin-right: 15px;" mat-raised-button (click)="logout()">
+      <button
+        style="margin-right: 15px;"
+        mat-raised-button
+        (click)="logout()"
+        *ngIf="currentUser !== undefined"
+      >
         Kilépés
       </button>
     </mat-toolbar>
   `,
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent {
-  title: string = 'Fogorvos frontend';
+export class HeaderComponent implements OnInit, OnDestroy {
+  private userSubscription: any;
+
+  protected currentUser?: UserData;
+  protected title: string = 'Fogorvos frontend';
 
   constructor(
-    private userService: UserService,
+    private ngrxStore: Store,
+    @Inject(userActionFactoryToken)
+    private userActionFactory: UserActionFactory,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    this.userSubscription = this.ngrxStore
+      .select(selectUserState)
+      .subscribe((userState: UserState) => {
+        this.currentUser = userState.currentUser;
+      });
+  }
+  ngOnInit(): void {
+    this.userActionFactory.check().subscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.userSubscription.unsubscribe();
+  }
 
   logout(): void {
-    this.userService.logout().subscribe((response: MessageResponse) => {
+    this.userActionFactory.logout().subscribe((response: MessageResponse) => {
       console.log(response.message);
       this.snackBar.open('Sikeres kijelentkezés', 'Bezár', {
         duration: 2000,

@@ -1,14 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CheckResponse, UserData } from 'src/app/model/UserData';
-import { UserService } from 'src/app/services/user.service';
+import { Store } from '@ngrx/store';
+import { UserData } from 'src/app/model/UserData';
+import {
+  UserActionFactory,
+  userActionFactoryToken,
+} from 'src/app/state/user/user.action.factory';
+import {
+  selectUserState,
+  UserState,
+} from 'src/app/state/user/user.state.model';
 
 @Component({
   selector: 'app-login',
   template: `
     <div fxLayoutAlign="center center" style="margin-top: 100px">
       <mat-card class="login-card">
-        <mat-toolbar color="primary" [class.mat-elevation-z3]="true">Bejelentkezés</mat-toolbar>
+        <mat-toolbar color="primary" [class.mat-elevation-z3]="true"
+          >Bejelentkezés</mat-toolbar
+        >
         <form class="login-form" fxLayoutalign="stretch" fxLayout="column">
           <mat-form-field appearance="fill">
             <mat-label>Felhasználónév</mat-label>
@@ -49,25 +59,34 @@ import { UserService } from 'src/app/services/user.service';
   `,
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnDestroy {
+  private userSubscription: any;
+
   constructor(
-    private userService: UserService,
+    private ngrxStore: Store,
+    @Inject(userActionFactoryToken)
+    private userActionFactory: UserActionFactory,
     private snackBar: MatSnackBar
-  ) {}
+  ) {
+    // TODO: itt talán nem is kell
+    this.userSubscription = this.ngrxStore
+      .select(selectUserState)
+      .subscribe((userState: UserState) => {});
+  }
 
   protected username: string = '';
   protected password: string = '';
 
   check(): void {
-    this.userService.check().subscribe((checkResponse: CheckResponse) => {
-      console.log(checkResponse);
-      if (checkResponse.userData === null) {
+    this.userActionFactory.check().subscribe((userData: UserData) => {
+      console.log(userData);
+      if (userData === null) {
         this.snackBar.open('Nem vagy bejelentkezve!', 'Bezár', {
           duration: 2000,
           panelClass: ['warning-snackbar'],
         });
       } else {
-        this.snackBar.open(checkResponse.userData.username, 'Bezár', {
+        this.snackBar.open(userData.username, 'Bezár', {
           duration: 2000,
           panelClass: ['success-snackbar'],
         });
@@ -77,7 +96,7 @@ export class LoginComponent {
 
   login(e: Event): void {
     e.preventDefault();
-    this.userService
+    this.userActionFactory
       .login(this.username, this.password)
       .subscribe((userData: UserData) => {
         console.log(userData);
@@ -86,5 +105,9 @@ export class LoginComponent {
           panelClass: ['success-snackbar'],
         });
       });
+  }
+
+  ngOnDestroy(): void {
+    this.userSubscription.unsubscribe();
   }
 }

@@ -1,11 +1,6 @@
 export interface UserData {
-  id: string,
+  id: string;
   username: string;
-}
-
-export interface CheckResponse {
-  userData: UserData;
-  loggedIn: boolean;
 }
 
 export interface LoginRequest {

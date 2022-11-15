@@ -1,9 +1,9 @@
 package com.peczedavid.fogorvos.controller;
 
-import com.peczedavid.fogorvos.model.network.CheckResponse;
 import com.peczedavid.fogorvos.model.network.LoginRequest;
 import com.peczedavid.fogorvos.model.network.MessageResponse;
 import com.peczedavid.fogorvos.model.network.RegisterRequest;
+import com.peczedavid.fogorvos.model.network.UserData;
 import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
 import com.peczedavid.fogorvos.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/check")
-    public ResponseEntity<CheckResponse> checkUser(HttpServletRequest request) {
+    public ResponseEntity<UserData> checkUser(HttpServletRequest request) {
         return userService.checkUser(request);
     }
 

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { TaskPayload } from '../model/generic/task';
 import { MessageResponse } from '../model/MessageResponse';
-import { UserData, LoginRequest, CheckResponse } from '../model/UserData';
+import { LoginRequest, UserData } from '../model/UserData';
 
 @Injectable({
   providedIn: 'root',
@@ -14,16 +14,18 @@ export class UserService {
   private _backendAddress = 'http://localhost:8080/api';
 
   // TODO: automatikusan a bejelentkezett felhasználó task-jait kérje le
+  //       átrakni user state-be
   private _getTasksUrl: string = this._backendAddress + '/user/#userId#/task';
   getTasks(userId: string): Observable<TaskPayload[]> {
     const url = this._getTasksUrl.replace('#userId#', userId);
     return this.http.get<TaskPayload[]>(url, { withCredentials: true });
   }
 
+  // TODO: make into regular userData
   private _checkUrl: string = this._backendAddress + '/user/check';
-  check(): Observable<CheckResponse> {
+  check(): Observable<UserData> {
     const url = this._checkUrl;
-    return this.http.get<CheckResponse>(url, {
+    return this.http.get<UserData>(url, {
       withCredentials: true,
     });
   }
