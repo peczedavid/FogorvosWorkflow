@@ -41,12 +41,13 @@ import {
     >
       <div fxFlex="35%" style="margin-top: 0.5rem">
         <button
-          style="margin-left: 1rem; margin-right: 1rem;"
+          style="margin-left: 1rem; margin-right: 1rem; padding-right: 0.55rem;"
           (click)="newTask()"
           color="basic"
           mat-raised-button
         >
           Új folyamat
+          <mat-icon style="margin-left: 0.35rem; font-size: 1.6em;" fontIcon="create"></mat-icon>
         </button>
         <button style="margin-bottom: 1rem;" mat-icon-button (click)="onRefreshTasks()">
           <mat-icon fontIcon="refresh"></mat-icon>
