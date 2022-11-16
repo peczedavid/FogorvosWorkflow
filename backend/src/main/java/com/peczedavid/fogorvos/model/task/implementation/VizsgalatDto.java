@@ -10,6 +10,8 @@ import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 
 import java.util.List;
 
+import static com.peczedavid.fogorvos.service.ProcessInstanceService.VARIABLE_RONTGEN_NAME;
+
 @Getter
 @Setter
 public class VizsgalatDto extends TaskPayload {
@@ -19,7 +21,7 @@ public class VizsgalatDto extends TaskPayload {
     public VizsgalatDto(TaskDto taskDto, TaskTipus taskTipus, List<VariableInstanceDto> taskVariables) {
         this.taskDto = taskDto;
         this.taskTipus = taskTipus;
-        this.rontgen = (boolean) VariableUtil.getValue(taskVariables, "rontgen");
+        this.rontgen = (boolean) VariableUtil.getValue(taskVariables, VARIABLE_RONTGEN_NAME);
     }
 
 }

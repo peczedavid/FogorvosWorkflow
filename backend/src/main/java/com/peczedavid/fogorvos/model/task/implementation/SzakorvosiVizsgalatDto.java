@@ -10,6 +10,8 @@ import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 
 import java.util.List;
 
+import static com.peczedavid.fogorvos.service.ProcessInstanceService.VARIABLE_FOGSZABALYZO_NAME;
+
 @Getter
 @Setter
 public class SzakorvosiVizsgalatDto extends TaskPayload {
@@ -19,7 +21,7 @@ public class SzakorvosiVizsgalatDto extends TaskPayload {
     public SzakorvosiVizsgalatDto(TaskDto taskDto, TaskTipus taskTipus, List<VariableInstanceDto> taskVariables) {
         this.taskDto = taskDto;
         this.taskTipus = taskTipus;
-        this.fogszabalyzo = (boolean) VariableUtil.getValue(taskVariables, "fogszabalyzo");
+        this.fogszabalyzo = (boolean) VariableUtil.getValue(taskVariables, VARIABLE_FOGSZABALYZO_NAME);
     }
 
 }

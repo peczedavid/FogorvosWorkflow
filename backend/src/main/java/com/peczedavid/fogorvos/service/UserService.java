@@ -129,7 +129,7 @@ public class UserService {
         final String password = passwordEncoder.encode(registerRequest.getPassword());
         Optional<User> dbUser = userRepository.findByName(username);
         if (dbUser.isPresent()) {
-            logger.warn("Username '" + username + "' is already taken");
+            logger.error("Username '" + username + "' is already taken");
             return new ResponseEntity<>(new MessageResponse("Username '" + username + "' is already taken."), HttpStatus.BAD_REQUEST);
         }
         User user = new User(username, password);

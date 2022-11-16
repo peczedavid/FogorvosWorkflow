@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.peczedavid.fogorvos.model.db.ClinicService.*;
-import static com.peczedavid.fogorvos.service.ProcessInstanceService.VARIABLE_FOGSZBALYZO_NAME;
+import static com.peczedavid.fogorvos.service.ProcessInstanceService.VARIABLE_FOGSZABALYZO_NAME;
 
 @Service
 public class TaskServiceCustom {
@@ -119,7 +119,7 @@ public class TaskServiceCustom {
                 if (szakorvosiVizsgalatService != null)
                     clinicServices.add(szakorvosiVizsgalatService);
 
-                if ((Boolean) runtimeService.getVariable(task.getProcessInstanceId(), VARIABLE_FOGSZBALYZO_NAME)) {
+                if ((Boolean) runtimeService.getVariable(task.getProcessInstanceId(), VARIABLE_FOGSZABALYZO_NAME)) {
                     if (fogszabalyzoFelkarasaService != null)
                         clinicServices.add(fogszabalyzoFelkarasaService);
                 }

@@ -10,6 +10,8 @@ import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 
 import java.util.List;
 
+import static com.peczedavid.fogorvos.service.ProcessInstanceService.VARIABLE_ELMARAD_NAME;
+
 @Getter
 @Setter
 public class BetegErtesiteseDto extends TaskPayload {
@@ -19,7 +21,7 @@ public class BetegErtesiteseDto extends TaskPayload {
     public BetegErtesiteseDto(TaskDto taskDto, TaskTipus taskTipus, List<VariableInstanceDto> taskVariables) {
         this.taskDto = taskDto;
         this.taskTipus = taskTipus;
-        this.elmarad = (boolean) VariableUtil.getValue(taskVariables, "elmarad");
+        this.elmarad = (boolean) VariableUtil.getValue(taskVariables, VARIABLE_ELMARAD_NAME);
     }
 
 }

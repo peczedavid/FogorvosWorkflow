@@ -40,7 +40,7 @@ public class ProcessInstanceService {
                 .setVariable(VARIABLE_ROLE_SZAKORVOS_NAME, "14")
                 .setVariable(VARIABLE_RONTGEN_NAME, false)
                 .setVariable(VARIABLE_SZAKORVOSI_VIZSGALAT_NAME, false)
-                .setVariable(VARIABLE_FOGSZBALYZO_NAME, false)
+                .setVariable(VARIABLE_FOGSZABALYZO_NAME, false)
                 .setVariable(VARIABLE_ELMARAD_NAME, false)
                 .executeWithVariablesInReturn();
 
@@ -79,7 +79,7 @@ public class ProcessInstanceService {
 
     public static final String VARIABLE_RONTGEN_NAME = "rontgen";
     public static final String VARIABLE_SZAKORVOSI_VIZSGALAT_NAME = "szakorvosiVizsgalat";
-    public static final String VARIABLE_FOGSZBALYZO_NAME = "fogszabalyzo";
+    public static final String VARIABLE_FOGSZABALYZO_NAME = "fogszabalyzo";
     public static final String VARIABLE_ELMARAD_NAME = "elmarad";
 
 }
