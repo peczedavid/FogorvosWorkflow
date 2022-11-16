@@ -54,7 +54,13 @@ public class TaskServiceCustom {
             logger.error("Task " + id + " not found");
             return new ResponseEntity<>(new MessageResponse("Task " + id + " not found!"), HttpStatus.NOT_FOUND);
         }
-        List<VariableInstanceDto> taskVariables = runtimeService.createVariableInstanceQuery().processInstanceIdIn(task.getProcessInstanceId()).list().stream().map(VariableInstanceDto::fromVariableInstance).collect(Collectors.toList());
+        List<VariableInstanceDto> taskVariables = runtimeService
+                .createVariableInstanceQuery()
+                .processInstanceIdIn(task.getProcessInstanceId())
+                .list()
+                .stream()
+                .map(VariableInstanceDto::fromVariableInstance)
+                .collect(Collectors.toList());
 
         return new ResponseEntity<>(TaskPayload.fromTask(task, taskVariables), HttpStatus.OK);
     }
@@ -74,12 +80,28 @@ public class TaskServiceCustom {
             return new ResponseEntity<>(new MessageResponse("Cannot find user with id " + patientId), HttpStatus.NOT_FOUND);
         }
 
+        List<ClinicService> clinicServices = getClinicServices(task);
+        for (ClinicService clinicService : clinicServices) {
+            usedClinicServiceRepository.save(
+                    UsedClinicService.builder()
+                            .clinicService(clinicService)
+                            .user(user)
+                            .handled(false)
+                            .processInstanceId(processInstanceId)
+                            .build()
+            );
+        }
+
+        taskService.complete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    private List<ClinicService> getClinicServices(Task task) {
+        TaskDto taskDto = TaskDto.fromEntity(task);
+        TaskTipus taskTipus = TaskTipus.fromTaskDefinitionKey(taskDto.getTaskDefinitionKey());
         // Fogszabályzó felrakása párhuzamos, egyszerre kell elmenteni a szakorvosi vizsgálattal,
         // mert utána jön közvetlen a számlázás, ezért lesz lista
         List<ClinicService> clinicServices = new ArrayList<>();
-        TaskDto taskDto = TaskDto.fromEntity(task);
-        TaskTipus taskTipus = TaskTipus.fromTaskDefinitionKey(taskDto.getTaskDefinitionKey());
-
         ClinicService vizsgalatService = clinicServiceRepository.findByName(CLINIC_SERVICE_VIZSGALAT).orElse(null);
         ClinicService rontgenService = clinicServiceRepository.findByName(CLINIC_SERVICE_RONTGEN).orElse(null);
         ClinicService szakorvosiVizsgalatService = clinicServiceRepository.findByName(CLINIC_SERVICE_SZAKORVOSI_VIZSGALAT).orElse(null);
@@ -97,26 +119,12 @@ public class TaskServiceCustom {
                 if (szakorvosiVizsgalatService != null)
                     clinicServices.add(szakorvosiVizsgalatService);
 
-                if ((Boolean) runtimeService.getVariable(processInstanceId, VARIABLE_FOGSZBALYZO_NAME)) {
+                if ((Boolean) runtimeService.getVariable(task.getProcessInstanceId(), VARIABLE_FOGSZBALYZO_NAME)) {
                     if (fogszabalyzoFelkarasaService != null)
                         clinicServices.add(fogszabalyzoFelkarasaService);
                 }
             }
-            default -> { }
         }
-        // Fizetős szolgáltatás
-        if (clinicServices.size() > 0) {
-            for (ClinicService clinicService : clinicServices) {
-                UsedClinicService usedClinicService = new UsedClinicService();
-                usedClinicService.setClinicService(clinicService);
-                usedClinicService.setUser(user);
-                usedClinicService.setHandled(false);
-                usedClinicService.setProcessInstanceId(processInstanceId);
-                usedClinicServiceRepository.save(usedClinicService);
-            }
-        }
-
-        taskService.complete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return clinicServices;
     }
 }

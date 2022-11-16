@@ -26,7 +26,7 @@ public class ProcessInstanceService {
     @Autowired
     private UserRepository userRepository;
 
-    // TODO: automatikusan beosza a többi résztvevőt
+    // TODO: automatikusan beosztja a többi résztvevőt(role kell hozzá)
     public ResponseEntity<MessageResponse> getCleanProcess(StartProcessRequest startProcessRequest) {
         User user = userRepository.findByName(startProcessRequest.getPatientName()).orElse(null);
         if (user == null)

@@ -52,6 +52,7 @@ public class Szamlazas implements JavaDelegate {
             logger.info("----------");
             logger.info(" + " + costSum + "Ft");
             logger.info("Billing " + costSum + "Ft to " + user.getName());
+            logger.info("");
         }
     }
 }
