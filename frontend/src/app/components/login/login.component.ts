@@ -6,7 +6,7 @@ import { MessageResponse } from 'src/app/model/MessageResponse';
 import { UserData } from 'src/app/model/UserData';
 import {
   UserActionFactory,
-  userActionFactoryToken
+  userActionFactoryToken,
 } from 'src/app/state/user/user.action.factory';
 
 @Component({
@@ -71,7 +71,8 @@ export class LoginComponent {
         });
       },
       error: (messageResponse: MessageResponse) => {
-        // TODO: nem fut le, action factory-ban van valami
+        // TODO: nem fut le,
+        //       action factory-ban lehet valami
         console.log(messageResponse.message);
         this.snackBar.open(SNACK_BAR_MSG.ERROR, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,

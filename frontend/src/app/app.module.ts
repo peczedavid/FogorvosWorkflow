@@ -25,7 +25,6 @@ import { AppComponent } from './app.component';
 
 import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/login/login.component';
-import { WorkflowComponent } from './components/workflow/workflow.component';
 
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
@@ -58,7 +57,6 @@ import { HomeComponent } from './components/home/home.component';
     AppComponent,
     HeaderComponent,
     LoginComponent,
-    WorkflowComponent,
     TasksPageComponent,
     TaskDetailComponent,
     MegjelenesIdopontonComponent,

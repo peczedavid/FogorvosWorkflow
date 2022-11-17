@@ -46,6 +46,7 @@ import {
         style="margin-top: 1rem; margin-bottom: 1rem"
         [ngSwitch]="task!.taskTipus"
       >
+        <!-- TODO: nem átadni a taskpayload-ot, hanem mindegyikben lekérdezni a selected task-ot? -->
         <app-megjelenes-idoponton
           *ngSwitchCase="TaskTipus.TASK_MEGJELENES_IDOPONTON"
         ></app-megjelenes-idoponton>
@@ -110,17 +111,25 @@ export class TaskDetailComponent implements OnDestroy {
     this.taskActionFactory.completeTask(this.task.taskDto.id).subscribe({
       next: () => {
         this.taskActionFactory.getTasks(this.currentUser!.id).subscribe();
-        this.snackBar.open(SNACK_BAR_MSG.TASK_FINISHED_SUCCESS, SNACK_BAR_MSG.ACTION_TEXT, {
-          duration: 2000,
-          panelClass: ['success-snackbar'],
-        });
+        this.snackBar.open(
+          SNACK_BAR_MSG.TASK_FINISHED_SUCCESS,
+          SNACK_BAR_MSG.ACTION_TEXT,
+          {
+            duration: 2000,
+            panelClass: ['success-snackbar'],
+          }
+        );
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
-        this.snackBar.open(SNACK_BAR_MSG.TASK_FINISHED_FAILED, SNACK_BAR_MSG.ACTION_TEXT, {
-          duration: 2000,
-          panelClass: ['danger-snackbar'],
-        });
+        this.snackBar.open(
+          SNACK_BAR_MSG.TASK_FINISHED_FAILED,
+          SNACK_BAR_MSG.ACTION_TEXT,
+          {
+            duration: 2000,
+            panelClass: ['danger-snackbar'],
+          }
+        );
       },
     });
   }
