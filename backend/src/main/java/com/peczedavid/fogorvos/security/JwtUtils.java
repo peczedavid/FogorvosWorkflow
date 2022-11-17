@@ -40,7 +40,7 @@ public class JwtUtils {
         String jwt = generateToken(userDetailsImpl);
         Cookie cookie = new Cookie(COOKIE_NAME, jwt);
         cookie.setHttpOnly(true);
-        cookie.setPath("/api");
+        cookie.setPath(TOKEN_PATH);
         cookie.setMaxAge(JWT_EXPIRATION_MS / 1000);
         return cookie;
     }
@@ -48,7 +48,7 @@ public class JwtUtils {
     public Cookie generateLogutCookie() {
         Cookie cookie = new Cookie(COOKIE_NAME, "");
         cookie.setHttpOnly(true);
-        cookie.setPath("/api");
+        cookie.setPath(TOKEN_PATH);
         cookie.setMaxAge(0);
         return cookie;
     }
@@ -73,13 +73,13 @@ public class JwtUtils {
 
     public String generateToken(UserDetailsImpl userDetailsImpl) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", String.valueOf(userDetailsImpl.getId()));
+        claims.put(TOKEN_ID, String.valueOf(userDetailsImpl.getId()));
         return createToken(claims, userDetailsImpl.getUsername());
     }
 
     public String getId(String jwt) {
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(jwt);
-        return claimsJws.getBody().get("id", String.class);
+        return claimsJws.getBody().get(TOKEN_ID, String.class);
     }
 
     public String getUsername(String token) {
@@ -109,4 +109,6 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY).compact();
     }
 
+    public static final String TOKEN_PATH = "/api";
+    public static final String TOKEN_ID = "id";
 }
