@@ -1,17 +1,13 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { MessageResponse } from 'src/app/model/MessageResponse';
 import { UserData } from 'src/app/model/UserData';
 import {
   UserActionFactory,
-  userActionFactoryToken,
+  userActionFactoryToken
 } from 'src/app/state/user/user.action.factory';
-import {
-  selectUserState,
-  UserState,
-} from 'src/app/state/user/user.state.model';
 
 @Component({
   selector: 'app-login',
@@ -53,21 +49,13 @@ import {
   `,
   styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnDestroy {
-  private userSubscription: any;
-
+export class LoginComponent {
   constructor(
     private router: Router,
-    private ngrxStore: Store,
     @Inject(userActionFactoryToken)
     private userActionFactory: UserActionFactory,
     private snackBar: MatSnackBar
-  ) {
-    // TODO: itt talán nem is kell
-    this.userSubscription = this.ngrxStore
-      .select(selectUserState)
-      .subscribe((userState: UserState) => {});
-  }
+  ) {}
 
   protected username: string = '';
   protected password: string = '';
@@ -75,10 +63,9 @@ export class LoginComponent implements OnDestroy {
   login(e: Event): void {
     e.preventDefault();
     this.userActionFactory.login(this.username, this.password).subscribe({
-      next: (userData: UserData) => {
-        console.log(userData);
+      next: (_: UserData) => {
         this.router.navigateByUrl('/tasks');
-        this.snackBar.open('Bejelentkezve', 'Bezár', {
+        this.snackBar.open(SNACK_BAR_MSG.LOGGED_IN, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,
           panelClass: ['success-snackbar'],
         });
@@ -86,15 +73,11 @@ export class LoginComponent implements OnDestroy {
       error: (messageResponse: MessageResponse) => {
         // TODO: nem fut le, action factory-ban van valami
         console.log(messageResponse.message);
-        this.snackBar.open('Hiba történt', 'Bezár', {
+        this.snackBar.open(SNACK_BAR_MSG.ERROR, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,
           panelClass: ['danger-snackbar'],
         });
       },
     });
-  }
-
-  ngOnDestroy(): void {
-    this.userSubscription.unsubscribe();
   }
 }

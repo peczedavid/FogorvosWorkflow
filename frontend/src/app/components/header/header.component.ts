@@ -2,6 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { MessageResponse } from 'src/app/model/MessageResponse';
 import { UserData } from 'src/app/model/UserData';
 import {
@@ -59,7 +60,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   private userSubscription: any;
 
   protected currentUser?: UserData;
-  protected title: string = 'Fogorvos frontend';
 
   constructor(
     private router: Router,
@@ -83,10 +83,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   logout(): void {
-    this.userActionFactory.logout().subscribe((response: MessageResponse) => {
-      console.log(response.message);
+    this.userActionFactory.logout().subscribe((_: MessageResponse) => {
       this.router.navigateByUrl('/');
-      this.snackBar.open('Kijelentkezve', 'Bezár', {
+      this.snackBar.open(SNACK_BAR_MSG.LOGGED_OUT, SNACK_BAR_MSG.ACTION_TEXT, {
         duration: 2000,
         panelClass: ['success-snackbar'],
       });

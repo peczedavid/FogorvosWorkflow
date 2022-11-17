@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, Input, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
+import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { UserData } from 'src/app/model/UserData';
 import {
   TaskActionFactory,
@@ -50,7 +51,7 @@ export class VariableCheckboxComponent implements OnDestroy {
       .subscribe({
         next: (response) => {
           if (response) {
-            this.snackBar.open('Változó átállítva', 'Bezár', {
+            this.snackBar.open(SNACK_BAR_MSG.VARIABLE_CHANGED_SUCCESS, SNACK_BAR_MSG.ACTION_TEXT, {
               duration: 2000,
               panelClass: ['success-snackbar'],
             });
@@ -61,7 +62,7 @@ export class VariableCheckboxComponent implements OnDestroy {
         },
         error: (error: HttpErrorResponse) => {
           console.log(error);
-          this.snackBar.open('A változó nem sikerült átállítani', 'Bezár', {
+          this.snackBar.open(SNACK_BAR_MSG.VARIABLE_CHANGED_FAILED, SNACK_BAR_MSG.ACTION_TEXT, {
             duration: 2000,
             panelClass: ['danger-snackbar'],
           });

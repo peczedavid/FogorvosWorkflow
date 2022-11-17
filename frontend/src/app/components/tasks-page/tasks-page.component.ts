@@ -24,6 +24,7 @@ import {
   UserState,
 } from 'src/app/state/user/user.state.model';
 import { TaskPayload } from '../../model/generic/task';
+import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 
 @Component({
   selector: 'app-tasks-page',
@@ -110,15 +111,19 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     // Ha taszkot megnyitva lépünk el másik oldalra és visszakattintunk, akkor egy pillanatra
     // felvillanna a details ablak
     this.taskActionFactory.setSelectedTask(undefined).subscribe();
-    this.getTasks();
+    this.taskActionFactory.getTasks(this.currentUser!.id).subscribe();
   }
 
   handleAuthNext(userData: UserData): void {
     if (userData === null) {
-      this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-        duration: 2000,
-        panelClass: ['danger-snackbar'],
-      });
+      this.snackBar.open(
+        SNACK_BAR_MSG.NOT_LOGGED_IN,
+        SNACK_BAR_MSG.ACTION_TEXT,
+        {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        }
+      );
       this.router.navigateByUrl('/login', { skipLocationChange: true });
     } else {
       this.initData();
@@ -149,42 +154,18 @@ export class TasksPageComponent implements OnInit, OnDestroy {
     this.taskActionFactory
       .startNewProcess('beteg_1')
       .subscribe((message: MessageResponse) => {
-        this.getTasksKeepSelected();
+        this.taskActionFactory
+          .getTasksKeepSelected(this.currentUser!.id)
+          .subscribe();
       });
   }
 
   onRefreshTasks() {
-    this.getTasks();
+    this.taskActionFactory.getTasks(this.currentUser!.id).subscribe();
   }
 
   onSelectionChanged(event: MatSelectionListChange): void {
     const selected: TaskPayload = event.options[0].value;
     this.taskActionFactory.setSelectedTask(selected.taskDto.id).subscribe();
-  }
-
-  getTasksKeepSelected() {
-    this.taskActionFactory
-      .getTasksKeepSelected(this.currentUser!.id)
-      .subscribe({
-        error: (error: HttpErrorResponse) => {
-          console.log(error);
-          this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-            duration: 2000,
-            panelClass: ['danger-snackbar'],
-          });
-        },
-      });
-  }
-
-  getTasks() {
-    this.taskActionFactory.getTasks(this.currentUser!.id).subscribe({
-      error: (error: HttpErrorResponse) => {
-        console.log(error);
-        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-          duration: 2000,
-          panelClass: ['danger-snackbar'],
-        });
-      },
-    });
   }
 }

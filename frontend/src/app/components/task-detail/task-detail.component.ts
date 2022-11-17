@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
+import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
 import { UserData } from 'src/app/model/UserData';
 import {
@@ -109,14 +110,14 @@ export class TaskDetailComponent implements OnDestroy {
     this.taskActionFactory.completeTask(this.task.taskDto.id).subscribe({
       next: () => {
         this.taskActionFactory.getTasks(this.currentUser!.id).subscribe();
-        this.snackBar.open('Feladat befejezve', 'Bezár', {
+        this.snackBar.open(SNACK_BAR_MSG.TASK_FINISHED_SUCCESS, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,
           panelClass: ['success-snackbar'],
         });
       },
       error: (error: HttpErrorResponse) => {
         console.log(error);
-        this.snackBar.open('A feladatot nem sikerült befejezni', 'Bezár', {
+        this.snackBar.open(SNACK_BAR_MSG.TASK_FINISHED_FAILED, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,
           panelClass: ['danger-snackbar'],
         });
