@@ -1,12 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-rontgen',
   template: ``,
   styleUrls: ['./rontgen.component.css'],
 })
-export class RontgenComponent implements OnInit {
+export class RontgenComponent {
   constructor() {}
-
-  ngOnInit(): void {}
 }

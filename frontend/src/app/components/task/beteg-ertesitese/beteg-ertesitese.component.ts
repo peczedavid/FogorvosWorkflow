@@ -1,6 +1,10 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
-import { TaskPayload } from 'src/app/model/generic/task';
+import { Component, OnDestroy } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { BetegErtesiteseDto } from 'src/app/model/implementation/concrete-tasks';
+import {
+  selectTasksState,
+  TasksState,
+} from 'src/app/state/task/task.state.model';
 
 @Component({
   selector: 'app-beteg-ertesitese',
@@ -10,22 +14,23 @@ import { BetegErtesiteseDto } from 'src/app/model/implementation/concrete-tasks'
       [name]="'elmarad'"
       [displayName]="'Elmarad'"
       [value]="betegErtesiteseDto.elmarad"
-      (valueChanged)="variableChanged.emit($event)"
     ></app-variable-checkbox>
   `,
   styleUrls: ['./beteg-ertesitese.component.css'],
 })
-export class BetegErtesiteseComponent implements OnChanges {
-  
-  @Input() taskPayload: TaskPayload;
-  @Output() variableChanged = new EventEmitter();
+export class BetegErtesiteseComponent implements OnDestroy {
+  private tasksSubscription: any;
+  protected betegErtesiteseDto: BetegErtesiteseDto;
 
-  betegErtesiteseDto: BetegErtesiteseDto;
-
-  constructor() {}
-
-  ngOnChanges() {
-    this.betegErtesiteseDto = this.taskPayload as BetegErtesiteseDto;
+  constructor(private ngrxStore: Store) {
+    this.tasksSubscription = this.ngrxStore
+      .select(selectTasksState)
+      .subscribe((tasksState: TasksState) => {
+        this.betegErtesiteseDto = tasksState.selectedTask as BetegErtesiteseDto;
+      });
   }
-  
+
+  ngOnDestroy(): void {
+    this.tasksSubscription.unsubscribe();
+  }
 }

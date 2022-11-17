@@ -1,6 +1,19 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { Store } from '@ngrx/store';
 import { TaskPayload } from 'src/app/model/generic/task';
 import { VizsgalatDto } from 'src/app/model/implementation/concrete-tasks';
+import {
+  selectTasksState,
+  TasksState,
+} from 'src/app/state/task/task.state.model';
 
 @Component({
   selector: 'app-vizsgalat',
@@ -10,20 +23,23 @@ import { VizsgalatDto } from 'src/app/model/implementation/concrete-tasks';
       [name]="'rontgen'"
       [displayName]="'Röntgen'"
       [value]="vizsgalatDto.rontgen"
-      (valueChanged)="variableChanged.emit($event)"
     ></app-variable-checkbox>
   `,
   styleUrls: ['./vizsgalat.component.css'],
 })
-export class VizsgalatComponent implements OnChanges {
-  @Input() taskPayload: TaskPayload;
-  @Output() variableChanged = new EventEmitter();
+export class VizsgalatComponent implements OnDestroy {
+  private tasksSubscription: any;
+  protected vizsgalatDto: VizsgalatDto;
 
-  vizsgalatDto: VizsgalatDto;
+  constructor(private ngrxStore: Store) {
+    this.tasksSubscription = this.ngrxStore
+      .select(selectTasksState)
+      .subscribe((tasksState: TasksState) => {
+        this.vizsgalatDto = tasksState.selectedTask as VizsgalatDto;
+      });
+  }
 
-  constructor() {}
-
-  ngOnChanges(): void {
-    this.vizsgalatDto = this.taskPayload as VizsgalatDto;
+  ngOnDestroy(): void {
+    this.tasksSubscription.unsubscribe();
   }
 }

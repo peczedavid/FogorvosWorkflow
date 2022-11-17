@@ -46,25 +46,18 @@ import {
         style="margin-top: 1rem; margin-bottom: 1rem"
         [ngSwitch]="task!.taskTipus"
       >
-        <!-- TODO: nem átadni a taskpayload-ot, hanem mindegyikben lekérdezni a selected task-ot? -->
         <app-megjelenes-idoponton
           *ngSwitchCase="TaskTipus.TASK_MEGJELENES_IDOPONTON"
         ></app-megjelenes-idoponton>
         <app-beteg-ertesitese
-          [taskPayload]="task!"
           *ngSwitchCase="TaskTipus.TASK_BETEG_ERTESITESE"
         ></app-beteg-ertesitese>
-        <app-vizsgalat
-          [taskPayload]="task!"
-          *ngSwitchCase="TaskTipus.TASK_VIZSGALAT"
-        ></app-vizsgalat>
+        <app-vizsgalat *ngSwitchCase="TaskTipus.TASK_VIZSGALAT"></app-vizsgalat>
         <app-rontgen *ngSwitchCase="TaskTipus.TASK_RONTGEN"></app-rontgen>
         <app-felulvizsgalat
-          [taskPayload]="task!"
           *ngSwitchCase="TaskTipus.TASK_FELULVIZSGALAT"
         ></app-felulvizsgalat>
         <app-szakorvosi-vizsgalat
-          [taskPayload]="task!"
           *ngSwitchCase="TaskTipus.TASK_SZAKORVOSI_VIZSGALAT"
         ></app-szakorvosi-vizsgalat>
         <app-fogszabalyzo-felrakasa
