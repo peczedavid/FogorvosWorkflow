@@ -1,17 +1,12 @@
-import {
-  Component,
-  Inject,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  SimpleChanges,
-} from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatSelectionListChange } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { MessageResponse } from 'src/app/model/MessageResponse';
+import { UserData } from 'src/app/model/UserData';
 import {
   TaskActionFactory,
   taskActionFactoryToken,
@@ -20,16 +15,15 @@ import {
   selectTasksState,
   TasksState,
 } from 'src/app/state/task/task.state.model';
-import { TaskPayload } from '../../model/generic/task';
-import {
-  selectUserState,
-  UserState,
-} from 'src/app/state/user/user.state.model';
-import { UserData } from 'src/app/model/UserData';
 import {
   UserActionFactory,
   userActionFactoryToken,
 } from 'src/app/state/user/user.action.factory';
+import {
+  selectUserState,
+  UserState,
+} from 'src/app/state/user/user.state.model';
+import { TaskPayload } from '../../model/generic/task';
 
 @Component({
   selector: 'app-tasks-page',
@@ -47,9 +41,16 @@ import {
           mat-raised-button
         >
           Új folyamat
-          <mat-icon style="margin-left: 0.35rem; font-size: 1.6em;" fontIcon="create"></mat-icon>
+          <mat-icon
+            style="margin-left: 0.35rem; font-size: 1.6em;"
+            fontIcon="create"
+          ></mat-icon>
         </button>
-        <button style="margin-bottom: 1rem;" mat-icon-button (click)="onRefreshTasks()">
+        <button
+          style="margin-bottom: 1rem;"
+          mat-icon-button
+          (click)="onRefreshTasks()"
+        >
           <mat-icon fontIcon="refresh"></mat-icon>
         </button>
         <mat-selection-list
@@ -85,6 +86,7 @@ export class TasksPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private snackBar: MatSnackBar,
+    private router: Router,
     private ngrxStore: Store,
     @Inject(taskActionFactoryToken)
     private taskActionFactory: TaskActionFactory,
@@ -104,12 +106,38 @@ export class TasksPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnInit(): void {
+  initData(): void {
     // Ha taszkot megnyitva lépünk el másik oldalra és visszakattintunk, akkor egy pillanatra
     // felvillanna a details ablak
     this.taskActionFactory.setSelectedTask(undefined).subscribe();
-
     this.getTasks();
+  }
+
+  handleAuthNext(userData: UserData): void {
+    if (userData === null) {
+      this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+        duration: 2000,
+        panelClass: ['danger-snackbar'],
+      });
+      this.router.navigateByUrl('/login', { skipLocationChange: true });
+    } else {
+      this.initData();
+    }
+  }
+
+  handleAuthError(error: any): void {
+    console.log(error);
+  }
+
+  ngOnInit(): void {
+    if (this.currentUser === undefined) {
+      this.userActionFactory.check().subscribe({
+        next: (userData: UserData) => this.handleAuthNext(userData),
+        error: (error: any) => this.handleAuthError(error),
+      });
+    } else {
+      this.initData();
+    }
   }
 
   ngOnDestroy(): void {
@@ -135,52 +163,9 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   }
 
   getTasksKeepSelected() {
-    if (this.currentUser === undefined) {
-      this.userActionFactory.check().subscribe({
-        next: (userData: UserData) => {
-          console.log('check');
-          this.taskActionFactory.getTasksKeepSelected(userData.id).subscribe({
-            error: (error: HttpErrorResponse) => {
-              console.log(error);
-              this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-                duration: 2000,
-                panelClass: ['danger-snackbar'],
-              });
-            },
-          });
-        },
-      });
-    } else {
-      this.taskActionFactory
-        .getTasksKeepSelected(this.currentUser.id)
-        .subscribe({
-          error: (error: HttpErrorResponse) => {
-            this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-              duration: 2000,
-              panelClass: ['danger-snackbar'],
-            });
-          },
-        });
-    }
-  }
-
-  getTasks() {
-    if (this.currentUser === undefined) {
-      this.userActionFactory.check().subscribe({
-        next: (userData: UserData) => {
-          this.taskActionFactory.getTasks(userData.id).subscribe({
-            error: (error: HttpErrorResponse) => {
-              console.log(error);
-              this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
-                duration: 2000,
-                panelClass: ['danger-snackbar'],
-              });
-            },
-          });
-        },
-      });
-    } else {
-      this.taskActionFactory.getTasks(this.currentUser.id).subscribe({
+    this.taskActionFactory
+      .getTasksKeepSelected(this.currentUser!.id)
+      .subscribe({
         error: (error: HttpErrorResponse) => {
           console.log(error);
           this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
@@ -189,6 +174,17 @@ export class TasksPageComponent implements OnInit, OnDestroy {
           });
         },
       });
-    }
+  }
+
+  getTasks() {
+    this.taskActionFactory.getTasks(this.currentUser!.id).subscribe({
+      error: (error: HttpErrorResponse) => {
+        console.log(error);
+        this.snackBar.open('Nem vagy bejelentkezve', 'Bezár', {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        });
+      },
+    });
   }
 }
