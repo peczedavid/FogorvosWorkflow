@@ -1,11 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  Component,
-  EventEmitter,
-  Inject,
-  OnDestroy,
-  Output,
-} from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
