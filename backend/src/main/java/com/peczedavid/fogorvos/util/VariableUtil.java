@@ -1,7 +1,6 @@
 package com.peczedavid.fogorvos.util;
 
 import org.camunda.bpm.engine.rest.dto.runtime.VariableInstanceDto;
-import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

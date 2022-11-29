@@ -15,7 +15,6 @@ import org.camunda.bpm.engine.rest.dto.runtime.VariableInstanceDto;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -38,25 +37,31 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
+    private final RuntimeService runtimeService;
+    private final JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private RuntimeService runtimeService;
-
-    @Autowired
-    private JwtUtils jwtUtils;
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UserRepository userRepository;
+    public UserService(
+            TaskService taskService,
+            RuntimeService runtimeService,
+            JwtUtils jwtUtils,
+            AuthenticationManager authenticationManager,
+            UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder,
+            UserRepository userRepository
+    ) {
+        this.taskService = taskService;
+        this.runtimeService = runtimeService;
+        this.jwtUtils = jwtUtils;
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+    }
 
     private ResponseEntity<?> tryLogin(String username, String password, HttpServletResponse response) {
         try {

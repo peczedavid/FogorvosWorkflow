@@ -1,6 +1,5 @@
 package com.peczedavid.fogorvos.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,11 +16,16 @@ import java.io.IOException;
 @Component
 public class AuthTokenFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final JwtUtils jwtUtils;
 
-    @Autowired
-    private JwtUtils jwtUtils;
+    public AuthTokenFilter(
+            UserDetailsServiceImpl userDetailsService,
+            JwtUtils jwtUtils
+    ) {
+        this.userDetailsService = userDetailsService;
+        this.jwtUtils = jwtUtils;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

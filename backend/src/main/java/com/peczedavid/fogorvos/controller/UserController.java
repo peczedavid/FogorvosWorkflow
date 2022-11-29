@@ -6,7 +6,6 @@ import com.peczedavid.fogorvos.model.network.RegisterRequest;
 import com.peczedavid.fogorvos.model.network.UserData;
 import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
 import com.peczedavid.fogorvos.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +19,11 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/{id}/task")
     public ResponseEntity<List<TaskPayload>> getTasks(@PathVariable String id) {

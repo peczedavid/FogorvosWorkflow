@@ -4,7 +4,6 @@ import com.peczedavid.fogorvos.model.db.User;
 import com.peczedavid.fogorvos.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,8 +17,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserDetailsServiceImpl.class);
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserDetailsServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     @Transactional

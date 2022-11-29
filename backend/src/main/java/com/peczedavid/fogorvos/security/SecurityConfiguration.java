@@ -1,6 +1,5 @@
 package com.peczedavid.fogorvos.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,11 +16,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private AuthTokenFilter authTokenFilter;
+    private final AuthTokenFilter authTokenFilter;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    public SecurityConfiguration(
+            AuthTokenFilter authTokenFilter,
+            UserDetailsServiceImpl userDetailsService
+    ) {
+        this.authTokenFilter = authTokenFilter;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

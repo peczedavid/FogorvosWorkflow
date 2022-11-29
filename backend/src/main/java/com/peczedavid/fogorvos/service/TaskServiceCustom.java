@@ -16,7 +16,6 @@ import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 import org.camunda.bpm.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,20 +32,25 @@ public class TaskServiceCustom {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskServiceCustom.class);
 
-    @Autowired
-    private TaskService taskService;
+    private final TaskService taskService;
+    private final RuntimeService runtimeService;
+    private final UserRepository userRepository;
+    private final ClinicServiceRepository clinicServiceRepository;
+    private final UsedClinicServiceRepository usedClinicServiceRepository;
 
-    @Autowired
-    private RuntimeService runtimeService;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ClinicServiceRepository clinicServiceRepository;
-
-    @Autowired
-    private UsedClinicServiceRepository usedClinicServiceRepository;
+    public TaskServiceCustom(
+            TaskService taskService,
+            RuntimeService runtimeService,
+            UserRepository userRepository,
+            ClinicServiceRepository clinicServiceRepository,
+            UsedClinicServiceRepository usedClinicServiceRepository
+    ) {
+        this.taskService = taskService;
+        this.runtimeService = runtimeService;
+        this.userRepository = userRepository;
+        this.clinicServiceRepository = clinicServiceRepository;
+        this.usedClinicServiceRepository = usedClinicServiceRepository;
+    }
 
     public ResponseEntity<?> getTask(String id) {
         Task task = taskService.createTaskQuery().taskId(id).singleResult();

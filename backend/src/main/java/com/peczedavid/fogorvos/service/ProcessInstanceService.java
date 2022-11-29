@@ -10,7 +10,6 @@ import org.camunda.bpm.engine.exception.NullValueException;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,11 +19,13 @@ public class ProcessInstanceService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessInstanceService.class);
 
-    @Autowired
-    private RuntimeService runtimeService;
+    private final RuntimeService runtimeService;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    public ProcessInstanceService(RuntimeService runtimeService, UserRepository userRepository) {
+        this.runtimeService = runtimeService;
+        this.userRepository = userRepository;
+    }
 
     // TODO: automatikusan beosztja a többi résztvevőt(role kell hozzá)
     public ResponseEntity<MessageResponse> getCleanProcess(StartProcessRequest startProcessRequest) {

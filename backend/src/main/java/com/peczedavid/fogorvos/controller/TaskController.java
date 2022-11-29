@@ -1,8 +1,6 @@
 package com.peczedavid.fogorvos.controller;
 
 import com.peczedavid.fogorvos.service.TaskServiceCustom;
-import org.camunda.bpm.engine.RuntimeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +9,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/api/task")
 public class TaskController {
-    @Autowired
-    private TaskServiceCustom taskServiceCustom;
+    private final TaskServiceCustom taskServiceCustom;
+
+    public TaskController(TaskServiceCustom taskServiceCustom) {
+        this.taskServiceCustom = taskServiceCustom;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getTask(@PathVariable String id) {

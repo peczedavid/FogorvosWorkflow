@@ -9,7 +9,6 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,14 +20,19 @@ public class Szamlazas implements JavaDelegate {
 
     private static final Logger logger = LoggerFactory.getLogger(Szamlazas.class);
 
-    @Autowired
-    private UsedClinicServiceRepository usedClinicServiceRepository;
+    private final UsedClinicServiceRepository usedClinicServiceRepository;
+    private final UserRepository userRepository;
+    private final RuntimeService runtimeService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private RuntimeService runtimeService;
+    public Szamlazas(
+            UsedClinicServiceRepository usedClinicServiceRepository,
+            UserRepository userRepository,
+            RuntimeService runtimeService
+    ) {
+        this.usedClinicServiceRepository = usedClinicServiceRepository;
+        this.userRepository = userRepository;
+        this.runtimeService = runtimeService;
+    }
 
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {

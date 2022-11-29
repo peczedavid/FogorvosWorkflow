@@ -4,9 +4,6 @@ import com.peczedavid.fogorvos.model.network.MessageResponse;
 import com.peczedavid.fogorvos.model.network.StartProcessRequest;
 import com.peczedavid.fogorvos.model.process.VariablePayload;
 import com.peczedavid.fogorvos.service.ProcessInstanceService;
-import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/process-instance")
 public class ProcessInstanceController {
 
-    @Autowired
-    private ProcessInstanceService processInstanceService;
+    private final ProcessInstanceService processInstanceService;
+
+    public ProcessInstanceController(ProcessInstanceService processInstanceService) {
+        this.processInstanceService = processInstanceService;
+    }
 
     @PostMapping("/new")
     public ResponseEntity<?> startCleanProcess(@RequestBody StartProcessRequest startProcessRequest) {
