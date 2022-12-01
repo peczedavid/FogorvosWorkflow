@@ -58,8 +58,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/user/logout").permitAll()
                 .antMatchers("/api/user/check").permitAll()
                 .antMatchers("/api/user/register").access(
-                        "hasRole('" + Role.ROLE_RECEPTIONIST + "') or " +
-                                "hasRole('" + Role.ROLE_ADMIN + "')"
+                        "hasRole('" + Role.ROLE_RECEPTIONIST + "') or " + "hasRole('" + Role.ROLE_ADMIN + "')"
+                )
+                .antMatchers("/api/role").access(
+                        "hasRole('" + Role.ROLE_RECEPTIONIST + "') or " + "hasRole('" + Role.ROLE_ADMIN + "')"
                 )
                 .anyRequest().authenticated();
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
