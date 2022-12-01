@@ -72,8 +72,7 @@ export class LoginComponent {
         });
       },
       error: (messageResponse: MessageResponse) => {
-        // TODO: nem fut le,
-        //       action factory-ban lehet valami
+        // TODO: nem fut le, action factory-ban lehet valami
         console.log(messageResponse.message);
         this.snackBar.open(SNACK_BAR_MSG.ERROR, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,

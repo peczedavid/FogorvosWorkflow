@@ -11,15 +11,15 @@ import { LoginRequest, UserData } from '../model/UserData';
 export class UserService {
   constructor(private http: HttpClient) {}
 
-  private _backendAddress = 'http://localhost:8080/api';
+  private _backendAddress = 'http://localhost:8080/api/user';
 
-  private _getTasksUrl: string = this._backendAddress + '/user/#userId#/task';
+  private _getTasksUrl: string = this._backendAddress + '/#userId#/task';
   getTasks(userId: string): Observable<TaskPayload[]> {
     const url = this._getTasksUrl.replace('#userId#', userId);
     return this.http.get<TaskPayload[]>(url, { withCredentials: true });
   }
 
-  private _checkUrl: string = this._backendAddress + '/user/check';
+  private _checkUrl: string = this._backendAddress + '/check';
   check(): Observable<UserData> {
     const url = this._checkUrl;
     return this.http.get<UserData>(url, {
@@ -27,7 +27,7 @@ export class UserService {
     });
   }
 
-  private _loginUrl: string = this._backendAddress + '/user/login';
+  private _loginUrl: string = this._backendAddress + '/login';
   login(username: string, password: string): Observable<UserData> {
     const url = this._loginUrl;
     const loginRequest: LoginRequest = {
@@ -39,7 +39,25 @@ export class UserService {
     });
   }
 
-  private _logoutUrl: string = this._backendAddress + '/user/logout';
+  private _registerUrl: string = this._backendAddress + '/register';
+  register(
+    username: string,
+    password: string,
+    role: string
+  ): Observable<UserData> {
+    const url = this._registerUrl;
+    return this.http.post<UserData>(
+      url,
+      {
+        username: username,
+        password: password,
+        role: role,
+      },
+      { withCredentials: true }
+    );
+  }
+
+  private _logoutUrl: string = this._backendAddress + '/logout';
   logout(): Observable<MessageResponse> {
     const url = this._logoutUrl;
     return this.http.post<MessageResponse>(

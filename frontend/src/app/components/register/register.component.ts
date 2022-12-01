@@ -1,11 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
+import { MessageResponse } from 'src/app/model/MessageResponse';
 import {
   Role,
   ROLE_ADMIN,
   ROLE_RECEPTIONIST,
-  ROLE_USER
+  ROLE_USER,
 } from 'src/app/model/role';
+import { UserData } from 'src/app/model/UserData';
 import { RoleService } from 'src/app/services/role.service';
+import {
+  UserActionFactory,
+  userActionFactoryToken,
+} from 'src/app/state/user/user.action.factory';
 @Component({
   selector: 'app-register',
   template: `
@@ -22,7 +31,12 @@ import { RoleService } from 'src/app/services/role.service';
         >
           <mat-form-field appearance="fill">
             <mat-label>Felhasználónév</mat-label>
-            <input matInput name="somethingAutofillDoesntKnow" />
+            <input
+              matInput
+              name="somethingAutofillDoesntKnow"
+              [(ngModel)]="username"
+              [ngModelOptions]="{ standalone: true }"
+            />
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Jelszó</mat-label>
@@ -30,17 +44,19 @@ import { RoleService } from 'src/app/services/role.service';
               matInput
               name="somethingAutofillDoesntKnow"
               type="password"
+              [(ngModel)]="password"
+              [ngModelOptions]="{ standalone: true }"
             />
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Szerepkör</mat-label>
-            <mat-select>
+            <mat-select (selectionChange)="selectValueChanged($event.value)">
               <mat-option *ngFor="let role of roles" [value]="role.name">
                 {{ mapRoleToReadableName(role.name) }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <button type="submit" mat-raised-button color="accent">
+          <button type="submit" (click)="register($event)" mat-raised-button color="accent">
             Regisztrálás
           </button>
         </form>
@@ -52,8 +68,49 @@ import { RoleService } from 'src/app/services/role.service';
 export class RegisterComponent implements OnInit {
   protected roles: Role[];
 
+  protected username: string = '';
+  protected password: string = '';
+  protected role: string = '';
+
   // TODO: into own state?
-  constructor(private roleService: RoleService) {}
+  constructor(
+    private roleService: RoleService,
+    private router: Router,
+    @Inject(userActionFactoryToken)
+    private userActionFactory: UserActionFactory,
+    private snackBar: MatSnackBar
+  ) {}
+
+  selectValueChanged(value: string) {
+    this.role = value;
+  }
+
+  register(e: Event): void {
+    e.preventDefault();
+    this.userActionFactory
+      .register(this.username, this.password, this.role)
+      .subscribe({
+        next: (userData: UserData) => {
+          console.log(userData);
+          this.snackBar.open(
+            SNACK_BAR_MSG.REGISTERED,
+            SNACK_BAR_MSG.ACTION_TEXT,
+            {
+              duration: 2000,
+              panelClass: ['success-snackbar'],
+            }
+          );
+        },
+        error: (messageResponse: MessageResponse) => {
+          // TODO: nem fut le, action factory-ban lehet valami
+          console.log(messageResponse.message);
+          this.snackBar.open(SNACK_BAR_MSG.ERROR, SNACK_BAR_MSG.ACTION_TEXT, {
+            duration: 2000,
+            panelClass: ['danger-snackbar'],
+          });
+        },
+      });
+  }
 
   protected mapRoleToReadableName(role: string): string {
     switch (role) {

@@ -2,6 +2,7 @@ export const SNACK_BAR_MSG = {
   NOT_LOGGED_IN: 'Nem vagy bejelentkezve',
   LOGGED_OUT: 'Kijelentkezve',
   LOGGED_IN: 'Bejelentkezve',
+  REGISTERED: 'Sikeres regisztráció',
   ERROR: 'Hiba történt',
   TASK_FINISHED_SUCCESS: 'Feladat befejezve',
   TASK_FINISHED_FAILED: 'A feladatot nem sikerült befejezni',
