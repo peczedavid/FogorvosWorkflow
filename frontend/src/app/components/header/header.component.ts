@@ -4,11 +4,8 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { MessageResponse } from 'src/app/model/MessageResponse';
-import {
-  ROLE_ADMIN,
-  ROLE_RECEPTIONIST,
-  UserData,
-} from 'src/app/model/UserData';
+import { ROLE_ADMIN, ROLE_RECEPTIONIST } from 'src/app/model/role';
+import { UserData } from 'src/app/model/UserData';
 import {
   UserActionFactory,
   userActionFactoryToken,
@@ -50,7 +47,10 @@ import {
         *ngIf="checkRegisterRoles()"
       >
         Műveletek
-        <mat-icon style="margin-left: 0.15rem;" fontIcon="account_circle"></mat-icon>
+        <mat-icon
+          style="margin-left: 0.15rem;"
+          fontIcon="account_circle"
+        ></mat-icon>
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item [routerLink]="['/register']">Regisztrálás</button>
