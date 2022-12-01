@@ -6,6 +6,7 @@ import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { MessageResponse } from 'src/app/model/MessageResponse';
 import { ROLE_ADMIN, ROLE_RECEPTIONIST } from 'src/app/model/role';
 import { UserData } from 'src/app/model/UserData';
+import { TaskActionFactory, taskActionFactoryToken } from 'src/app/state/task/task.action.factory';
 import {
   UserActionFactory,
   userActionFactoryToken,
@@ -55,6 +56,7 @@ import {
       <mat-menu #menu="matMenu">
         <button mat-menu-item [routerLink]="['/register']">Regisztrálás</button>
         <button mat-menu-item>Adminisztáció</button>
+        <button mat-menu-item (click)="newTask()">Új folyamat</button>
       </mat-menu>
       <button
         [routerLink]="['/login']"
@@ -89,6 +91,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private ngrxStore: Store,
     @Inject(userActionFactoryToken)
     private userActionFactory: UserActionFactory,
+    @Inject(taskActionFactoryToken)
+    private taskActionFactory: TaskActionFactory,
     private snackBar: MatSnackBar
   ) {
     this.userSubscription = this.ngrxStore
@@ -113,6 +117,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
         panelClass: ['success-snackbar'],
       });
     });
+  }
+
+  newTask(): void {
+    this.taskActionFactory
+      .startNewProcess('beteg_1')
+      .subscribe((_: MessageResponse) => {
+        this.taskActionFactory
+          .getTasksKeepSelected(this.currentUser!.id)
+          .subscribe();
+      });
   }
 
   checkRegisterRoles(): boolean {
