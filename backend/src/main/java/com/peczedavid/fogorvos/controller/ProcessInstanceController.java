@@ -19,6 +19,8 @@ public class ProcessInstanceController {
         this.processInstanceService = processInstanceService;
     }
 
+    // TODO: delete process-instance (remove used clinic services records)
+
     @PostMapping("/new")
     public ResponseEntity<?> startCleanProcess(@RequestBody StartProcessRequest startProcessRequest) {
         return processInstanceService.getCleanProcess(startProcessRequest);
