@@ -30,9 +30,9 @@ import {
             <mat-label>Jelszó</mat-label>
             <input
               [(ngModel)]="password"
+              [ngModelOptions]="{ standalone: true }"
               matInput
               type="password"
-              [ngModelOptions]="{ standalone: true }"
             />
           </mat-form-field>
           <button
@@ -65,7 +65,6 @@ export class LoginComponent {
     this.userActionFactory.login(this.username, this.password).subscribe({
       next: (userData: UserData) => {
         this.router.navigateByUrl('/tasks');
-        console.log(userData);
         this.snackBar.open(SNACK_BAR_MSG.LOGGED_IN, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,
           panelClass: ['success-snackbar'],

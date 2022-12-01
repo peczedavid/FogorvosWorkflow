@@ -91,7 +91,6 @@ export class RegisterComponent implements OnInit {
       .register(this.username, this.password, this.role)
       .subscribe({
         next: (userData: UserData) => {
-          console.log(userData);
           this.snackBar.open(
             SNACK_BAR_MSG.REGISTERED,
             SNACK_BAR_MSG.ACTION_TEXT,
