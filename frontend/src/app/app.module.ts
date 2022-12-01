@@ -51,6 +51,7 @@ import { UserActionFactoryImpl } from './state/user/user.action.factory.impl';
 import { userReducer } from './state/user/user.reducer';
 import { USER_STATE_NAME } from './state/user/user.state.model';
 import { HomeComponent } from './components/home/home.component';
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +70,7 @@ import { HomeComponent } from './components/home/home.component';
     VariableCheckboxComponent,
     TaskListItemComponent,
     HomeComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,

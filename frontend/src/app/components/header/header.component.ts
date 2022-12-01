@@ -53,7 +53,7 @@ import {
         <mat-icon style="margin-left: 0.15rem;" fontIcon="account_circle"></mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <button mat-menu-item>Regisztrálás</button>
+        <button mat-menu-item [routerLink]="['/register']">Regisztrálás</button>
         <button mat-menu-item>Adminisztáció</button>
       </mat-menu>
       <button
