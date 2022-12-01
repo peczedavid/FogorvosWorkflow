@@ -56,7 +56,12 @@ import {
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <button type="submit" (click)="register($event)" mat-raised-button color="accent">
+          <button
+            type="submit"
+            (click)="register($event)"
+            mat-raised-button
+            color="accent"
+          >
             Regisztrálás
           </button>
         </form>
@@ -123,7 +128,27 @@ export class RegisterComponent implements OnInit {
     return 'Hibás szerepkör';
   }
 
-  ngOnInit(): void {
+  handleAuthNext(userData: UserData): void {
+    if (userData === null) {
+      this.snackBar.open(
+        SNACK_BAR_MSG.NOT_LOGGED_IN,
+        SNACK_BAR_MSG.ACTION_TEXT,
+        {
+          duration: 2000,
+          panelClass: ['danger-snackbar'],
+        }
+      );
+      this.router.navigateByUrl('/login', { skipLocationChange: true });
+    } else {
+      this.initRoles();
+    }
+  }
+
+  handleAuthError(error: any): void {
+    console.log(error);
+  }
+
+  initRoles(): void {
     this.roleService.getRoles().subscribe({
       next: (roles: Role[]) => {
         this.roles = roles;
@@ -131,6 +156,13 @@ export class RegisterComponent implements OnInit {
       error: (error) => {
         console.log(error);
       },
+    });
+  }
+
+  ngOnInit(): void {
+    this.userActionFactory.check().subscribe({
+      next: (userData: UserData) => this.handleAuthNext(userData),
+      error: (error: any) => this.handleAuthError(error),
     });
   }
 }
