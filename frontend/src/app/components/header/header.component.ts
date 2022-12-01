@@ -23,7 +23,9 @@ import {
         Online klinika
       </button>
       <span class="example-spacer"></span>
-      <p style="font-size: 0.875em; margin-right: 1rem;" mat-button>{{ currentUser?.username }}</p>
+      <p style="font-size: 0.875em; margin-right: 1rem;" mat-button>
+        {{ currentUser?.username + ' (' + currentUser?.role + ')' }}
+      </p>
       <button
         [routerLink]="['/tasks']"
         style="margin-right: 1rem; padding-right: 0.65rem;"

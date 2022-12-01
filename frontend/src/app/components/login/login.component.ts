@@ -63,8 +63,9 @@ export class LoginComponent {
   login(e: Event): void {
     e.preventDefault();
     this.userActionFactory.login(this.username, this.password).subscribe({
-      next: (_: UserData) => {
+      next: (userData: UserData) => {
         this.router.navigateByUrl('/tasks');
+        console.log(userData);
         this.snackBar.open(SNACK_BAR_MSG.LOGGED_IN, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,
           panelClass: ['success-snackbar'],

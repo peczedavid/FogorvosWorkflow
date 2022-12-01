@@ -9,8 +9,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "roles")
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,13 +20,8 @@ public class User {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @NonNull
-    @Column(nullable = false)
-    private String password;
-
-    @NonNull
-    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id", nullable = false, referencedColumnName = "id")
-    private Role role;
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_RECEPTIONIST = "ROLE_RECEPTIONIST";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
 }

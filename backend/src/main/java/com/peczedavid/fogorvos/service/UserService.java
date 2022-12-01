@@ -1,11 +1,13 @@
 package com.peczedavid.fogorvos.service;
 
+import com.peczedavid.fogorvos.model.db.Role;
 import com.peczedavid.fogorvos.model.db.User;
 import com.peczedavid.fogorvos.model.network.LoginRequest;
 import com.peczedavid.fogorvos.model.network.MessageResponse;
 import com.peczedavid.fogorvos.model.network.RegisterRequest;
 import com.peczedavid.fogorvos.model.network.UserData;
 import com.peczedavid.fogorvos.model.task.generic.TaskPayload;
+import com.peczedavid.fogorvos.repository.RoleRepository;
 import com.peczedavid.fogorvos.repository.UserRepository;
 import com.peczedavid.fogorvos.security.JwtUtils;
 import com.peczedavid.fogorvos.security.UserDetailsImpl;
@@ -44,6 +46,7 @@ public class UserService {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     public UserService(
             TaskService taskService,
@@ -52,7 +55,8 @@ public class UserService {
             AuthenticationManager authenticationManager,
             UserDetailsService userDetailsService,
             PasswordEncoder passwordEncoder,
-            UserRepository userRepository
+            UserRepository userRepository,
+            RoleRepository roleRepository
     ) {
         this.taskService = taskService;
         this.runtimeService = runtimeService;
@@ -61,28 +65,31 @@ public class UserService {
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
-    }
-
-    private ResponseEntity<?> tryLogin(String username, String password, HttpServletResponse response) {
-        try {
-            authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            UserDetailsImpl userDetailsImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
-            String userName = userDetailsImpl.getUsername();
-            Cookie jwtCookie = jwtUtils.generaJwtCookie(userDetailsImpl);
-            response.addCookie(jwtCookie);
-            logger.info("User '" + userName + "' logged in.");
-            UserData userData = new UserData(String.valueOf(userDetailsImpl.getId()), userName);
-            return new ResponseEntity<>(userData, HttpStatus.OK);
-        } catch (BadCredentialsException exception) {
-            logger.error("Incorrect username or password!");
-            MessageResponse messageResponse = new MessageResponse("Incorrect username or password!");
-            return new ResponseEntity<>(messageResponse, HttpStatus.FORBIDDEN);
-        }
+        this.roleRepository = roleRepository;
     }
 
     public ResponseEntity<?> login(LoginRequest loginRequest, HttpServletResponse response) {
-        return tryLogin(loginRequest.getUsername(), loginRequest.getPassword(), response);
+        try {
+            final String username = loginRequest.getUsername();
+            final String password = loginRequest.getPassword();
+            authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            UserDetailsImpl userDetailsImpl = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
+            Cookie jwtCookie = jwtUtils.generateJwtCookie(userDetailsImpl);
+            response.addCookie(jwtCookie);
+            User dbUser = userRepository.findByName(username).orElse(null);
+            if (dbUser == null) {
+                final String message = "User '" + dbUser.getName() + "' was not found in database";
+                logger.error(message);
+                return new ResponseEntity<>(new MessageResponse(message), HttpStatus.NOT_FOUND);
+            }
+            logger.info("User '" + username + "' logged in.");
+            UserData userData = new UserData(String.valueOf(userDetailsImpl.getId()), username, dbUser.getRole().getName());
+            return new ResponseEntity<>(userData, HttpStatus.OK);
+        } catch (BadCredentialsException exception) {
+            logger.error("Incorrect username or password!");
+            return new ResponseEntity<>(new MessageResponse("Incorrect username or password!"), HttpStatus.FORBIDDEN);
+        }
     }
 
     public ResponseEntity<MessageResponse> logout(HttpServletRequest request, HttpServletResponse response) {
@@ -104,7 +111,7 @@ public class UserService {
         if (jwt == null) {
             return ResponseEntity.ok(null);
         }
-        UserData userData = new UserData(jwtUtils.getId(jwt), jwtUtils.getUsername(jwt));
+        UserData userData = new UserData(jwtUtils.getId(jwt), jwtUtils.getUsername(jwt), jwtUtils.getRole(jwt));
         return ResponseEntity.ok(userData);
     }
 
@@ -137,10 +144,16 @@ public class UserService {
             logger.error("Username '" + username + "' is already taken");
             return new ResponseEntity<>(new MessageResponse("Username '" + username + "' is already taken."), HttpStatus.BAD_REQUEST);
         }
-        User user = new User(username, password);
+        final String role = registerRequest.getRole();
+        Optional<Role> dbRole = roleRepository.findByName(role);
+        if (dbRole.isEmpty()) {
+            logger.error("Role '" + role + "' not found");
+            return new ResponseEntity<>(new MessageResponse("Role '" + role + "' not found"), HttpStatus.NOT_FOUND);
+        }
+        User user = new User(username, password, dbRole.get());
         userRepository.save(user);
         logger.info("User '" + username + "' successfully registered");
-
-        return tryLogin(username, registerRequest.getPassword(), response);
+        UserData userData = new UserData(String.valueOf(user.getId()), user.getName(), role);
+        return new ResponseEntity<>(userData, HttpStatus.OK);
     }
 }
