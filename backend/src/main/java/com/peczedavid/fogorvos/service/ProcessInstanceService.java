@@ -60,6 +60,7 @@ public class ProcessInstanceService {
             logger.info("Process instance '" + id + "' not found");
             return new ResponseEntity<>(new MessageResponse("Process instance '" + id + "' not found"), HttpStatus.NOT_FOUND);
         }
+
         runtimeService.setVariable(id, varName, variablePayload.getValue());
         if (!variable.equals(runtimeService.getVariable(id, varName))) {
             logger.info("Variable '" + varName + "' value changed.");
