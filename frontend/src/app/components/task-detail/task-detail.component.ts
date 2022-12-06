@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
+import { ROLE_ADMIN, ROLE_RECEPTIONIST } from 'src/app/model/role';
 import { UserData } from 'src/app/model/UserData';
 import {
   TaskActionFactory,
@@ -59,8 +60,21 @@ import {
         ></app-fogszabalyzo-felrakasa>
         <div *ngSwitchDefault>Ismeretlen task</div>
       </div>
-      <button mat-raised-button color="accent" (click)="onCompleteTask()">
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="onCompleteTask()"
+        style="margin-right: 1rem;"
+      >
         Befejez
+      </button>
+      <button
+        mat-raised-button
+        color="warn"
+        (click)="onDeleteProcessInstance()"
+        *ngIf="checkDeleteRole()"
+      >
+        Megszakít
       </button>
     </div>
   `,
@@ -93,6 +107,36 @@ export class TaskDetailComponent implements OnDestroy {
       });
   }
 
+  onDeleteProcessInstance(): void {
+    if (this.task === undefined) return;
+    this.taskActionFactory
+      .deleteProcessInstance(this.task.taskDto.processInstanceId)
+      .subscribe({
+        next: () => {
+          this.taskActionFactory.getTasks(this.currentUser!.id).subscribe();
+          this.snackBar.open(
+            SNACK_BAR_MSG.PROCESS_INSTANCE_DELETED_SUCCESS,
+            SNACK_BAR_MSG.ACTION_TEXT,
+            {
+              duration: 2000,
+              panelClass: ['success-snackbar'],
+            }
+          );
+        },
+        error: (error: HttpErrorResponse) => {
+          console.log(error);
+          this.snackBar.open(
+            SNACK_BAR_MSG.PROCESS_INSTANCE_DELETED_FAILED,
+            SNACK_BAR_MSG.ACTION_TEXT,
+            {
+              duration: 2000,
+              panelClass: ['danger-snackbar'],
+            }
+          );
+        },
+      });
+  }
+
   onCompleteTask(): void {
     if (this.task == undefined) return;
     this.taskActionFactory.completeTask(this.task.taskDto.id).subscribe({
@@ -119,6 +163,13 @@ export class TaskDetailComponent implements OnDestroy {
         );
       },
     });
+  }
+
+  checkDeleteRole(): boolean {
+    return (
+      this.currentUser?.role == ROLE_ADMIN ||
+      this.currentUser?.role == ROLE_RECEPTIONIST
+    );
   }
 
   onClosePanel(): void {

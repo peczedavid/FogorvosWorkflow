@@ -30,6 +30,12 @@ export class TaskService {
     );
   }
 
+  private _deleteProcessInstanceUrl = BACKEND_ADDRESS + '/process-instance/#id#';
+  deleteProcessInstance(processInstanceId: string): Observable<MessageResponse> {
+    const url = this._deleteProcessInstanceUrl.replace('#id#', processInstanceId);
+    return this.http.delete<MessageResponse>(url, { withCredentials: true});
+  }
+
   private _startCleanProcessUrl = BACKEND_ADDRESS + '/process-instance/new';
   startCleanProcess(patientName: string): Observable<MessageResponse> {
     const url = this._startCleanProcessUrl;

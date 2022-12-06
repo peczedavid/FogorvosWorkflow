@@ -8,6 +8,8 @@ export const SNACK_BAR_MSG = {
   TASK_FINISHED_FAILED: 'A feladatot nem sikerült befejezni',
   VARIABLE_CHANGED_SUCCESS: 'Változó átállítva',
   VARIABLE_CHANGED_FAILED: 'A változót nem sikerült átállítani',
+  PROCESS_INSTANCE_DELETED_SUCCESS: 'A folyamat sikeresen megszakadt',
+  PROCESS_INSTANCE_DELETED_FAILED: 'A folyamatot nem sikerült megszakítani',
 
   ACTION_TEXT: 'Bezár'
 };

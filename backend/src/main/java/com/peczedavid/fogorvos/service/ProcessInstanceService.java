@@ -4,9 +4,11 @@ import com.peczedavid.fogorvos.model.db.User;
 import com.peczedavid.fogorvos.model.network.MessageResponse;
 import com.peczedavid.fogorvos.model.network.StartProcessRequest;
 import com.peczedavid.fogorvos.model.process.VariablePayload;
+import com.peczedavid.fogorvos.repository.UsedClinicServiceRepository;
 import com.peczedavid.fogorvos.repository.UserRepository;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.exception.NullValueException;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +23,32 @@ public class ProcessInstanceService {
 
     private final RuntimeService runtimeService;
     private final UserRepository userRepository;
+    private final UsedClinicServiceRepository usedClinicServiceRepository;
 
-    public ProcessInstanceService(RuntimeService runtimeService, UserRepository userRepository) {
+    public ProcessInstanceService(
+            RuntimeService runtimeService,
+            UserRepository userRepository,
+            UsedClinicServiceRepository usedClinicServiceRepository) {
         this.runtimeService = runtimeService;
         this.userRepository = userRepository;
+        this.usedClinicServiceRepository = usedClinicServiceRepository;
+    }
+
+    public ResponseEntity<?> deleteProcess(String id) {
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult();
+
+        if (processInstance == null) {
+            final String text = "Process instance with id: " + id + " not found";
+            logger.warn(text);
+            return new ResponseEntity<>(new MessageResponse(text), HttpStatus.NOT_FOUND);
+        }
+
+        usedClinicServiceRepository.removeByProcessInstanceId(id);
+        runtimeService.deleteProcessInstance(id, "Manually deleted.");
+
+        final String text = "Process instance with id: " + id + " deleted successfully";
+        logger.info(text);
+        return new ResponseEntity<>(new MessageResponse(text), HttpStatus.OK);
     }
 
     // TODO: automatikusan beosztja a többi résztvevőt(role kell hozzá)

@@ -20,6 +20,10 @@ public class ProcessInstanceController {
     }
 
     // TODO: delete process-instance (remove used clinic services records)
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProcess(@PathVariable String id) {
+        return processInstanceService.deleteProcess(id);
+    }
 
     @PostMapping("/new")
     public ResponseEntity<?> startCleanProcess(@RequestBody StartProcessRequest startProcessRequest) {
