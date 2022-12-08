@@ -7,13 +7,13 @@ import {
   Role,
   ROLE_ADMIN,
   ROLE_RECEPTIONIST,
-  ROLE_USER,
+  ROLE_USER
 } from 'src/app/model/role';
 import { UserData } from 'src/app/model/UserData';
 import { RoleService } from 'src/app/services/role.service';
 import {
   UserActionFactory,
-  userActionFactoryToken,
+  userActionFactoryToken
 } from 'src/app/state/user/user.action.factory';
 @Component({
   selector: 'app-register',
@@ -77,7 +77,6 @@ export class RegisterComponent implements OnInit {
   protected password: string = '';
   protected role: string = '';
 
-  // TODO: into own state?
   constructor(
     private roleService: RoleService,
     private router: Router,
@@ -95,7 +94,7 @@ export class RegisterComponent implements OnInit {
     this.userActionFactory
       .register(this.username, this.password, this.role)
       .subscribe({
-        next: (userData: UserData) => {
+        next: (_: UserData) => {
           this.snackBar.open(
             SNACK_BAR_MSG.REGISTERED,
             SNACK_BAR_MSG.ACTION_TEXT,

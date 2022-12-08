@@ -51,7 +51,6 @@ public class ProcessInstanceService {
         return new ResponseEntity<>(new MessageResponse(text), HttpStatus.OK);
     }
 
-    // TODO: automatikusan beosztja a többi résztvevőt(role kell hozzá)
     public ResponseEntity<MessageResponse> getCleanProcess(StartProcessRequest startProcessRequest) {
         User user = userRepository.findByName(startProcessRequest.getPatientName()).orElse(null);
         if (user == null)

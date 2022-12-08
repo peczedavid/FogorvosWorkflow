@@ -52,6 +52,7 @@ import { userReducer } from './state/user/user.reducer';
 import { USER_STATE_NAME } from './state/user/user.state.model';
 import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
+import { NewProcessComponent } from './components/new-process/new-process.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +72,7 @@ import { RegisterComponent } from './components/register/register.component';
     TaskListItemComponent,
     HomeComponent,
     RegisterComponent,
+    NewProcessComponent,
   ],
   imports: [
     BrowserModule,

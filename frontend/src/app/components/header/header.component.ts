@@ -56,7 +56,7 @@ import {
       <mat-menu #menu="matMenu">
         <button mat-menu-item [routerLink]="['/register']">Regisztrálás</button>
         <button mat-menu-item>Adminisztáció</button>
-        <button mat-menu-item (click)="newTask()">Új folyamat</button>
+        <button mat-menu-item [routerLink]="['/new-process']">Új folyamat</button>
       </mat-menu>
       <button
         [routerLink]="['/login']"
@@ -117,16 +117,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         panelClass: ['success-snackbar'],
       });
     });
-  }
-
-  newTask(): void {
-    this.taskActionFactory
-      .startNewProcess('beteg_1')
-      .subscribe((_: MessageResponse) => {
-        this.taskActionFactory
-          .getTasksKeepSelected(this.currentUser!.id)
-          .subscribe();
-      });
   }
 
   checkRegisterRoles(): boolean {
