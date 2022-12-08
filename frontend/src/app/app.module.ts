@@ -20,6 +20,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatDialogModule } from '@angular/material/dialog';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 
@@ -53,6 +55,7 @@ import { USER_STATE_NAME } from './state/user/user.state.model';
 import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { NewProcessComponent } from './components/new-process/new-process.component';
+import { DeleteProcessDialogComponent } from './components/delete-process-dialog/delete-process-dialog.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +76,7 @@ import { NewProcessComponent } from './components/new-process/new-process.compon
     HomeComponent,
     RegisterComponent,
     NewProcessComponent,
+    DeleteProcessDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -101,6 +105,7 @@ import { NewProcessComponent } from './components/new-process/new-process.compon
     MatGridListModule,
     MatCheckboxModule,
     MatSnackBarModule,
+    MatDialogModule,
     ReactiveFormsModule,
   ],
   providers: [
