@@ -3,11 +3,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { MessageResponse } from 'src/app/model/MessageResponse';
+import { mapRoleToReadableName } from 'src/app/model/role';
 import {
   Role,
-  ROLE_ADMIN,
-  ROLE_RECEPTIONIST,
-  ROLE_USER
 } from 'src/app/model/role';
 import { UserData } from 'src/app/model/UserData';
 import { RoleService } from 'src/app/services/role.service';
@@ -52,7 +50,7 @@ import {
             <mat-label>Szerepkör</mat-label>
             <mat-select (selectionChange)="selectValueChanged($event.value)">
               <mat-option *ngFor="let role of roles" [value]="role.name">
-                {{ mapRoleToReadableName(role.name) }}
+                {{ getRoleName(role.name) }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -115,16 +113,8 @@ export class RegisterComponent implements OnInit {
       });
   }
 
-  protected mapRoleToReadableName(role: string): string {
-    switch (role) {
-      case ROLE_USER:
-        return 'Felhasználó';
-      case ROLE_RECEPTIONIST:
-        return 'Recepciós';
-      case ROLE_ADMIN:
-        return 'Admin';
-    }
-    return 'Hibás szerepkör';
+  getRoleName(role: string): string {
+    return mapRoleToReadableName(role);
   }
 
   handleAuthNext(userData: UserData): void {

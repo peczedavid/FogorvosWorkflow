@@ -21,6 +21,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
@@ -109,6 +110,7 @@ import { UsersComponent } from './components/users/users.component';
     MatSnackBarModule,
     MatDialogModule,
     ReactiveFormsModule,
+    MatPaginatorModule
   ],
   providers: [
     TaskService,

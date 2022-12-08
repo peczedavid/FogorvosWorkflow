@@ -67,4 +67,10 @@ export class UserService {
       }
     );
   }
+
+  private _getUsersUrl: string = BACKEND_ADDRESS + '/user';
+  getUsers(): Observable<UserData[]> {
+    const url = this._getUsersUrl;
+    return this.http.get<UserData[]>(url, { withCredentials: true });
+  }
 }
