@@ -6,7 +6,6 @@ import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { MessageResponse } from 'src/app/model/MessageResponse';
 import { ROLE_ADMIN, ROLE_RECEPTIONIST } from 'src/app/model/role';
 import { UserData } from 'src/app/model/UserData';
-import { TaskActionFactory, taskActionFactoryToken } from 'src/app/state/task/task.action.factory';
 import {
   UserActionFactory,
   userActionFactoryToken,
@@ -55,8 +54,10 @@ import {
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item [routerLink]="['/register']">Regisztrálás</button>
-        <button mat-menu-item>Adminisztáció</button>
-        <button mat-menu-item [routerLink]="['/new-process']">Új folyamat</button>
+        <button mat-menu-item [routerLink]="['/users']" *ngIf="checkAdmin()" >Adminisztáció</button>
+        <button mat-menu-item [routerLink]="['/new-process']">
+          Új folyamat
+        </button>
       </mat-menu>
       <button
         [routerLink]="['/login']"
@@ -91,8 +92,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private ngrxStore: Store,
     @Inject(userActionFactoryToken)
     private userActionFactory: UserActionFactory,
-    @Inject(taskActionFactoryToken)
-    private taskActionFactory: TaskActionFactory,
     private snackBar: MatSnackBar
   ) {
     this.userSubscription = this.ngrxStore
@@ -107,6 +106,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userSubscription.unsubscribe();
+  }
+
+  checkAdmin(): boolean {
+    return (
+      this.currentUser !== undefined && this.currentUser.role === ROLE_ADMIN
+    );
   }
 
   logout(): void {

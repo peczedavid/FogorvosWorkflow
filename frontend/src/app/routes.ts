@@ -5,6 +5,7 @@ import { TasksPageComponent } from './components/tasks-page/tasks-page.component
 import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { NewProcessComponent } from './components/new-process/new-process.component';
+import { UsersComponent } from './components/users/users.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -12,4 +13,5 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'new-process', component: NewProcessComponent },
+  { path: 'users', component: UsersComponent}
 ];

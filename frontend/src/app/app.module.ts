@@ -56,6 +56,7 @@ import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { NewProcessComponent } from './components/new-process/new-process.component';
 import { DeleteProcessDialogComponent } from './components/delete-process-dialog/delete-process-dialog.component';
+import { UsersComponent } from './components/users/users.component';
 
 @NgModule({
   declarations: [
@@ -77,6 +78,7 @@ import { DeleteProcessDialogComponent } from './components/delete-process-dialog
     RegisterComponent,
     NewProcessComponent,
     DeleteProcessDialogComponent,
+    UsersComponent,
   ],
   imports: [
     BrowserModule,

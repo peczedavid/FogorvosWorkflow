@@ -68,6 +68,15 @@ public class UserService {
         this.roleRepository = roleRepository;
     }
 
+    public ResponseEntity<List<UserData>> getUsers() {
+        List<UserData> users = userRepository
+                .findAll()
+                .stream()
+                .map(UserData::new)
+                .toList();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
     public ResponseEntity<?> login(LoginRequest loginRequest, HttpServletResponse response) {
         try {
             final String username = loginRequest.getUsername();

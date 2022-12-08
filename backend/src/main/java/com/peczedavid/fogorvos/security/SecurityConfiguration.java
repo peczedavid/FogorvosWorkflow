@@ -63,6 +63,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/role").access(
                         "hasRole('" + Role.ROLE_RECEPTIONIST + "') or " + "hasRole('" + Role.ROLE_ADMIN + "')"
                 )
+                .antMatchers("/api/user").access(
+                        "hasRole('" + Role.ROLE_ADMIN + "')"
+                )
                 .anyRequest().authenticated();
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
