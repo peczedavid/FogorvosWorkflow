@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.peczedavid.fogorvos.model.db.ClinicService.*;
@@ -50,6 +51,28 @@ public class TaskServiceCustom {
         this.userRepository = userRepository;
         this.clinicServiceRepository = clinicServiceRepository;
         this.usedClinicServiceRepository = usedClinicServiceRepository;
+    }
+
+    public ResponseEntity<?> getAllTasks() {
+        List<Task> taskList = taskService.createTaskQuery().list();
+        List<TaskPayload> taskPayloadList = new ArrayList<>(taskList.size());
+
+        for (Task task : taskList) {
+            List<VariableInstanceDto> taskVariables = runtimeService
+                    .createVariableInstanceQuery()
+                    .processInstanceIdIn(task.getProcessInstanceId())
+                    .list()
+                    .stream()
+                    .map(VariableInstanceDto::fromVariableInstance)
+                    .collect(Collectors.toList());
+
+            TaskPayload taskPayload = TaskPayload.fromTask(task, taskVariables);
+            final Optional<User> user = userRepository.findById(Long.valueOf(taskPayload.getTaskDto().getAssignee()));
+            user.ifPresent(value -> taskPayload.setAssigneeName(value.getName()));
+
+            taskPayloadList.add(taskPayload);
+        }
+        return new ResponseEntity<>(taskPayloadList, HttpStatus.OK);
     }
 
     public ResponseEntity<?> getTask(String id) {

@@ -10,18 +10,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
@@ -33,6 +34,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { TasksPageComponent } from './components/tasks-page/tasks-page.component';
 
+import { DeleteProcessDialogComponent } from './components/delete-process-dialog/delete-process-dialog.component';
+import { HomeComponent } from './components/home/home.component';
+import { NewProcessComponent } from './components/new-process/new-process.component';
+import { RegisterComponent } from './components/register/register.component';
 import { TaskDetailComponent } from './components/task-detail/task-detail.component';
 import { TaskListItemComponent } from './components/task-list-item/task-list-item.component';
 import { BetegErtesiteseComponent } from './components/task/beteg-ertesitese/beteg-ertesitese.component';
@@ -42,6 +47,7 @@ import { MegjelenesIdopontonComponent } from './components/task/megjelenes-idopo
 import { RontgenComponent } from './components/task/rontgen/rontgen.component';
 import { SzakorvosiVizsgalatComponent } from './components/task/szakorvosi-vizsgalat/szakorvosi-vizsgalat.component';
 import { VizsgalatComponent } from './components/task/vizsgalat/vizsgalat.component';
+import { UsersComponent } from './components/users/users.component';
 import { VariableCheckboxComponent } from './components/variable/variable-checkbox/variable-checkbox.component';
 import { routes } from './routes';
 import { TaskService } from './services/task.service';
@@ -53,11 +59,6 @@ import { userActionFactoryToken } from './state/user/user.action.factory';
 import { UserActionFactoryImpl } from './state/user/user.action.factory.impl';
 import { userReducer } from './state/user/user.reducer';
 import { USER_STATE_NAME } from './state/user/user.state.model';
-import { HomeComponent } from './components/home/home.component';
-import { RegisterComponent } from './components/register/register.component';
-import { NewProcessComponent } from './components/new-process/new-process.component';
-import { DeleteProcessDialogComponent } from './components/delete-process-dialog/delete-process-dialog.component';
-import { UsersComponent } from './components/users/users.component';
 
 @NgModule({
   declarations: [
@@ -110,7 +111,8 @@ import { UsersComponent } from './components/users/users.component';
     MatSnackBarModule,
     MatDialogModule,
     ReactiveFormsModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSidenavModule,
   ],
   providers: [
     TaskService,

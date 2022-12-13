@@ -125,22 +125,20 @@ public class UserService {
     }
 
     public ResponseEntity<List<TaskPayload>> getTasks(String userId) {
-        List<Task> tasks = taskService.createTaskQuery().list();
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee(userId).list();
         List<TaskPayload> taskPayloads = new ArrayList<>(tasks.size());
 
         for (Task task : tasks) {
-            if (task.getAssignee().equals(userId)) {
-                List<VariableInstanceDto> taskVariables = runtimeService
-                        .createVariableInstanceQuery()
-                        .processInstanceIdIn(task.getProcessInstanceId())
-                        .list()
-                        .stream()
-                        .map(VariableInstanceDto::fromVariableInstance)
-                        .collect(Collectors.toList());
+            List<VariableInstanceDto> taskVariables = runtimeService
+                    .createVariableInstanceQuery()
+                    .processInstanceIdIn(task.getProcessInstanceId())
+                    .list()
+                    .stream()
+                    .map(VariableInstanceDto::fromVariableInstance)
+                    .collect(Collectors.toList());
 
-                TaskPayload taskPayload = TaskPayload.fromTask(task, taskVariables);
-                taskPayloads.add(taskPayload);
-            }
+            TaskPayload taskPayload = TaskPayload.fromTask(task, taskVariables);
+            taskPayloads.add(taskPayload);
         }
         return new ResponseEntity<>(taskPayloads, HttpStatus.OK);
     }

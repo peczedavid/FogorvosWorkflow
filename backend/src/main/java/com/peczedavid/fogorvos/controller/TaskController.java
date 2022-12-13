@@ -15,6 +15,11 @@ public class TaskController {
         this.taskServiceCustom = taskServiceCustom;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllTasks() {
+        return taskServiceCustom.getAllTasks();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getTask(@PathVariable String id) {
         return taskServiceCustom.getTask(id);

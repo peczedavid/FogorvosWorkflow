@@ -15,6 +15,8 @@ import java.util.List;
 @Setter
 public abstract class TaskPayload {
 
+    protected String assigneeName;
+
     protected TaskTipus taskTipus;
 
     protected TaskDto taskDto;
