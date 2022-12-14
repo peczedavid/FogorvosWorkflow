@@ -4,15 +4,22 @@ import com.peczedavid.fogorvos.model.db.User;
 import com.peczedavid.fogorvos.model.network.MessageResponse;
 import com.peczedavid.fogorvos.model.network.StartProcessRequest;
 import com.peczedavid.fogorvos.model.process.VariablePayload;
+import com.peczedavid.fogorvos.repository.UsedClinicServiceRepository;
 import com.peczedavid.fogorvos.repository.UserRepository;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.exception.NullValueException;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.peczedavid.fogorvos.constants.CamundaConstants.*;
 
 @Service
 public class ProcessInstanceService {
@@ -21,28 +28,43 @@ public class ProcessInstanceService {
 
     private final RuntimeService runtimeService;
     private final UserRepository userRepository;
+    private final UsedClinicServiceRepository usedClinicServiceRepository;
 
-    public ProcessInstanceService(RuntimeService runtimeService, UserRepository userRepository) {
+    public ProcessInstanceService(
+            RuntimeService runtimeService,
+            UserRepository userRepository,
+            UsedClinicServiceRepository usedClinicServiceRepository) {
         this.runtimeService = runtimeService;
         this.userRepository = userRepository;
+        this.usedClinicServiceRepository = usedClinicServiceRepository;
     }
 
-    // TODO: automatikusan beosztja a többi résztvevőt(role kell hozzá)
-    public ResponseEntity<MessageResponse> getCleanProcess(StartProcessRequest startProcessRequest) {
+    public ResponseEntity<MessageResponse> deleteProcess(String id) {
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult();
+
+        if (processInstance == null) {
+            final String text = "Process instance with id: " + id + " not found";
+            logger.warn(text);
+            return new ResponseEntity<>(new MessageResponse(text), HttpStatus.NOT_FOUND);
+        }
+
+        usedClinicServiceRepository.removeByProcessInstanceId(id);
+        runtimeService.deleteProcessInstance(id, "Manually deleted.");
+
+        final String text = "Process instance with id: " + id + " deleted successfully";
+        logger.info(text);
+        return new ResponseEntity<>(new MessageResponse(text), HttpStatus.OK);
+    }
+
+    public ResponseEntity<MessageResponse> startCleanProcess(StartProcessRequest startProcessRequest) {
         User user = userRepository.findByName(startProcessRequest.getPatientName()).orElse(null);
         if (user == null)
             return new ResponseEntity<>(new MessageResponse("User '" + startProcessRequest.getPatientName() + "' not found."), HttpStatus.NOT_FOUND);
 
+        Map<String, Object> variables = setUpVariables(user);
+
         ProcessInstanceWithVariables processInstance = runtimeService.createProcessInstanceByKey(PROCESS_NAME)
-                .setVariable(VARIABLE_ROLE_BETEG_NAME, user.getId().toString())
-                .setVariable(VARIABLE_ROLE_RECEPCIOS_NAME, "14")
-                .setVariable(VARIABLE_ROLE_ORVOS_NAME, "14")
-                .setVariable(VARIABLE_ROLE_RONTGENES_NAME, "14")
-                .setVariable(VARIABLE_ROLE_SZAKORVOS_NAME, "14")
-                .setVariable(VARIABLE_RONTGEN_NAME, false)
-                .setVariable(VARIABLE_SZAKORVOSI_VIZSGALAT_NAME, false)
-                .setVariable(VARIABLE_FOGSZABALYZO_NAME, false)
-                .setVariable(VARIABLE_ELMARAD_NAME, false)
+                .setVariables(variables)
                 .executeWithVariablesInReturn();
 
         logger.info("Process instance " + processInstance.getProcessInstanceId() + " started");
@@ -60,6 +82,7 @@ public class ProcessInstanceService {
             logger.info("Process instance '" + id + "' not found");
             return new ResponseEntity<>(new MessageResponse("Process instance '" + id + "' not found"), HttpStatus.NOT_FOUND);
         }
+
         runtimeService.setVariable(id, varName, variablePayload.getValue());
         if (!variable.equals(runtimeService.getVariable(id, varName))) {
             logger.info("Variable '" + varName + "' value changed.");
@@ -70,17 +93,21 @@ public class ProcessInstanceService {
         }
     }
 
-    public static final String PROCESS_NAME = "Process_Fogorvos";
+    private Map<String, Object> setUpVariables(User user) {
+        Map<String, Object> variables = new HashMap<>();
 
-    public static final String VARIABLE_ROLE_BETEG_NAME = "beteg";
-    public static final String VARIABLE_ROLE_RECEPCIOS_NAME = "recepcios";
-    public static final String VARIABLE_ROLE_ORVOS_NAME = "orvos";
-    public static final String VARIABLE_ROLE_RONTGENES_NAME = "rontgenes";
-    public static final String VARIABLE_ROLE_SZAKORVOS_NAME = "szakorvos";
+        variables.put(VARIABLE_ROLE_BETEG_NAME, user.getId().toString());
+        variables.put(VARIABLE_ROLE_RECEPCIOS_NAME, "14");
+        variables.put(VARIABLE_ROLE_ORVOS_NAME, "14");
+        variables.put(VARIABLE_ROLE_RONTGENES_NAME, "14");
+        variables.put(VARIABLE_ROLE_SZAKORVOS_NAME, "14");
+        variables.put(VARIABLE_RONTGEN_NAME, false);
+        variables.put(VARIABLE_SZAKORVOSI_VIZSGALAT_NAME, false);
+        variables.put(VARIABLE_FOGSZABALYZO_NAME, false);
+        variables.put(VARIABLE_ELMARAD_NAME, false);
 
-    public static final String VARIABLE_RONTGEN_NAME = "rontgen";
-    public static final String VARIABLE_SZAKORVOSI_VIZSGALAT_NAME = "szakorvosiVizsgalat";
-    public static final String VARIABLE_FOGSZABALYZO_NAME = "fogszabalyzo";
-    public static final String VARIABLE_ELMARAD_NAME = "elmarad";
+        return variables;
+    }
+
 
 }

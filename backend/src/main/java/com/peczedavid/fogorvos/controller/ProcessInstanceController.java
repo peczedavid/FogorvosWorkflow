@@ -19,9 +19,14 @@ public class ProcessInstanceController {
         this.processInstanceService = processInstanceService;
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MessageResponse> deleteProcess(@PathVariable String id) {
+        return processInstanceService.deleteProcess(id);
+    }
+
     @PostMapping("/new")
-    public ResponseEntity<?> startCleanProcess(@RequestBody StartProcessRequest startProcessRequest) {
-        return processInstanceService.getCleanProcess(startProcessRequest);
+    public ResponseEntity<MessageResponse> startCleanProcess(@RequestBody StartProcessRequest startProcessRequest) {
+        return processInstanceService.startCleanProcess(startProcessRequest);
     }
 
     @PostMapping("/{id}/variables/{varName}")

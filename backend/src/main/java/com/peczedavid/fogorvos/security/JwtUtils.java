@@ -36,7 +36,7 @@ public class JwtUtils {
         return cookie.getValue();
     }
 
-    public Cookie generaJwtCookie(UserDetailsImpl userDetailsImpl) {
+    public Cookie generateJwtCookie(UserDetailsImpl userDetailsImpl) {
         String jwt = generateToken(userDetailsImpl);
         Cookie cookie = new Cookie(COOKIE_NAME, jwt);
         cookie.setHttpOnly(true);
@@ -74,12 +74,19 @@ public class JwtUtils {
     public String generateToken(UserDetailsImpl userDetailsImpl) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(TOKEN_ID, String.valueOf(userDetailsImpl.getId()));
+        var authorities = userDetailsImpl.getAuthorities().stream().toList();
+        claims.put(TOKEN_ROLE, authorities.get(0).getAuthority());
         return createToken(claims, userDetailsImpl.getUsername());
     }
 
     public String getId(String jwt) {
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(jwt);
         return claimsJws.getBody().get(TOKEN_ID, String.class);
+    }
+
+    public String getRole(String jwt) {
+        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(jwt);
+        return claimsJws.getBody().get(TOKEN_ROLE, String.class);
     }
 
     public String getUsername(String token) {
@@ -111,4 +118,5 @@ public class JwtUtils {
 
     public static final String TOKEN_PATH = "/api";
     public static final String TOKEN_ID = "id";
+    public static final String TOKEN_ROLE = "role";
 }

@@ -3,6 +3,7 @@ import { TaskPayload } from 'src/app/model/generic/task';
 import { MessageResponse } from 'src/app/model/MessageResponse';
 import {
   COMPLETE_TASK_RESPONSE,
+  DELETE_PROCESS_INSTANCE_RESPONSE,
   GET_TASKS_KEEP_SELECTED_RESPONSE,
   GET_TASKS_RESPONSE,
   SET_SELECTED_TASK_RESPONSE,
@@ -33,6 +34,8 @@ export function taskReducer(
       return completeTaskResponse(tasksState, action.payload);
     case SET_VARIABLE_RESPONSE:
       return setVariableResponse(tasksState, action.payload);
+      case DELETE_PROCESS_INSTANCE_RESPONSE:
+        return deleteProcessInstanceResponse(tasksState, action.payload);
     default:
       return tasksState;
   }
@@ -42,6 +45,14 @@ function setVariableResponse(
   tasksState: TasksState,
   message: MessageResponse
 ): TasksState {
+  const changes: TasksState = {
+    tasks: tasksState.tasks,
+    selectedTask: tasksState.selectedTask,
+  };
+  return changeState(tasksState, changes);
+}
+
+function  deleteProcessInstanceResponse(tasksState: TasksState, payload: MessageResponse): TasksState {
   const changes: TasksState = {
     tasks: tasksState.tasks,
     selectedTask: tasksState.selectedTask,

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { MessageResponse } from 'src/app/model/MessageResponse';
+import { ROLE_ADMIN, ROLE_RECEPTIONIST } from 'src/app/model/role';
 import { UserData } from 'src/app/model/UserData';
 import {
   UserActionFactory,
@@ -23,7 +24,13 @@ import {
         Online klinika
       </button>
       <span class="example-spacer"></span>
-      <p style="font-size: 0.875em; margin-right: 1rem;" mat-button>{{ currentUser?.username }}</p>
+      <p
+        *ngIf="currentUser !== undefined"
+        style="font-size: 0.875em; margin-right: 1rem;"
+        mat-button
+      >
+        {{ currentUser.username + ' (' + currentUser.role + ')' }}
+      </p>
       <button
         [routerLink]="['/tasks']"
         style="margin-right: 1rem; padding-right: 0.65rem;"
@@ -33,6 +40,25 @@ import {
         Feladatok
         <mat-icon style="margin-left: 0.5rem;" fontIcon="list_alt"></mat-icon>
       </button>
+      <button
+        [matMenuTriggerFor]="menu"
+        style="margin-right: 1rem; padding-right: 0.65rem;"
+        mat-raised-button
+        *ngIf="checkRegisterRoles()"
+      >
+        Műveletek
+        <mat-icon
+          style="margin-left: 0.15rem;"
+          fontIcon="account_circle"
+        ></mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item [routerLink]="['/register']">Regisztrálás</button>
+        <button mat-menu-item [routerLink]="['/users']" *ngIf="checkAdmin()" >Adminisztáció</button>
+        <button mat-menu-item [routerLink]="['/new-process']">
+          Új folyamat
+        </button>
+      </mat-menu>
       <button
         [routerLink]="['/login']"
         style="margin-right: 1rem; padding-right: 0.65rem;"
@@ -82,6 +108,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.userSubscription.unsubscribe();
   }
 
+  checkAdmin(): boolean {
+    return (
+      this.currentUser !== undefined && this.currentUser.role === ROLE_ADMIN
+    );
+  }
+
   logout(): void {
     this.userActionFactory.logout().subscribe((_: MessageResponse) => {
       this.router.navigateByUrl('/');
@@ -90,5 +122,13 @@ export class HeaderComponent implements OnInit, OnDestroy {
         panelClass: ['success-snackbar'],
       });
     });
+  }
+
+  checkRegisterRoles(): boolean {
+    if (this.currentUser === undefined) return false;
+    return (
+      this.currentUser.role === ROLE_ADMIN ||
+      this.currentUser.role === ROLE_RECEPTIONIST
+    );
   }
 }

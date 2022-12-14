@@ -36,23 +36,13 @@ import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
     >
       <div fxFlex="35%" style="margin-top: 0.5rem">
         <button
-          style="margin-left: 1rem; margin-right: 1rem; padding-right: 0.55rem;"
-          (click)="newTask()"
+          style="margin-bottom: 1rem;"
+          (click)="onRefreshTasks()"
           color="basic"
           mat-raised-button
         >
-          Új folyamat
-          <mat-icon
-            style="margin-left: 0.35rem; font-size: 1.6em;"
-            fontIcon="create"
-          ></mat-icon>
-        </button>
-        <button
-          style="margin-bottom: 1rem;"
-          mat-icon-button
-          (click)="onRefreshTasks()"
-        >
-          <mat-icon fontIcon="refresh"></mat-icon>
+          Frissítés
+          <mat-icon style="padding-left: 0.35rem" fontIcon="refresh"></mat-icon>
         </button>
         <mat-selection-list
           id="task-list"
@@ -148,16 +138,6 @@ export class TasksPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.tasksSubscription.unsubscribe();
     this.userSubscription.unsubscribe();
-  }
-
-  newTask(): void {
-    this.taskActionFactory
-      .startNewProcess('beteg_1')
-      .subscribe((message: MessageResponse) => {
-        this.taskActionFactory
-          .getTasksKeepSelected(this.currentUser!.id)
-          .subscribe();
-      });
   }
 
   onRefreshTasks() {

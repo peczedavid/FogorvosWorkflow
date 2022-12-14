@@ -6,10 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Data
@@ -22,14 +24,18 @@ public class UserDetailsImpl implements UserDetails {
     private Long id;
     private String username;
     private String password;
+    private String role;
     private Collection<? extends GrantedAuthority> authorities;
 
     public static UserDetailsImpl build(User user) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        final String roleStr = user.getRole().getName();
+        authorities.add(new SimpleGrantedAuthority(roleStr));
         return UserDetailsImpl.builder()
                 .id(user.getId())
                 .username(user.getName())
                 .password(user.getPassword())
-                .authorities(new ArrayList<>())
+                .authorities(authorities)
                 .build();
     }
 

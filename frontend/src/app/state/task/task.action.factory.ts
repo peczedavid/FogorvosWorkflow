@@ -12,6 +12,7 @@ export const SET_SELECTED_TASK_RESPONSE = 'SET_SELECTED_TASK_RESPONSE';
 export const START_NEW_PROCESS_RESPONSE = 'START_NEW_PROCESS_RESPONSE';
 export const COMPLETE_TASK_RESPONSE = 'COMPLETE_TASK_RESPONSE';
 export const SET_VARIABLE_RESPONSE = 'SET_VARIABLE_RESPONSE';
+export const DELETE_PROCESS_INSTANCE_RESPONSE = 'DELETE_PROCESS_INSTANCE_RESPONSE'; 
 
 export const taskActionFactoryToken: InjectionToken<TaskActionFactory> =
   new InjectionToken<TaskActionFactory>(DESC);
@@ -27,4 +28,5 @@ export interface TaskActionFactory {
     variableName: string,
     variableValue: any
   ): Observable<MessageResponse>;
+  deleteProcessInstance(processInstanceId: string): Observable<MessageResponse>;
 }

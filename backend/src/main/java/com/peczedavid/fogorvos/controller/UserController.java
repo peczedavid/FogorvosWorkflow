@@ -25,6 +25,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping
+    public ResponseEntity<List<UserData>> getUsers() {
+        return userService.getUsers();
+    }
+
     @GetMapping("/{id}/task")
     public ResponseEntity<List<TaskPayload>> getTasks(@PathVariable String id) {
         return userService.getTasks(id);

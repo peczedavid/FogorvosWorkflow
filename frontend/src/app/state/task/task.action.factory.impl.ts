@@ -7,6 +7,7 @@ import { TaskService } from 'src/app/services/task.service';
 import { UserService } from 'src/app/services/user.service';
 import {
   COMPLETE_TASK_RESPONSE,
+  DELETE_PROCESS_INSTANCE_RESPONSE,
   GET_TASKS_KEEP_SELECTED_RESPONSE,
   GET_TASKS_RESPONSE,
   SET_SELECTED_TASK_RESPONSE,
@@ -22,6 +23,22 @@ export class TaskActionFactoryImpl implements TaskActionFactory {
     private userService: UserService,
     private ngrxStore: Store<any>
   ) {}
+
+  deleteProcessInstance(processInstanceId: string): Observable<MessageResponse> {
+    return new Observable<MessageResponse>((subscriber: Subscriber<any>) => {
+      this.taskService
+        .deleteProcessInstance(processInstanceId)
+        .subscribe((response: MessageResponse) => {
+          this.ngrxStore.dispatch({
+          type: DELETE_PROCESS_INSTANCE_RESPONSE,
+          payload: response  
+          });
+          subscriber.next(response);
+          subscriber.complete();
+        });
+        return function unsubscribe() {};
+    });
+  }
 
   setVariable(
     processId: string,

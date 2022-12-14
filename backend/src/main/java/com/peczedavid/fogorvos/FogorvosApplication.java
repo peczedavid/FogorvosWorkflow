@@ -4,12 +4,11 @@ import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+// TODO: spring error handling
+
 @EnableProcessApplication
 @SpringBootApplication
 public class FogorvosApplication {
-
-    // TODO: authorizáció
-    // TODO: role-ok
 
     public static void main(String[] args) {
         SpringApplication.run(FogorvosApplication.class, args);

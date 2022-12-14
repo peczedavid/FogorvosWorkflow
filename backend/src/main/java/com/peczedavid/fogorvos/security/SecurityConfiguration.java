@@ -1,5 +1,6 @@
 package com.peczedavid.fogorvos.security;
 
+import com.peczedavid.fogorvos.model.db.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,7 +57,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/user/login").permitAll()
                 .antMatchers("/api/user/logout").permitAll()
                 .antMatchers("/api/user/check").permitAll()
-                .antMatchers("/api/user/register").permitAll()
+                .antMatchers("/api/user/register").access(
+                        "hasRole('" + Role.ROLE_RECEPTIONIST + "') or " + "hasRole('" + Role.ROLE_ADMIN + "')"
+                )
+                .antMatchers("/api/role").access(
+                        "hasRole('" + Role.ROLE_RECEPTIONIST + "') or " + "hasRole('" + Role.ROLE_ADMIN + "')"
+                )
+                .antMatchers("/api/user").access(
+                        "hasRole('" + Role.ROLE_ADMIN + "')"
+                )
+                .antMatchers("/api/task/all").access(
+                        "hasRole('" + Role.ROLE_ADMIN + "')"
+                )
                 .anyRequest().authenticated();
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }

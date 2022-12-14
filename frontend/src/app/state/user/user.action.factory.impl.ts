@@ -8,6 +8,7 @@ import {
   CHECK_RESPONSE,
   LOGIN_RESPONSE,
   LOGOUT_RESPONSE,
+  REGISTER_RESPONSE,
   UserActionFactory
 } from './user.action.factory';
 
@@ -17,6 +18,22 @@ export class UserActionFactoryImpl implements UserActionFactory {
     private userService: UserService,
     private ngrxStore: Store<any>
   ) {}
+
+  register(username: string, password: string, role: string): Observable<UserData> {
+    return new Observable<UserData>((subscriber: Subscriber<any>) => {
+      this.userService
+        .register(username, password, role)
+        .subscribe((userData: UserData) => {
+          this.ngrxStore.dispatch({
+            type: REGISTER_RESPONSE,
+            payload: userData
+          });
+          subscriber.next(userData);
+          subscriber.complete();
+        });
+        return function unsubscribe() {};
+    });
+  }
 
   login(username: string, passwod: string): Observable<UserData> {
     return new Observable<UserData>((subscriber: Subscriber<any>) => {

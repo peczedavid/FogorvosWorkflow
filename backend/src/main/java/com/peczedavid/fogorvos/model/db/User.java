@@ -24,4 +24,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @NonNull
+    @ManyToOne(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false, referencedColumnName = "id")
+    private Role role;
+
 }

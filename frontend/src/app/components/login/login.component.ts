@@ -30,9 +30,9 @@ import {
             <mat-label>Jelszó</mat-label>
             <input
               [(ngModel)]="password"
+              [ngModelOptions]="{ standalone: true }"
               matInput
               type="password"
-              [ngModelOptions]="{ standalone: true }"
             />
           </mat-form-field>
           <button
@@ -63,7 +63,7 @@ export class LoginComponent {
   login(e: Event): void {
     e.preventDefault();
     this.userActionFactory.login(this.username, this.password).subscribe({
-      next: (_: UserData) => {
+      next: (userData: UserData) => {
         this.router.navigateByUrl('/tasks');
         this.snackBar.open(SNACK_BAR_MSG.LOGGED_IN, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,
@@ -71,8 +71,7 @@ export class LoginComponent {
         });
       },
       error: (messageResponse: MessageResponse) => {
-        // TODO: nem fut le,
-        //       action factory-ban lehet valami
+        // TODO: nem fut le, action factory-ban lehet valami
         console.log(messageResponse.message);
         this.snackBar.open(SNACK_BAR_MSG.ERROR, SNACK_BAR_MSG.ACTION_TEXT, {
           duration: 2000,

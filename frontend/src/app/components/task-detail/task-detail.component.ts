@@ -1,9 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { TaskPayload, TaskTipus } from 'src/app/model/generic/task';
+import { ROLE_ADMIN, ROLE_RECEPTIONIST } from 'src/app/model/role';
 import { UserData } from 'src/app/model/UserData';
 import {
   TaskActionFactory,
@@ -17,6 +19,7 @@ import {
   selectUserState,
   UserState,
 } from 'src/app/state/user/user.state.model';
+import { DeleteProcessDialogComponent } from '../delete-process-dialog/delete-process-dialog.component';
 
 @Component({
   selector: 'app-task-detail',
@@ -59,8 +62,21 @@ import {
         ></app-fogszabalyzo-felrakasa>
         <div *ngSwitchDefault>Ismeretlen task</div>
       </div>
-      <button mat-raised-button color="accent" (click)="onCompleteTask()">
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="onCompleteTask()"
+        style="margin-right: 1rem;"
+      >
         Befejez
+      </button>
+      <button
+        mat-raised-button
+        color="warn"
+        (click)="onDeleteProcessInstance()"
+        *ngIf="checkDeleteRole()"
+      >
+        Megszakít
       </button>
     </div>
   `,
@@ -79,7 +95,8 @@ export class TaskDetailComponent implements OnDestroy {
     private snackBar: MatSnackBar,
     private ngrxStore: Store,
     @Inject(taskActionFactoryToken)
-    private taskActionFactory: TaskActionFactory
+    private taskActionFactory: TaskActionFactory,
+    private dialog: MatDialog
   ) {
     this.tasksSubscription = this.ngrxStore
       .select(selectTasksState)
@@ -91,6 +108,68 @@ export class TaskDetailComponent implements OnDestroy {
       .subscribe((userState: UserState) => {
         this.currentUser = userState.currentUser;
       });
+  }
+
+  onDeleteProcessInstance(): void {
+    const dialogRef = this.dialog.open(DeleteProcessDialogComponent);
+    dialogRef.afterClosed().subscribe((cancel) => {
+      if (!cancel) return;
+      if (this.task === undefined) return;
+      this.taskActionFactory
+        .deleteProcessInstance(this.task.taskDto.processInstanceId)
+        .subscribe({
+          next: () => {
+            this.taskActionFactory.getTasks(this.currentUser!.id).subscribe();
+            this.snackBar.open(
+              SNACK_BAR_MSG.PROCESS_INSTANCE_DELETED_SUCCESS,
+              SNACK_BAR_MSG.ACTION_TEXT,
+              {
+                duration: 2000,
+                panelClass: ['success-snackbar'],
+              }
+            );
+          },
+          error: (error: HttpErrorResponse) => {
+            console.log(error);
+            this.snackBar.open(
+              SNACK_BAR_MSG.PROCESS_INSTANCE_DELETED_FAILED,
+              SNACK_BAR_MSG.ACTION_TEXT,
+              {
+                duration: 2000,
+                panelClass: ['danger-snackbar'],
+              }
+            );
+          },
+        });
+    });
+
+    // if (this.task === undefined) return;
+    // this.taskActionFactory
+    //   .deleteProcessInstance(this.task.taskDto.processInstanceId)
+    //   .subscribe({
+    //     next: () => {
+    //       this.taskActionFactory.getTasks(this.currentUser!.id).subscribe();
+    //       this.snackBar.open(
+    //         SNACK_BAR_MSG.PROCESS_INSTANCE_DELETED_SUCCESS,
+    //         SNACK_BAR_MSG.ACTION_TEXT,
+    //         {
+    //           duration: 2000,
+    //           panelClass: ['success-snackbar'],
+    //         }
+    //       );
+    //     },
+    //     error: (error: HttpErrorResponse) => {
+    //       console.log(error);
+    //       this.snackBar.open(
+    //         SNACK_BAR_MSG.PROCESS_INSTANCE_DELETED_FAILED,
+    //         SNACK_BAR_MSG.ACTION_TEXT,
+    //         {
+    //           duration: 2000,
+    //           panelClass: ['danger-snackbar'],
+    //         }
+    //       );
+    //     },
+    //   });
   }
 
   onCompleteTask(): void {
@@ -119,6 +198,13 @@ export class TaskDetailComponent implements OnDestroy {
         );
       },
     });
+  }
+
+  checkDeleteRole(): boolean {
+    return (
+      this.currentUser?.role == ROLE_ADMIN ||
+      this.currentUser?.role == ROLE_RECEPTIONIST
+    );
   }
 
   onClosePanel(): void {
