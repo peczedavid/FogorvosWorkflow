@@ -16,6 +16,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.peczedavid.fogorvos.constants.CamundaConstants.*;
+
 @Service
 public class ProcessInstanceService {
 
@@ -34,7 +39,7 @@ public class ProcessInstanceService {
         this.usedClinicServiceRepository = usedClinicServiceRepository;
     }
 
-    public ResponseEntity<?> deleteProcess(String id) {
+    public ResponseEntity<MessageResponse> deleteProcess(String id) {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult();
 
         if (processInstance == null) {
@@ -51,21 +56,15 @@ public class ProcessInstanceService {
         return new ResponseEntity<>(new MessageResponse(text), HttpStatus.OK);
     }
 
-    public ResponseEntity<MessageResponse> getCleanProcess(StartProcessRequest startProcessRequest) {
+    public ResponseEntity<MessageResponse> startCleanProcess(StartProcessRequest startProcessRequest) {
         User user = userRepository.findByName(startProcessRequest.getPatientName()).orElse(null);
         if (user == null)
             return new ResponseEntity<>(new MessageResponse("User '" + startProcessRequest.getPatientName() + "' not found."), HttpStatus.NOT_FOUND);
 
+        Map<String, Object> variables = setUpVariables(user);
+
         ProcessInstanceWithVariables processInstance = runtimeService.createProcessInstanceByKey(PROCESS_NAME)
-                .setVariable(VARIABLE_ROLE_BETEG_NAME, user.getId().toString())
-                .setVariable(VARIABLE_ROLE_RECEPCIOS_NAME, "14")
-                .setVariable(VARIABLE_ROLE_ORVOS_NAME, "14")
-                .setVariable(VARIABLE_ROLE_RONTGENES_NAME, "14")
-                .setVariable(VARIABLE_ROLE_SZAKORVOS_NAME, "14")
-                .setVariable(VARIABLE_RONTGEN_NAME, false)
-                .setVariable(VARIABLE_SZAKORVOSI_VIZSGALAT_NAME, false)
-                .setVariable(VARIABLE_FOGSZABALYZO_NAME, false)
-                .setVariable(VARIABLE_ELMARAD_NAME, false)
+                .setVariables(variables)
                 .executeWithVariablesInReturn();
 
         logger.info("Process instance " + processInstance.getProcessInstanceId() + " started");
@@ -94,17 +93,21 @@ public class ProcessInstanceService {
         }
     }
 
-    public static final String PROCESS_NAME = "Process_Fogorvos";
+    private Map<String, Object> setUpVariables(User user) {
+        Map<String, Object> variables = new HashMap<>();
 
-    public static final String VARIABLE_ROLE_BETEG_NAME = "beteg";
-    public static final String VARIABLE_ROLE_RECEPCIOS_NAME = "recepcios";
-    public static final String VARIABLE_ROLE_ORVOS_NAME = "orvos";
-    public static final String VARIABLE_ROLE_RONTGENES_NAME = "rontgenes";
-    public static final String VARIABLE_ROLE_SZAKORVOS_NAME = "szakorvos";
+        variables.put(VARIABLE_ROLE_BETEG_NAME, user.getId().toString());
+        variables.put(VARIABLE_ROLE_RECEPCIOS_NAME, "14");
+        variables.put(VARIABLE_ROLE_ORVOS_NAME, "14");
+        variables.put(VARIABLE_ROLE_RONTGENES_NAME, "14");
+        variables.put(VARIABLE_ROLE_SZAKORVOS_NAME, "14");
+        variables.put(VARIABLE_RONTGEN_NAME, false);
+        variables.put(VARIABLE_SZAKORVOSI_VIZSGALAT_NAME, false);
+        variables.put(VARIABLE_FOGSZABALYZO_NAME, false);
+        variables.put(VARIABLE_ELMARAD_NAME, false);
 
-    public static final String VARIABLE_RONTGEN_NAME = "rontgen";
-    public static final String VARIABLE_SZAKORVOSI_VIZSGALAT_NAME = "szakorvosiVizsgalat";
-    public static final String VARIABLE_FOGSZABALYZO_NAME = "fogszabalyzo";
-    public static final String VARIABLE_ELMARAD_NAME = "elmarad";
+        return variables;
+    }
+
 
 }

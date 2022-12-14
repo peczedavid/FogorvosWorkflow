@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @CrossOrigin(origins = {"http://localhost:4200"}, maxAge = 3600, allowCredentials = "true")

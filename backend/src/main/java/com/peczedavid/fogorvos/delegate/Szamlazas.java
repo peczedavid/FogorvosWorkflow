@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.peczedavid.fogorvos.service.ProcessInstanceService.VARIABLE_ROLE_BETEG_NAME;
+import static com.peczedavid.fogorvos.constants.CamundaConstants.VARIABLE_ROLE_BETEG_NAME;
 
 @Component
 public class Szamlazas implements JavaDelegate {

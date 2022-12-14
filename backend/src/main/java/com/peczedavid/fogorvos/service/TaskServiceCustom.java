@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.peczedavid.fogorvos.constants.CamundaConstants.VARIABLE_FOGSZABALYZO_NAME;
 import static com.peczedavid.fogorvos.model.db.ClinicService.*;
-import static com.peczedavid.fogorvos.service.ProcessInstanceService.VARIABLE_FOGSZABALYZO_NAME;
 
 @Service
 public class TaskServiceCustom {
@@ -53,7 +53,7 @@ public class TaskServiceCustom {
         this.usedClinicServiceRepository = usedClinicServiceRepository;
     }
 
-    public ResponseEntity<?> getAllTasks() {
+    public ResponseEntity<List<TaskPayload>> getAllTasks() {
         List<Task> taskList = taskService.createTaskQuery().list();
         List<TaskPayload> taskPayloadList = new ArrayList<>(taskList.size());
 
@@ -92,7 +92,7 @@ public class TaskServiceCustom {
         return new ResponseEntity<>(TaskPayload.fromTask(task, taskVariables), HttpStatus.OK);
     }
 
-    public ResponseEntity<?> complete(String id) {
+    public ResponseEntity<MessageResponse> complete(String id) {
         Task task = taskService.createTaskQuery().taskId(id).singleResult();
         if (task == null) {
             logger.error("Cannot find task with id " + id);
@@ -129,27 +129,16 @@ public class TaskServiceCustom {
         // Fogszabályzó felrakása párhuzamos, egyszerre kell elmenteni a szakorvosi vizsgálattal,
         // mert utána jön közvetlen a számlázás, ezért lesz lista
         List<ClinicService> clinicServices = new ArrayList<>();
-        ClinicService vizsgalatService = clinicServiceRepository.findByName(CLINIC_SERVICE_VIZSGALAT).orElse(null);
-        ClinicService rontgenService = clinicServiceRepository.findByName(CLINIC_SERVICE_RONTGEN).orElse(null);
-        ClinicService szakorvosiVizsgalatService = clinicServiceRepository.findByName(CLINIC_SERVICE_SZAKORVOSI_VIZSGALAT).orElse(null);
-        ClinicService fogszabalyzoFelkarasaService = clinicServiceRepository.findByName(CLINIC_SERVICE_FOGSZABALYZO_FELRAKASA).orElse(null);
         switch (taskTipus) {
-            case TASK_VIZSGALAT -> {
-                if (vizsgalatService != null)
-                    clinicServices.add(vizsgalatService);
-            }
-            case TASK_RONTGEN -> {
-                if (rontgenService != null)
-                    clinicServices.add(rontgenService);
-            }
+            case TASK_VIZSGALAT ->
+                    clinicServiceRepository.findByName(CLINIC_SERVICE_VIZSGALAT).ifPresent(clinicServices::add);
+            case TASK_RONTGEN ->
+                    clinicServiceRepository.findByName(CLINIC_SERVICE_RONTGEN).ifPresent(clinicServices::add);
             case TASK_SZAKORVOSI_VIZSGALAT -> {
-                if (szakorvosiVizsgalatService != null)
-                    clinicServices.add(szakorvosiVizsgalatService);
-
-                if ((Boolean) runtimeService.getVariable(task.getProcessInstanceId(), VARIABLE_FOGSZABALYZO_NAME)) {
-                    if (fogszabalyzoFelkarasaService != null)
-                        clinicServices.add(fogszabalyzoFelkarasaService);
-                }
+                clinicServiceRepository.findByName(CLINIC_SERVICE_SZAKORVOSI_VIZSGALAT).ifPresent(clinicServices::add);
+                boolean bracesNeeded = (boolean) runtimeService.getVariable(task.getProcessInstanceId(), VARIABLE_FOGSZABALYZO_NAME);
+                if (bracesNeeded)
+                    clinicServiceRepository.findByName(CLINIC_SERVICE_FOGSZABALYZO_FELRAKASA).ifPresent(clinicServices::add);
             }
         }
         return clinicServices;
