@@ -17,7 +17,6 @@ import static com.peczedavid.fogorvos.constants.CamundaConstants.VARIABLE_ROLE_B
 
 @Component
 public class Szamlazas implements JavaDelegate {
-
     private static final Logger logger = LoggerFactory.getLogger(Szamlazas.class);
 
     private final UsedClinicServiceRepository usedClinicServiceRepository;
