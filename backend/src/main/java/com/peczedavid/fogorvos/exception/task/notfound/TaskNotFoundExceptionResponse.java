@@ -1,4 +1,4 @@
-package com.peczedavid.fogorvos.exception.task;
+package com.peczedavid.fogorvos.exception.task.notfound;
 
 import com.peczedavid.fogorvos.exception.ExceptionResponseBase;
 import com.peczedavid.fogorvos.exception.ExceptionResponseBaseData;

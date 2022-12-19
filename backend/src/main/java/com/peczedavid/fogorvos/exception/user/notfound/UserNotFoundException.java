@@ -1,4 +1,4 @@
-package com.peczedavid.fogorvos.exception.user;
+package com.peczedavid.fogorvos.exception.user.notfound;
 
 import lombok.Getter;
 

@@ -46,12 +46,12 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<UserData> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         return userService.login(loginRequest, response);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest, HttpServletResponse response) {
-        return userService.register(registerRequest, response);
+    public ResponseEntity<UserData> register(@RequestBody RegisterRequest registerRequest) {
+        return userService.register(registerRequest);
     }
 }

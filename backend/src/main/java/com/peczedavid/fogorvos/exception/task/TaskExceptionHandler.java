@@ -1,6 +1,8 @@
 package com.peczedavid.fogorvos.exception.task;
 
 import com.peczedavid.fogorvos.exception.ExceptionResponseBaseData;
+import com.peczedavid.fogorvos.exception.task.notfound.TaskNotFoundException;
+import com.peczedavid.fogorvos.exception.task.notfound.TaskNotFoundExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

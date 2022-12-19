@@ -1,7 +1,7 @@
 package com.peczedavid.fogorvos.service;
 
-import com.peczedavid.fogorvos.exception.task.TaskNotFoundException;
-import com.peczedavid.fogorvos.exception.user.UserNotFoundException;
+import com.peczedavid.fogorvos.exception.task.notfound.TaskNotFoundException;
+import com.peczedavid.fogorvos.exception.user.notfound.UserNotFoundException;
 import com.peczedavid.fogorvos.model.db.ClinicService;
 import com.peczedavid.fogorvos.model.db.UsedClinicService;
 import com.peczedavid.fogorvos.model.db.User;
