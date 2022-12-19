@@ -1,5 +1,6 @@
 package com.peczedavid.fogorvos.service;
 
+import com.peczedavid.fogorvos.exception.task.TaskNotFoundException;
 import com.peczedavid.fogorvos.model.db.ClinicService;
 import com.peczedavid.fogorvos.model.db.UsedClinicService;
 import com.peczedavid.fogorvos.model.db.User;
@@ -75,11 +76,11 @@ public class TaskServiceCustom {
         return new ResponseEntity<>(taskPayloadList, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getTask(String id) {
+    public ResponseEntity<TaskPayload> getTask(String id) {
         Task task = taskService.createTaskQuery().taskId(id).singleResult();
         if (task == null) {
             logger.error("Task " + id + " not found");
-            return new ResponseEntity<>(new MessageResponse("Task " + id + " not found!"), HttpStatus.NOT_FOUND);
+            throw new TaskNotFoundException("Feladat '" + id + "' nem található", id);
         }
         List<VariableInstanceDto> taskVariables = runtimeService
                 .createVariableInstanceQuery()
@@ -95,8 +96,8 @@ public class TaskServiceCustom {
     public ResponseEntity<MessageResponse> complete(String id) {
         Task task = taskService.createTaskQuery().taskId(id).singleResult();
         if (task == null) {
-            logger.error("Cannot find task with id " + id);
-            return new ResponseEntity<>(new MessageResponse("Cannot find task with id " + id), HttpStatus.NOT_FOUND);
+            logger.error("Task " + id + " not found");
+            throw new TaskNotFoundException("Feladat '" + id + "' nem található", id);
         }
 
         String processInstanceId = task.getProcessInstanceId();

@@ -30,7 +30,7 @@ public class JwtUtils {
     public String getJwtFromRequest(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, COOKIE_NAME);
         if (cookie == null) {
-            logger.warn("No jwt cookie found in request.");
+            logger.info("No jwt cookie found in request.");
             return null;
         }
         return cookie.getValue();
