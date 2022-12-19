@@ -1,6 +1,7 @@
 package com.peczedavid.fogorvos.service;
 
 import com.peczedavid.fogorvos.exception.task.TaskNotFoundException;
+import com.peczedavid.fogorvos.exception.user.UserNotFoundException;
 import com.peczedavid.fogorvos.model.db.ClinicService;
 import com.peczedavid.fogorvos.model.db.UsedClinicService;
 import com.peczedavid.fogorvos.model.db.User;
@@ -105,7 +106,7 @@ public class TaskServiceCustom {
         User user = userRepository.findById(Long.valueOf(patientId)).orElse(null);
         if (user == null) {
             logger.error("Cannot find user with id " + patientId);
-            return new ResponseEntity<>(new MessageResponse("Cannot find user with id " + patientId), HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException("Nem található a felhasználó.", patientId);
         }
 
         List<ClinicService> clinicServices = getClinicServices(task);

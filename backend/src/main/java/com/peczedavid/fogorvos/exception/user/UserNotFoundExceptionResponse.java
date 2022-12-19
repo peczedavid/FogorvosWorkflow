@@ -1,11 +1,16 @@
 package com.peczedavid.fogorvos.exception.user;
 
 import com.peczedavid.fogorvos.exception.ExceptionResponseBase;
+import com.peczedavid.fogorvos.exception.ExceptionResponseBaseData;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
-
-import java.time.ZonedDateTime;
 
 @Getter
-public class UserNotFoundExceptionResponse {}
+public class UserNotFoundExceptionResponse extends ExceptionResponseBase {
+    private final String userId;
+
+    public UserNotFoundExceptionResponse(String userId, ExceptionResponseBaseData data) {
+        super(data);
+        this.userId = userId;
+    }
+}
 

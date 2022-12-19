@@ -1,10 +1,10 @@
 package com.peczedavid.fogorvos.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -14,4 +14,14 @@ public class ExceptionResponseBaseData {
     private HttpStatus httpStatus;
     private int httpStatusCode;
     private ZonedDateTime dateTime;
+
+    public static ExceptionResponseBaseData fromRuntimeException(RuntimeException e, HttpStatus httpStatus) {
+        return ExceptionResponseBaseData
+                .builder()
+                .message(e.getMessage())
+                .httpStatus(httpStatus)
+                .httpStatusCode(httpStatus.value())
+                .dateTime(ZonedDateTime.now(ZoneId.of("Z")))
+                .build();
+    }
 }
