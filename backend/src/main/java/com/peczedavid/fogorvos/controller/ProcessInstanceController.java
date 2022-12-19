@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/api/process-instance")
 public class ProcessInstanceController {
-
     private final ProcessInstanceService processInstanceService;
 
     public ProcessInstanceController(ProcessInstanceService processInstanceService) {
@@ -34,5 +33,4 @@ public class ProcessInstanceController {
             @PathVariable String id, @PathVariable String varName, @RequestBody VariablePayload variablePayload) {
         return processInstanceService.setVariable(id, varName, variablePayload);
     }
-
 }

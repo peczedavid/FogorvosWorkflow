@@ -25,7 +25,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getTask(@PathVariable String id) {
+    public ResponseEntity<TaskPayload> getTask(@PathVariable String id) {
         return taskServiceCustom.getTask(id);
     }
 

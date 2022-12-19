@@ -1,5 +1,7 @@
 package com.peczedavid.fogorvos.service;
 
+import com.peczedavid.fogorvos.exception.task.notfound.TaskNotFoundException;
+import com.peczedavid.fogorvos.exception.user.notfound.UserNotFoundException;
 import com.peczedavid.fogorvos.model.db.ClinicService;
 import com.peczedavid.fogorvos.model.db.UsedClinicService;
 import com.peczedavid.fogorvos.model.db.User;
@@ -75,11 +77,11 @@ public class TaskServiceCustom {
         return new ResponseEntity<>(taskPayloadList, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> getTask(String id) {
+    public ResponseEntity<TaskPayload> getTask(String id) {
         Task task = taskService.createTaskQuery().taskId(id).singleResult();
         if (task == null) {
             logger.error("Task " + id + " not found");
-            return new ResponseEntity<>(new MessageResponse("Task " + id + " not found!"), HttpStatus.NOT_FOUND);
+            throw new TaskNotFoundException("Feladat '" + id + "' nem található", id);
         }
         List<VariableInstanceDto> taskVariables = runtimeService
                 .createVariableInstanceQuery()
@@ -95,8 +97,8 @@ public class TaskServiceCustom {
     public ResponseEntity<MessageResponse> complete(String id) {
         Task task = taskService.createTaskQuery().taskId(id).singleResult();
         if (task == null) {
-            logger.error("Cannot find task with id " + id);
-            return new ResponseEntity<>(new MessageResponse("Cannot find task with id " + id), HttpStatus.NOT_FOUND);
+            logger.error("Task " + id + " not found");
+            throw new TaskNotFoundException("Feladat '" + id + "' nem található", id);
         }
 
         String processInstanceId = task.getProcessInstanceId();
@@ -104,7 +106,7 @@ public class TaskServiceCustom {
         User user = userRepository.findById(Long.valueOf(patientId)).orElse(null);
         if (user == null) {
             logger.error("Cannot find user with id " + patientId);
-            return new ResponseEntity<>(new MessageResponse("Cannot find user with id " + patientId), HttpStatus.NOT_FOUND);
+            throw new UserNotFoundException("Nem található a felhasználó.", patientId);
         }
 
         List<ClinicService> clinicServices = getClinicServices(task);

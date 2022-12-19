@@ -14,7 +14,6 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/role")
 public class RoleController {
-
     private final RoleService roleService;
 
     public RoleController(
@@ -27,5 +26,4 @@ public class RoleController {
     public ResponseEntity<List<Role>> getRoles() {
         return roleService.getRoles();
     }
-
 }

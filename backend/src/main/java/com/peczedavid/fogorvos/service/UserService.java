@@ -1,5 +1,9 @@
 package com.peczedavid.fogorvos.service;
 
+import com.peczedavid.fogorvos.exception.role.notfound.RoleNotFoundException;
+import com.peczedavid.fogorvos.exception.user.badcredentials.BadCredentialsExceptionCustom;
+import com.peczedavid.fogorvos.exception.user.nametaken.UsernameTakenException;
+import com.peczedavid.fogorvos.exception.user.notfound.UserNotFoundException;
 import com.peczedavid.fogorvos.model.db.Role;
 import com.peczedavid.fogorvos.model.db.User;
 import com.peczedavid.fogorvos.model.network.LoginRequest;
@@ -77,7 +81,7 @@ public class UserService {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> login(LoginRequest loginRequest, HttpServletResponse response) {
+    public ResponseEntity<UserData> login(LoginRequest loginRequest, HttpServletResponse response) {
         try {
             final String username = loginRequest.getUsername();
             final String password = loginRequest.getPassword();
@@ -88,16 +92,15 @@ public class UserService {
             response.addCookie(jwtCookie);
             User dbUser = userRepository.findByName(username).orElse(null);
             if (dbUser == null) {
-                final String message = "User '" + dbUser.getName() + "' was not found in database";
-                logger.error(message);
-                return new ResponseEntity<>(new MessageResponse(message), HttpStatus.NOT_FOUND);
+                logger.error("Cannot find user with name " + username);
+                throw new UserNotFoundException("Nem található a felhasználó.", username);
             }
             logger.info("User '" + username + "' logged in.");
             UserData userData = new UserData(String.valueOf(userDetailsImpl.getId()), username, dbUser.getRole().getName());
             return new ResponseEntity<>(userData, HttpStatus.OK);
         } catch (BadCredentialsException exception) {
             logger.error("Incorrect username or password!");
-            return new ResponseEntity<>(new MessageResponse("Incorrect username or password!"), HttpStatus.FORBIDDEN);
+            throw new BadCredentialsExceptionCustom("Hibás felhasználónév vagy jelszó");
         }
     }
 
@@ -143,19 +146,19 @@ public class UserService {
         return new ResponseEntity<>(taskPayloads, HttpStatus.OK);
     }
 
-    public ResponseEntity<?> register(RegisterRequest registerRequest, HttpServletResponse response) {
+    public ResponseEntity<UserData> register(RegisterRequest registerRequest) {
         final String username = registerRequest.getUsername();
         final String password = passwordEncoder.encode(registerRequest.getPassword());
         Optional<User> dbUser = userRepository.findByName(username);
         if (dbUser.isPresent()) {
             logger.error("Username '" + username + "' is already taken");
-            return new ResponseEntity<>(new MessageResponse("Username '" + username + "' is already taken."), HttpStatus.BAD_REQUEST);
+            throw new UsernameTakenException("A felhasználónév foglalt", username);
         }
         final String role = registerRequest.getRole();
         Optional<Role> dbRole = roleRepository.findByName(role);
         if (dbRole.isEmpty()) {
             logger.error("Role '" + role + "' not found");
-            return new ResponseEntity<>(new MessageResponse("Role '" + role + "' not found"), HttpStatus.NOT_FOUND);
+            throw new RoleNotFoundException("Szerepkör: '" + role + "' nem található", role);
         }
         User user = new User(username, password, dbRole.get());
         userRepository.save(user);

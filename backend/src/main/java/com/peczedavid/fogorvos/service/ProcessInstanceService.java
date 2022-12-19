@@ -1,5 +1,8 @@
 package com.peczedavid.fogorvos.service;
 
+import com.peczedavid.fogorvos.exception.processinstance.notfound.ProcessInstanceNotFoundException;
+import com.peczedavid.fogorvos.exception.user.notfound.UserNotFoundException;
+import com.peczedavid.fogorvos.exception.variable.notfound.VariableNotFoundException;
 import com.peczedavid.fogorvos.model.db.User;
 import com.peczedavid.fogorvos.model.network.MessageResponse;
 import com.peczedavid.fogorvos.model.network.StartProcessRequest;
@@ -43,23 +46,24 @@ public class ProcessInstanceService {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult();
 
         if (processInstance == null) {
-            final String text = "Process instance with id: " + id + " not found";
-            logger.warn(text);
-            return new ResponseEntity<>(new MessageResponse(text), HttpStatus.NOT_FOUND);
+            logger.error("Process instance with id: " + id + " not found");
+            throw new ProcessInstanceNotFoundException("Folyamat nem található", id);
         }
 
         usedClinicServiceRepository.removeByProcessInstanceId(id);
         runtimeService.deleteProcessInstance(id, "Manually deleted.");
 
-        final String text = "Process instance with id: " + id + " deleted successfully";
-        logger.info(text);
-        return new ResponseEntity<>(new MessageResponse(text), HttpStatus.OK);
+        logger.info("Process instance with id: " + id + " deleted successfully");
+        return new ResponseEntity<>(new MessageResponse("Folyamat sikeresen törölve."), HttpStatus.OK);
     }
 
     public ResponseEntity<MessageResponse> startCleanProcess(StartProcessRequest startProcessRequest) {
         User user = userRepository.findByName(startProcessRequest.getPatientName()).orElse(null);
-        if (user == null)
-            return new ResponseEntity<>(new MessageResponse("User '" + startProcessRequest.getPatientName() + "' not found."), HttpStatus.NOT_FOUND);
+        if (user == null) {
+            final String username = startProcessRequest.getPatientName();
+            logger.error("Cannot find user with name " + username);
+            throw new UserNotFoundException("Nem található a felhasználó.", username);
+        }
 
         Map<String, Object> variables = setUpVariables(user);
 
@@ -75,12 +79,12 @@ public class ProcessInstanceService {
         Object variable;
         try {
             if ((variable = runtimeService.getVariable(id, varName)) == null) {
-                logger.warn("Variable '" + varName + "' not found");
-                return new ResponseEntity<>(new MessageResponse("Variable '" + varName + "' not found"), HttpStatus.NOT_FOUND);
+                logger.error("Variable '" + varName + "' not found");
+                throw new VariableNotFoundException("Változó '" + varName + "' nem található", varName);
             }
         } catch (NullValueException e) {
-            logger.info("Process instance '" + id + "' not found");
-            return new ResponseEntity<>(new MessageResponse("Process instance '" + id + "' not found"), HttpStatus.NOT_FOUND);
+            logger.error("Process instance with id: " + id + " not found");
+            throw new ProcessInstanceNotFoundException("Folyamat nem található", id);
         }
 
         runtimeService.setVariable(id, varName, variablePayload.getValue());
