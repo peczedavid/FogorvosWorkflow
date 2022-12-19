@@ -1,5 +1,6 @@
 package com.peczedavid.fogorvos.exception.task;
 
+import com.peczedavid.fogorvos.exception.ExceptionResponseBaseData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,16 +13,18 @@ import java.time.ZonedDateTime;
 public class TaskExceptionHandler {
     @ExceptionHandler(value = {TaskNotFoundException.class})
     public ResponseEntity<TaskNotFoundExceptionResponse> handleTaskNotFoundException(TaskNotFoundException e) {
-        HttpStatus notFound = HttpStatus.NOT_FOUND;
-        TaskNotFoundExceptionResponse responseBody
-                = TaskNotFoundExceptionResponse
+        final HttpStatus notFound = HttpStatus.NOT_FOUND;
+
+        final ExceptionResponseBaseData baseData = ExceptionResponseBaseData
                 .builder()
-                .taskId(e.getTaskId())
                 .message(e.getMessage())
-                .dateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .httpStatus(notFound)
-                .httpStatusCode(HttpStatus.NOT_FOUND.value())
+                .httpStatusCode(notFound.value())
+                .dateTime(ZonedDateTime.now(ZoneId.of("Z")))
                 .build();
+
+        final TaskNotFoundExceptionResponse responseBody = new TaskNotFoundExceptionResponse(e.getTaskId(), baseData);
+
         return new ResponseEntity<>(responseBody, notFound);
     }
 }
