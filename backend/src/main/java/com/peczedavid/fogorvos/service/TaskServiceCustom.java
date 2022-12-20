@@ -1,5 +1,6 @@
 package com.peczedavid.fogorvos.service;
 
+import com.peczedavid.fogorvos.constants.CamundaConstants;
 import com.peczedavid.fogorvos.exception.task.notfound.TaskNotFoundException;
 import com.peczedavid.fogorvos.exception.user.notfound.UserNotFoundException;
 import com.peczedavid.fogorvos.model.db.ClinicService;
@@ -101,8 +102,9 @@ public class TaskServiceCustom {
             throw new TaskNotFoundException("Feladat '" + id + "' nem található", id);
         }
 
+        // Nem tudom miért ellenőrzöm le, de nem baj
         String processInstanceId = task.getProcessInstanceId();
-        String patientId = (String) runtimeService.getVariable(processInstanceId, "beteg");
+        String patientId = (String) runtimeService.getVariable(processInstanceId, CamundaConstants.VARIABLE_ROLE_BETEG_NAME);
         User user = userRepository.findById(Long.valueOf(patientId)).orElse(null);
         if (user == null) {
             logger.error("Cannot find user with id " + patientId);

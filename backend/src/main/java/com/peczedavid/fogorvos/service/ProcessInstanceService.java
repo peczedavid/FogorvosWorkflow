@@ -51,10 +51,10 @@ public class ProcessInstanceService {
         }
 
         usedClinicServiceRepository.removeByProcessInstanceId(id);
-        runtimeService.deleteProcessInstance(id, "Manually deleted.");
+        runtimeService.deleteProcessInstance(id, "Manually deleted");
 
         logger.info("Process instance with id: " + id + " deleted successfully");
-        return new ResponseEntity<>(new MessageResponse("Folyamat sikeresen törölve."), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse("Folyamat sikeresen törölve"), HttpStatus.OK);
     }
 
     public ResponseEntity<MessageResponse> startCleanProcess(StartProcessRequest startProcessRequest) {
@@ -62,7 +62,7 @@ public class ProcessInstanceService {
         if (user == null) {
             final String username = startProcessRequest.getPatientName();
             logger.error("Cannot find user with name " + username);
-            throw new UserNotFoundException("Nem található a felhasználó.", username);
+            throw new UserNotFoundException("Nem található a felhasználó", username);
         }
 
         Map<String, Object> variables = setUpVariables(user);
@@ -89,11 +89,12 @@ public class ProcessInstanceService {
 
         runtimeService.setVariable(id, varName, variablePayload.getValue());
         if (!variable.equals(runtimeService.getVariable(id, varName))) {
-            logger.info("Variable '" + varName + "' value changed.");
-            return new ResponseEntity<>(new MessageResponse("Variable '" + varName + "' value changed."), HttpStatus.OK);
+            logger.info("Variable '" + varName + "' value changed");
+            return new ResponseEntity<>(new MessageResponse("'" + varName + "' változó értéke megváltozott"), HttpStatus.OK);
         } else {
-            logger.warn("Couldn't change variable value for '" + varName + "'.");
-            return new ResponseEntity<>(new MessageResponse("Couldn't change variable value for '" + varName + "'."), HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.warn("Couldn't change variable value for '" + varName + "'");
+            //return new ResponseEntity<>(new MessageResponse("Couldn't change variable value for '" + varName + "'."), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MessageResponse("Nem sikerült megváltoztatni '" + varName + "' változó értékét"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

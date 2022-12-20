@@ -93,7 +93,7 @@ public class UserService {
             User dbUser = userRepository.findByName(username).orElse(null);
             if (dbUser == null) {
                 logger.error("Cannot find user with name " + username);
-                throw new UserNotFoundException("Nem található a felhasználó.", username);
+                throw new UserNotFoundException("Nem található a felhasználó", username);
             }
             logger.info("User '" + username + "' logged in.");
             UserData userData = new UserData(String.valueOf(userDetailsImpl.getId()), username, dbUser.getRole().getName());
