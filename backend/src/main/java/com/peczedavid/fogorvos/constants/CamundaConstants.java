@@ -13,4 +13,6 @@ public final class CamundaConstants {
     public static final String VARIABLE_SZAKORVOSI_VIZSGALAT_NAME = "szakorvosiVizsgalat";
     public static final String VARIABLE_FOGSZABALYZO_NAME = "fogszabalyzo";
     public static final String VARIABLE_ELMARAD_NAME = "elmarad";
+
+    private CamundaConstants() {}
 }

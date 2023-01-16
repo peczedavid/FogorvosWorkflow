@@ -12,7 +12,7 @@ public abstract class ExceptionResponseBase {
     protected int httpStatusCode;
     protected ZonedDateTime dateTime;
 
-    public ExceptionResponseBase(ExceptionResponseBaseData data) {
+    protected ExceptionResponseBase(ExceptionResponseBaseData data) {
         this.message = data.getMessage();
         this.httpStatus = data.getHttpStatus();
         this.httpStatusCode = data.getHttpStatusCode();

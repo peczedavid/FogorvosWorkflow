@@ -3,7 +3,6 @@ package com.peczedavid.fogorvos.exception.role;
 import com.peczedavid.fogorvos.exception.ExceptionResponseBaseData;
 import com.peczedavid.fogorvos.exception.role.notfound.RoleNotFoundException;
 import com.peczedavid.fogorvos.exception.role.notfound.RoleNotFoundExceptionResponse;
-import com.peczedavid.fogorvos.exception.user.notfound.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

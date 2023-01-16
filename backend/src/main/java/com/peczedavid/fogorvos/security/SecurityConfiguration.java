@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    private static final String HAS_ROLE_PREFIX = "hasRole('";
+
     private final AuthTokenFilter authTokenFilter;
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -42,7 +44,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         debugSetupSecurity(http);
-        //debugSetupNoSecurity(http);
     }
 
     @Bean
@@ -58,24 +59,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/user/logout").permitAll()
                 .antMatchers("/api/user/check").permitAll()
                 .antMatchers("/api/user/register").access(
-                        "hasRole('" + Role.ROLE_RECEPTIONIST + "') or " + "hasRole('" + Role.ROLE_ADMIN + "')"
+                        HAS_ROLE_PREFIX + Role.ROLE_RECEPTIONIST + "') or " + HAS_ROLE_PREFIX + Role.ROLE_ADMIN + "')"
                 )
                 .antMatchers("/api/role").access(
-                        "hasRole('" + Role.ROLE_RECEPTIONIST + "') or " + "hasRole('" + Role.ROLE_ADMIN + "')"
+                        HAS_ROLE_PREFIX + Role.ROLE_RECEPTIONIST + "') or " + HAS_ROLE_PREFIX + Role.ROLE_ADMIN + "')"
                 )
                 .antMatchers("/api/user").access(
-                        "hasRole('" + Role.ROLE_ADMIN + "')"
+                        HAS_ROLE_PREFIX + Role.ROLE_ADMIN + "')"
                 )
                 .antMatchers("/api/task/all").access(
-                        "hasRole('" + Role.ROLE_ADMIN + "')"
+                        HAS_ROLE_PREFIX + Role.ROLE_ADMIN + "')"
                 )
                 .anyRequest().authenticated();
         http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
-    }
-
-    private void debugSetupNoSecurity(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/**").permitAll();
     }
 }

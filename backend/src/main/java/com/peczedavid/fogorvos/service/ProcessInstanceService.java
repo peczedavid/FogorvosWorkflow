@@ -93,7 +93,6 @@ public class ProcessInstanceService {
             return new ResponseEntity<>(new MessageResponse("'" + varName + "' változó értéke megváltozott"), HttpStatus.OK);
         } else {
             logger.warn("Couldn't change variable value for '" + varName + "'");
-            //return new ResponseEntity<>(new MessageResponse("Couldn't change variable value for '" + varName + "'."), HttpStatus.INTERNAL_SERVER_ERROR);
             return new ResponseEntity<>(new MessageResponse("Nem sikerült megváltoztatni '" + varName + "' változó értékét"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

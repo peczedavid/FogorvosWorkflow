@@ -25,13 +25,13 @@ public abstract class TaskPayload {
         TaskDto taskDto = TaskDto.fromEntity(task);
         TaskTipus taskTipus = TaskTipus.fromTaskDefinitionKey(taskDto.getTaskDefinitionKey());
         return switch (taskTipus) {
-            case TASK_MEGJELENES_IDOPONTON -> new MegjelenesIdopontonDto(taskDto, taskTipus, taskVariables);
+            case TASK_MEGJELENES_IDOPONTON -> new MegjelenesIdopontonDto(taskDto, taskTipus);
             case TASK_BETEG_ERTESITESE -> new BetegErtesiteseDto(taskDto, taskTipus, taskVariables);
             case TASK_VIZSGALAT -> new VizsgalatDto(taskDto, taskTipus, taskVariables);
-            case TASK_RONTGEN -> new RontgenDto(taskDto, taskTipus, taskVariables);
+            case TASK_RONTGEN -> new RontgenDto(taskDto, taskTipus);
             case TASK_FELULVIZSGALAT -> new FelulVizsgalatDto(taskDto, taskTipus, taskVariables);
             case TASK_SZAKORVOSI_VIZSGALAT -> new SzakorvosiVizsgalatDto(taskDto, taskTipus, taskVariables);
-            case TASK_FOGSZABALYZO_FELRAKASA -> new FogszabalyzoFelrakasaDto(taskDto, taskTipus, taskVariables);
+            case TASK_FOGSZABALYZO_FELRAKASA -> new FogszabalyzoFelrakasaDto(taskDto, taskTipus);
             default -> null;
         };
     }

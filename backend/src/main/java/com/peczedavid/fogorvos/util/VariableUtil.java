@@ -10,6 +10,9 @@ public class VariableUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(VariableUtil.class);
 
+    private VariableUtil() {
+    }
+
     public static Object getValue(List<VariableInstanceDto> taskVariables, String variableName) {
         VariableInstanceDto variableInstanceDto = taskVariables
                 .stream()
