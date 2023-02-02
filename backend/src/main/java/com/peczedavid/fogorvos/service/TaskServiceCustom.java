@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.peczedavid.fogorvos.constants.CamundaConstants.VARIABLE_FOGSZABALYZO_NAME;
 import static com.peczedavid.fogorvos.model.db.ClinicService.*;
@@ -67,7 +66,7 @@ public class TaskServiceCustom {
                     .list()
                     .stream()
                     .map(VariableInstanceDto::fromVariableInstance)
-                    .collect(Collectors.toList());
+                    .toList();
 
             TaskPayload taskPayload = TaskPayload.fromTask(task, taskVariables);
             final Optional<User> user = userRepository.findById(Long.valueOf(taskPayload.getTaskDto().getAssignee()));
@@ -81,7 +80,7 @@ public class TaskServiceCustom {
     public ResponseEntity<TaskPayload> getTask(String id) {
         Task task = taskService.createTaskQuery().taskId(id).singleResult();
         if (task == null) {
-            logger.error("Task " + id + " not found");
+            logger.error("Task {} not found", id);
             throw new TaskNotFoundException("Feladat '" + id + "' nem található", id);
         }
         List<VariableInstanceDto> taskVariables = runtimeService
@@ -90,7 +89,7 @@ public class TaskServiceCustom {
                 .list()
                 .stream()
                 .map(VariableInstanceDto::fromVariableInstance)
-                .collect(Collectors.toList());
+                .toList();
 
         return new ResponseEntity<>(TaskPayload.fromTask(task, taskVariables), HttpStatus.OK);
     }
@@ -98,7 +97,7 @@ public class TaskServiceCustom {
     public ResponseEntity<MessageResponse> complete(String id) {
         Task task = taskService.createTaskQuery().taskId(id).singleResult();
         if (task == null) {
-            logger.error("Task " + id + " not found");
+            logger.error("Task {} not found", id);
             throw new TaskNotFoundException("Feladat '" + id + "' nem található", id);
         }
 
@@ -107,7 +106,7 @@ public class TaskServiceCustom {
         String patientId = (String) runtimeService.getVariable(processInstanceId, CamundaConstants.VARIABLE_ROLE_BETEG_NAME);
         User user = userRepository.findById(Long.valueOf(patientId)).orElse(null);
         if (user == null) {
-            logger.error("Cannot find user with id " + patientId);
+            logger.error("Cannot find user with id {}", patientId);
             throw new UserNotFoundException("Nem található a felhasználó.", patientId);
         }
 
@@ -144,6 +143,7 @@ public class TaskServiceCustom {
                 if (bracesNeeded)
                     clinicServiceRepository.findByName(CLINIC_SERVICE_FOGSZABALYZO_FELRAKASA).ifPresent(clinicServices::add);
             }
+            default -> logger.warn("Other services are free of charce");
         }
         return clinicServices;
     }

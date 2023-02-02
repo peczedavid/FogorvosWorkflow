@@ -36,7 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -92,10 +91,10 @@ public class UserService {
             response.addCookie(jwtCookie);
             User dbUser = userRepository.findByName(username).orElse(null);
             if (dbUser == null) {
-                logger.error("Cannot find user with name " + username);
+                logger.error("Cannot find user with name {}", username);
                 throw new UserNotFoundException("Nem található a felhasználó", username);
             }
-            logger.info("User '" + username + "' logged in.");
+            logger.info("User '{}' logged in", username);
             UserData userData = new UserData(String.valueOf(userDetailsImpl.getId()), username, dbUser.getRole().getName());
             return new ResponseEntity<>(userData, HttpStatus.OK);
         } catch (BadCredentialsException exception) {
@@ -113,7 +112,7 @@ public class UserService {
         }
         Cookie cookie = jwtUtils.generateLogutCookie();
         response.addCookie(cookie);
-        logger.info("User '" + jwtUtils.getUsername(jwt) + "' logged out.");
+        logger.info("User '{}' logged out", jwtUtils.getUsername(jwt));
         MessageResponse messageResponse = new MessageResponse("User '" + jwtUtils.getUsername(jwt) + "' logged out.");
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
@@ -138,7 +137,7 @@ public class UserService {
                     .list()
                     .stream()
                     .map(VariableInstanceDto::fromVariableInstance)
-                    .collect(Collectors.toList());
+                    .toList();
 
             TaskPayload taskPayload = TaskPayload.fromTask(task, taskVariables);
             taskPayloads.add(taskPayload);
@@ -151,18 +150,18 @@ public class UserService {
         final String password = passwordEncoder.encode(registerRequest.getPassword());
         Optional<User> dbUser = userRepository.findByName(username);
         if (dbUser.isPresent()) {
-            logger.error("Username '" + username + "' is already taken");
+            logger.error("Username '{}' is already taken", username);
             throw new UsernameTakenException("A felhasználónév foglalt", username);
         }
         final String role = registerRequest.getRole();
         Optional<Role> dbRole = roleRepository.findByName(role);
         if (dbRole.isEmpty()) {
-            logger.error("Role '" + role + "' not found");
+            logger.error("Role '{}' not found", role);
             throw new RoleNotFoundException("Szerepkör: '" + role + "' nem található", role);
         }
         User user = new User(username, password, dbRole.get());
         userRepository.save(user);
-        logger.info("User '" + username + "' successfully registered");
+        logger.info("User '{}' successfully registered", username);
         UserData userData = new UserData(String.valueOf(user.getId()), user.getName(), role);
         return new ResponseEntity<>(userData, HttpStatus.OK);
     }

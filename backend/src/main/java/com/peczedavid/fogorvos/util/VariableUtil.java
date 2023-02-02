@@ -20,7 +20,7 @@ public class VariableUtil {
                 .findFirst()
                 .orElse(null);
         if (variableInstanceDto == null) {
-            logger.error("Couldn't get value from variable '" + variableName + "'");
+            logger.error("Couldn't get value from variable '{}'", variableName);
             return null;
         }
         return variableInstanceDto.getValue();

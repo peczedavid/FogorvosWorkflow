@@ -39,7 +39,7 @@ public class Szamlazas implements JavaDelegate {
         String userId = (String) runtimeService.getVariable(processInstanceId, VARIABLE_ROLE_BETEG_NAME);
         User user = userRepository.findById(Long.valueOf(userId)).orElse(null);
         if (user == null) {
-            logger.error("Cannot send bill, user with id " + userId + " not found");
+            logger.error("Cannot send bill, user with id {} not found", userId);
         } else {
             List<UsedClinicService> usedClinicServices = usedClinicServiceRepository
                     .findAllByUserAndProcessInstanceId(user, processInstanceId);
@@ -48,13 +48,13 @@ public class Szamlazas implements JavaDelegate {
                 if (!usedClinicService.getHandled()) {
                     Double cost = usedClinicService.getClinicService().getCost();
                     costSum += cost;
-                    logger.info("   " + cost + "Ft");
+                    logger.info(String.format("   %6.2fFt", cost));
                     usedClinicService.setHandled(true);
                 }
             }
             logger.info("----------");
-            logger.info(" + " + costSum + "Ft");
-            logger.info("Billing " + costSum + "Ft to " + user.getName());
+            logger.info(String.format(" + %6.2fFt", costSum));
+            logger.info(String.format("Billing %.2fFt to %s", costSum, user.getName()));
             logger.info("");
         }
     }

@@ -46,14 +46,14 @@ public class ProcessInstanceService {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult();
 
         if (processInstance == null) {
-            logger.error("Process instance with id: " + id + " not found");
+            logger.error("Process instance with id: {} not found", id);
             throw new ProcessInstanceNotFoundException("Folyamat nem található", id);
         }
 
         usedClinicServiceRepository.removeByProcessInstanceId(id);
         runtimeService.deleteProcessInstance(id, "Manually deleted");
 
-        logger.info("Process instance with id: " + id + " deleted successfully");
+        logger.info("Process instance with id: {} deleted successfully", id);
         return new ResponseEntity<>(new MessageResponse("Folyamat sikeresen törölve"), HttpStatus.OK);
     }
 
@@ -61,7 +61,7 @@ public class ProcessInstanceService {
         User user = userRepository.findByName(startProcessRequest.getPatientName()).orElse(null);
         if (user == null) {
             final String username = startProcessRequest.getPatientName();
-            logger.error("Cannot find user with name " + username);
+            logger.error("Cannot find user with name: {}", username);
             throw new UserNotFoundException("Nem található a felhasználó", username);
         }
 
@@ -71,7 +71,7 @@ public class ProcessInstanceService {
                 .setVariables(variables)
                 .executeWithVariablesInReturn();
 
-        logger.info("Process instance " + processInstance.getProcessInstanceId() + " started");
+        logger.info("Process instance {} started", processInstance.getProcessInstanceId());
         return new ResponseEntity<>(new MessageResponse(processInstance.getProcessInstanceId()), HttpStatus.OK);
     }
 
@@ -79,20 +79,20 @@ public class ProcessInstanceService {
         Object variable;
         try {
             if ((variable = runtimeService.getVariable(id, varName)) == null) {
-                logger.error("Variable '" + varName + "' not found");
+                logger.error("Variable '{}' not found", varName);
                 throw new VariableNotFoundException("Változó '" + varName + "' nem található", varName);
             }
         } catch (NullValueException e) {
-            logger.error("Process instance with id: " + id + " not found");
+            logger.error(String.format("Process instance with id: %s not found", id));
             throw new ProcessInstanceNotFoundException("Folyamat nem található", id);
         }
 
         runtimeService.setVariable(id, varName, variablePayload.getValue());
         if (!variable.equals(runtimeService.getVariable(id, varName))) {
-            logger.info("Variable '" + varName + "' value changed");
+            logger.info("Variable '{}' value changed", varName);
             return new ResponseEntity<>(new MessageResponse("'" + varName + "' változó értéke megváltozott"), HttpStatus.OK);
         } else {
-            logger.warn("Couldn't change variable value for '" + varName + "'");
+            logger.warn("Couldn't change variable value for '{}'", varName);
             return new ResponseEntity<>(new MessageResponse("Nem sikerült megváltoztatni '" + varName + "' változó értékét"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
