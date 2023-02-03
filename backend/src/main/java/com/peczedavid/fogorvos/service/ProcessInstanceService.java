@@ -9,12 +9,11 @@ import com.peczedavid.fogorvos.model.network.StartProcessRequest;
 import com.peczedavid.fogorvos.model.process.VariablePayload;
 import com.peczedavid.fogorvos.repository.UsedClinicServiceRepository;
 import com.peczedavid.fogorvos.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.exception.NullValueException;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstanceWithVariables;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,9 +24,8 @@ import java.util.Map;
 import static com.peczedavid.fogorvos.constants.CamundaConstants.*;
 
 @Service
+@Slf4j
 public class ProcessInstanceService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ProcessInstanceService.class);
 
     private final RuntimeService runtimeService;
     private final UserRepository userRepository;
@@ -46,14 +44,14 @@ public class ProcessInstanceService {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult();
 
         if (processInstance == null) {
-            logger.error("Process instance with id: {} not found", id);
+            log.error("Process instance with id: {} not found", id);
             throw new ProcessInstanceNotFoundException("Folyamat nem található", id);
         }
 
         usedClinicServiceRepository.removeByProcessInstanceId(id);
         runtimeService.deleteProcessInstance(id, "Manually deleted");
 
-        logger.info("Process instance with id: {} deleted successfully", id);
+        log.info("Process instance with id: {} deleted successfully", id);
         return new ResponseEntity<>(new MessageResponse("Folyamat sikeresen törölve"), HttpStatus.OK);
     }
 
@@ -61,7 +59,7 @@ public class ProcessInstanceService {
         User user = userRepository.findByName(startProcessRequest.getPatientName()).orElse(null);
         if (user == null) {
             final String username = startProcessRequest.getPatientName();
-            logger.error("Cannot find user with name: {}", username);
+            log.error("Cannot find user with name: {}", username);
             throw new UserNotFoundException("Nem található a felhasználó", username);
         }
 
@@ -71,7 +69,7 @@ public class ProcessInstanceService {
                 .setVariables(variables)
                 .executeWithVariablesInReturn();
 
-        logger.info("Process instance {} started", processInstance.getProcessInstanceId());
+        log.info("Process instance {} started", processInstance.getProcessInstanceId());
         return new ResponseEntity<>(new MessageResponse(processInstance.getProcessInstanceId()), HttpStatus.OK);
     }
 
@@ -79,20 +77,20 @@ public class ProcessInstanceService {
         Object variable;
         try {
             if ((variable = runtimeService.getVariable(id, varName)) == null) {
-                logger.error("Variable '{}' not found", varName);
+                log.error("Variable '{}' not found", varName);
                 throw new VariableNotFoundException("Változó '" + varName + "' nem található", varName);
             }
         } catch (NullValueException e) {
-            logger.error(String.format("Process instance with id: %s not found", id));
+            log.error(String.format("Process instance with id: %s not found", id));
             throw new ProcessInstanceNotFoundException("Folyamat nem található", id);
         }
 
         runtimeService.setVariable(id, varName, variablePayload.getValue());
         if (!variable.equals(runtimeService.getVariable(id, varName))) {
-            logger.info("Variable '{}' value changed", varName);
+            log.info("Variable '{}' value changed", varName);
             return new ResponseEntity<>(new MessageResponse("'" + varName + "' változó értéke megváltozott"), HttpStatus.OK);
         } else {
-            logger.warn("Couldn't change variable value for '{}'", varName);
+            log.warn("Couldn't change variable value for '{}'", varName);
             return new ResponseEntity<>(new MessageResponse("Nem sikerült megváltoztatni '" + varName + "' változó értékét"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
