@@ -1,30 +1,28 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 
-import { HttpErrorResponse } from '@angular/common/http';
 import { MatSelectionListChange } from '@angular/material/list';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { MessageResponse } from 'src/app/model/MessageResponse';
+import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 import { UserData } from 'src/app/model/UserData';
 import {
   TaskActionFactory,
-  taskActionFactoryToken,
+  taskActionFactoryToken
 } from 'src/app/state/task/task.action.factory';
 import {
   selectTasksState,
-  TasksState,
+  TasksState
 } from 'src/app/state/task/task.state.model';
 import {
   UserActionFactory,
-  userActionFactoryToken,
+  userActionFactoryToken
 } from 'src/app/state/user/user.action.factory';
 import {
   selectUserState,
-  UserState,
+  UserState
 } from 'src/app/state/user/user.state.model';
 import { TaskPayload } from '../../model/generic/task';
-import { SNACK_BAR_MSG } from 'src/app/constants/message.constants';
 
 @Component({
   selector: 'app-tasks-page',

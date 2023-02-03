@@ -1,14 +1,12 @@
 package com.peczedavid.fogorvos.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.camunda.bpm.engine.rest.dto.runtime.VariableInstanceDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+@Slf4j
 public class VariableUtil {
-
-    private static final Logger logger = LoggerFactory.getLogger(VariableUtil.class);
 
     private VariableUtil() {
     }
@@ -20,7 +18,7 @@ public class VariableUtil {
                 .findFirst()
                 .orElse(null);
         if (variableInstanceDto == null) {
-            logger.error("Couldn't get value from variable '" + variableName + "'");
+            log.error("Couldn't get value from variable '{}'", variableName);
             return null;
         }
         return variableInstanceDto.getValue();

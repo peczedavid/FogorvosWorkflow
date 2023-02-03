@@ -1,8 +1,7 @@
 package com.peczedavid.fogorvos.security;
 
 import io.jsonwebtoken.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
@@ -15,9 +14,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@Slf4j
 public class JwtUtils {
-    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
-
     @Value("${peczedavid.app.jwtSecret}")
     private String SECRET_KEY;
 
@@ -30,7 +28,7 @@ public class JwtUtils {
     public String getJwtFromRequest(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, COOKIE_NAME);
         if (cookie == null) {
-            logger.info("No jwt cookie found in request.");
+            log.info("No jwt cookie found in request.");
             return null;
         }
         return cookie.getValue();
@@ -58,15 +56,15 @@ public class JwtUtils {
             extractAllClaims(token);
             return !isTokenExpired(token);
         } catch (SignatureException e) {
-            logger.error("Invalid JWT signature: {}", e.getMessage());
+            log.error("Invalid JWT signature: {}", e.getMessage());
         } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
+            log.error("Invalid JWT token: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
+            log.error("JWT token is expired: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
+            log.error("JWT token is unsupported: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
+            log.error("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
     }

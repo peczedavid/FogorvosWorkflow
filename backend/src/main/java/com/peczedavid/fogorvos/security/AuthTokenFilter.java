@@ -1,5 +1,6 @@
 package com.peczedavid.fogorvos.security;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -44,7 +46,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         } catch (Exception exception) {
-            logger.error("Cannot authenticate user: " + exception);
+            log.error("Cannot authenticate user: " + exception);
         }
         filterChain.doFilter(request, response);
     }
